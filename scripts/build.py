@@ -199,6 +199,12 @@ def main():
         body = f'<article class="doc">\n{markdown(source)}\n</article>'
         (ROOT / f"{name}.html").write_text(layout(name, title, description, body))
 
+    # Raw Markdown for the apps (they show the latest literature; the copy bundled in the app is the offline fallback)
+    raw = ROOT / "docs"
+    raw.mkdir(exist_ok=True)
+    for f in DOCS:  # docs/ only: nothing from the app repo's bible/ ever goes on the website
+        (raw / f).write_text((app / "docs" / f).read_text())
+
     # Klean HQ
     hq_src, hq_out = app / "hq", ROOT / "hq"
     if hq_out.exists():
