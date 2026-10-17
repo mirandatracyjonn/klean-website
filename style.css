@@ -122,6 +122,7 @@ section.block { padding: 72px 0; }
 .download { text-align: center; }
 .download .stores { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
 .store { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--bg); border-radius: 14px; padding: 10px 18px; text-decoration: none; font-weight: 700; opacity: 0.92; }
+a.store:hover { opacity: 1; transform: translateY(-1px); }
 .store small { display: block; font-size: 11px; font-weight: 500; opacity: 0.8; }
 .store svg { width: 26px; height: 26px; }
 .badge-soon { display: inline-block; font-size: 12px; font-weight: 800; color: #7a4a00; background: #ffe7b0; border-radius: 999px; padding: 3px 10px; margin-left: 6px; }
