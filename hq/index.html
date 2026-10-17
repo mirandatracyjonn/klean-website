@@ -1,0 +1,35 @@
+<!doctype html>
+<!--
+  Klean HQ: the operator's live laundromat dashboard and machine simulator (M11, TJ 2026-10-17).
+  Run it with scripts/hq.sh (serves this folder on http://localhost:8787). Signs in as a Super Admin.
+  Every machine is either
+    * Simulated: this page plays the machine's controller (polls machine-events, acks credits, runs cycles), or
+    * Real hardware: a Klean controller box on the machine does that; this page only shows its live state.
+  Device secrets for simulated machines, and for real ones until the controller file is downloaded, are kept in this
+  browser's localStorage only. See docs/hardware-guide.md and firmware/klean-hub/.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://allxvwnohkibfjbpoxvu.supabase.co wss://allxvwnohkibfjbpoxvu.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klean HQ</title>
+<script src="vendor/supabase-js-2.117.2.js"></script>
+<script src="vendor/qrcode-generator-1.4.4.min.js"></script>
+<link rel="stylesheet" href="hq.css">
+
+</head>
+<body>
+<header>
+  <h1>🧺 Klean HQ</h1>
+  <span id="who"></span>
+  <span class="grow"></span>
+  <select id="operatorPick" hidden></select>
+  <button id="hardwareBtn" hidden>Hardware</button>
+  <button id="signOutBtn" hidden>Sign out</button>
+</header>
+<main id="app"></main>
+
+<script src="hq.js"></script>
+</body>
+</html>

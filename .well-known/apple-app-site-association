@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["P5G566MD9G.ph.klean.app"],
+        "components": [
+          { "/": "/m/*", "comment": "Machine QR stickers open the app's Scan with that machine" },
+          { "/": "/b/*", "comment": "Laundromat pages (e.g. iMessage cards) open in the app" }
+        ]
+      }
+    ]
+  }
+}
