@@ -2,7 +2,7 @@
 
 *Effective date: October 17, 2026. Version 1.0.*
 
-**Tracy Jon Miranda, doing business as Klean** ("Klean", "we") is the personal information controller for the Klean apps and web
+**Tracy Jon Miranda, doing business as Klean by Geerho** ("Klean", "we") is the personal information controller for the Klean apps and web
 app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
 and act as controllers for their own use of it.
 
@@ -91,4 +91,4 @@ We'll notify you in the app before material changes take effect.
 
 ## 10. Contact
 
-Tracy Jon Miranda, doing business as Klean · 676 Siena Way, Lemoore, CA 93245, USA · DPO: info@klean.ph
+Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · DPO: info@klean.ph

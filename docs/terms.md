@@ -2,7 +2,7 @@
 
 *Effective date: October 17, 2026. Version 1.0.*
 
-These Terms are an agreement between you and **Tracy Jon Miranda, doing business as Klean**, 676 Siena Way, Lemoore, CA 93245, USA ("**Klean**",
+These Terms are an agreement between you and **Tracy Jon Miranda, doing business as Klean by Geerho**, 676 Siena Way, Lemoore, CA 93245, USA ("**Klean**",
 "we", "us"). They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
 "**Service**"). By creating an account or using the Service, you agree to these Terms and to our
 [Privacy Policy](privacy.md).
@@ -193,4 +193,4 @@ from them, and may enforce these Terms against you.
 
 ## 13. Contact
 
-Tracy Jon Miranda, doing business as Klean · 676 Siena Way, Lemoore, CA 93245, USA · info@klean.ph
+Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · info@klean.ph
