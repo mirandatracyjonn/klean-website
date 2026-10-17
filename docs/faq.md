@@ -12,6 +12,10 @@ US$2.99, or ₱199 in the Philippines, shown in your local price); on klean.ph i
 attempt. If you close the window halfway, reopening it is free. App Store and Google Play refunds follow their own
 rules.
 
+**I verified for free. Why do I have to verify again?**
+While Klean is in testing, verification is sometimes free. Free verifications are temporary: when Klean launches,
+you'll be asked to verify once more, this time with the fee. Your account, points and history stay as they are.
+
 **Do you keep a copy of my ID?**
 No. Our verification partner, Didit, handles the images. Klean keeps only your verification result, your verified
 name and country, and one-way codes used to detect duplicate accounts.
