@@ -30,7 +30,9 @@ export function el(tag, props = {}, ...children) {
 }
 
 export function money(minor, currency) {
-  return new Intl.NumberFormat(currency === "PHP" ? "en-PH" : "en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(minor / 100);
+  // Whole amounts without cents (₱250); others with them (US$2.99, not "$3").
+  const digits = minor % 100 === 0 ? 0 : 2;
+  return new Intl.NumberFormat(currency === "PHP" ? "en-PH" : "en-US", { style: "currency", currency, minimumFractionDigits: digits, maximumFractionDigits: digits }).format(minor / 100);
 }
 
 export function mapsURL(b) {
