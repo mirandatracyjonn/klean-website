@@ -37,22 +37,27 @@ Good to know:
 
 ### Self-service: start laundry (weigh, pay, scan)
 
-1. At the laundromat, tap **Start laundry** on Home and choose the laundromat you're at.
+1. At the laundromat, tap **Start laundry** on Home and choose the laundromat you're at. Choose what you need:
+   **Wash + dry**, **Wash only** or **Dry only** (each laundromat sets its prices; Start laundry shows them).
 2. Weigh your dirty laundry on the laundromat's scale and enter the kilos (or choose the number of loads). Klean works
    out the loads: for example 9 kg with an 8 kg limit is **2 loads**.
-3. Pay once. The scanner opens: scan a free washer and press **Start** on it. Klean goes back to Home, which shows
+3. Pay once. The scanner opens: scan a free washer, load your laundry and close the door, then tap **Start wash**
+   on Home (or press Start on the machine). Machines never start by themselves. Klean goes back to Home, which shows
    what's still paid; tap **Scan a washer** for the next load.
-4. When a wash is done you get a notification: move the clothes to a free dryer, tap **Scan a dryer**, scan it and
-   press Start. You're notified again when the dry is done.
+4. When a wash is done you get a notification: move the clothes to a free dryer, tap **Scan a dryer**, scan it, then tap
+   **Start dry** (or press Start on the dryer). You're notified again when the dry is done.
 
 ### Self-service: scan a machine first
 
 1. Go to a machine that isn't running.
 2. Tap **Scan**, and point your camera at the QR code on the machine.
-3. Choose how many loads (one load = one wash and one dry; up to 5) and pay once. The machine is held for you for
+3. Scanned a washer? Choose **Wash + dry** or **Wash only**. Scanned a dryer with nothing saved? It's **Dry only**.
+   Choose how many loads (up to 5) and pay once. The machine is held for you for
    about 10 minutes while you pay.
-4. When payment clears, the machine is ready. **Press Start on the machine.**
-5. Your dry is saved in your wallet. When the wash is done, scan any free dryer at the same laundromat business.
+4. When payment clears, the machine is ready (its light turns white). Load your laundry, close the door, then tap
+   **Start wash** / **Start dry** on Home and confirm, or **press Start on the machine**. A machine never starts by
+   itself.
+5. Chose wash + dry? Your dry is saved in your wallet. When the wash is done, scan any free dryer at the same laundromat business.
    No second payment. Home shows what's paid ("Your dry is paid", or "2 washes and 3 dries paid").
 6. Paid for more than one load? Scan the next free washer: it starts without payment. Saved loads last 30 days.
 

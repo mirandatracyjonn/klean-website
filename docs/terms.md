@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 18, 2026. Version 1.1.*
+*Effective date: October 18, 2026. Version 1.2.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -42,8 +42,11 @@ Privacy Policy.
 its own prices, operates its own premises and machines, and is responsible for its laundry services. Klean
 provides the software and payment processing; Klean is not the laundromat.
 
-3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider.
-Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight. You
+3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider,
+and it starts only when you start it (in the app or with the machine's Start button); make sure your laundry is
+inside and the door is closed first.
+Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight,
+unless you choose **wash only** or **dry only** where the Operator offers them; then a load is that one service. You
 may pay for several loads at once (up to five, and no more than the branch's washers); the machine you scanned is
 activated and the other loads are kept as load credits (3.3).
 

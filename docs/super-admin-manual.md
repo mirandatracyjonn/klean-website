@@ -60,11 +60,16 @@ Klean is free to download and free to set up. There's no subscription. Klean ear
 | Setting | Default | Notes |
 |---|---|---|
 | Price per load (wash + dry) | ₱250 (PH) | New orders only; orders in progress keep their price |
+| Wash only | ₱175 (PH) | Leave blank to not offer it |
+| Dry only | ₱199 (PH) | Leave blank to not offer it |
 | Max kg per load | 8 kg | Loads = weight ÷ max, rounded up |
 | 1 point per | price ÷ 10 (₱25) | So customers earn 10 points per paid load |
 | Points for a free wash + dry | 100 | "Buy 10, get the 11th free" |
 | Welcome bonus | 10 | On a customer's first paid visit to your business |
 | Points expire after | 12 months | |
+
+Customers choose **wash + dry**, **wash only** or **dry only** (only the services you price). A dry-only load is what
+a customer gets when they scan a dryer with nothing saved. Every service shows on your public laundromat page.
 
 Customers scanning a machine can pay for **up to 5 loads at once** (never more than the branch's washers): the
 scanned washer starts and the rest are saved in their wallet for 30 days. It's one order and one payment in your
@@ -87,6 +92,11 @@ waiting for Start, blue in use, red error). Machines can be **Real** (a Klean co
 **Simulated** (Klean HQ plays the machine, so you can try everything before installing hardware). Its
 **Hardware** page lists what to buy or build, how it connects, and gives you the controller file to flash. Full
 details: the Hardware Guide.
+
+**Machines never start by themselves** (real or simulated). After paying, the customer taps **Start wash** /
+**Start dry** in Klean (after confirming the laundry is in and the door is closed) or presses Start on the machine;
+on a simulated machine you can also click **Press Start** in Klean HQ. If your machines start as soon as coins go
+in, tick that box before downloading the controller file, so Klean holds the coins until the customer taps Start.
 
 In the app:
 

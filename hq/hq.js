@@ -14,8 +14,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 // Per-browser memory: device secrets, which machines are simulated, and each simulated controller's state.
 const STORE_KEY = "klean-floor-v1"; // name from before Klean Floor became Klean HQ; kept so saved machine keys survive
 function loadLocal() {
-  try { return Object.assign({ secrets: {}, modes: {}, sim: {}, speed: 60, autoStart: true, operatorId: null, branchId: null }, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }
-  catch { return { secrets: {}, modes: {}, sim: {}, speed: 60, autoStart: true }; }
+  try { return Object.assign({ secrets: {}, modes: {}, sim: {}, speed: 60, operatorId: null, branchId: null }, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }
+  catch { return { secrets: {}, modes: {}, sim: {}, speed: 60 }; }
 }
 const local = loadLocal();
 const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify(local)); } catch {} };
@@ -95,7 +95,11 @@ async function tick() {
     const { commands } = await sendEvents(events);
     for (const [controllerId, list] of Object.entries(commands ?? {})) {
       const m = machines.find((x) => x.controller_id === controllerId);
-      for (const c of list) if (m && c.type === "CREDIT") await onCredit(m, c);
+      for (const c of list) {
+        if (m && c.type === "CREDIT") await onCredit(m, c);
+        // M37: the customer tapped Start wash / Start dry in Klean.
+        if (m && c.type === "START" && simOf(m).activation === c.activation_id) await pressStart(m.controller_id);
+      }
     }
     S.error = null;
   } catch (e) { S.error = `Simulator can't reach Klean: ${e.message}`; }
@@ -112,7 +116,7 @@ async function onCredit(m, c) {
   const sim = simOf(m);
   Object.assign(sim, { state: "ARMED", activation: c.activation_id, cycleMinutes: c.cycle_minutes ?? m.cycle_minutes, endsAt: null });
   await sendEvents([event(m, "ack", { activation_id: c.activation_id })]);
-  if (local.autoStart) setTimeout(() => pressStart(m.controller_id), 4000);
+  // Never start by itself (TJ, M37): the customer presses Start here or taps Start wash / Start dry in Klean.
 }
 
 async function pressStart(controllerId) {
@@ -347,7 +351,7 @@ function renderFloor() {
         <span><i class="dot" style="background:var(--blue)"></i>In use</span><span><i class="dot" style="background:var(--red)"></i>Error</span></div>
       <span class="sp"></span>
       ${sims.length ? `<label>Simulation speed <select data-set="speed">${[1, 10, 60, 300].map((v) => `<option value="${v}" ${local.speed === v ? "selected" : ""}>${v}×</option>`).join("")}</select></label>
-        <label><input type="checkbox" ${local.autoStart ? "checked" : ""} data-set="autoStart"> Customer presses Start automatically (simulation only: real machines wait for the customer to press Start)</label>` : ""}
+        <small style="max-width:360px;opacity:.75">Machines never start by themselves. After paying, the customer taps <b>Start wash</b> / <b>Start dry</b> in Klean, or you press <b>Press Start</b> here (the machine's own button).</small>` : ""}
       <button class="ghost" data-wizard="${local.branchId}">+ Add machines</button>
       <button class="ghost" data-do="print">Print QR stickers</button>
     </div>
@@ -460,13 +464,15 @@ function renderHardware() {
       <li>Have an electrician clamp a current switch around each machine's live wire and set it to trip when the motor runs.</li>
       <li>Download the controller file below, flash the Klean firmware (<code>firmware/klean-hub</code>) with the Arduino IDE, and power it up.</li>
       <li>Within a minute the machine's light on this page turns green. Test it: scan the machine's QR code in the Klean app and pay.
-          The relay clicks once per coin, the light turns white, and blue once you press Start on the machine.</li>
+          The relay clicks once per coin, the light turns white, and blue once you press Start on the machine or tap Start wash in the app.
+          Klean never starts a machine by itself.</li>
     </ol>
 
     <h3>Controller file</h3>
     ${real.length ? `<p>The file holds each machine's controller ID and a <b>fresh secret key</b>. Downloading it replaces the old keys, so any controller already
        installed for these machines must be re-flashed. Keep the file private and delete it after flashing.</p>
        <label class="field">Coins (pulses) per cycle<input id="hwPulses" type="number" min="1" max="50" value="1"></label>
+       <label><input type="checkbox" id="hwCoinsStart"> These machines start as soon as coins go in (no Start button). Klean then holds the coins until the customer taps Start in the app, so they never start by themselves.</label>
        <button class="primary" data-do="config">Download controller file (klean_config.h)</button>`
      : `<p>No machine at this location is set to <b>Real</b> yet. On the floor, choose <b>Use real machine</b> on the machines that have controllers.</p>`}
     <p id="hwMsg" class="err"></p>
@@ -476,13 +482,14 @@ function renderHardware() {
 async function downloadConfig() {
   const real = (S.machines[local.branchId] ?? []).filter((m) => modeOf(m) === "real");
   const pulses = Math.max(1, Math.min(50, parseInt($("hwPulses").value, 10) || 1));
+  const coinsStartIt = $("hwCoinsStart").checked;
   const branch = S.branches.find((b) => b.id === local.branchId);
   try {
     const lines = [];
     for (const [i, m] of real.entries()) {
       const secret = await rpc("rotate_device_secret", { machine: m.id });
       const box = Math.floor(i / 4) + 1, channel = (i % 4) + 1;
-      lines.push(`  // ${m.label} (${m.type}), box ${box} channel ${channel}\n  { "${m.label}", "${m.controller_id}", "${secret}", ${box}, ${channel}, ${pulses} },`);
+      lines.push(`  // ${m.label} (${m.type}), box ${box} channel ${channel}\n  { "${m.label}", "${m.controller_id}", "${secret}", ${box}, ${channel}, ${pulses}, ${coinsStartIt} },`);
     }
     for (const m of real) delete local.secrets[m.controller_id]; // the controller holds them now
     save();
@@ -494,7 +501,7 @@ async function downloadConfig() {
 #define KLEAN_WIFI_SSID "your-wifi-name"
 #define KLEAN_WIFI_PASSWORD "your-wifi-password"
 
-struct KleanMachine { const char* label; const char* controllerId; const char* secret; uint8_t box; uint8_t channel; uint8_t pulses; };
+struct KleanMachine { const char* label; const char* controllerId; const char* secret; uint8_t box; uint8_t channel; uint8_t pulses; bool coinsStartIt; };
 static const KleanMachine KLEAN_MACHINES[] = {
 ${lines.join("\n")}
 };
@@ -550,7 +557,6 @@ document.addEventListener("click", (e) => {
 document.addEventListener("change", (e) => {
   const d = e.target.dataset ?? {};
   if (d.set === "speed") { local.speed = +e.target.value; save(); }
-  if (d.set === "autoStart") { local.autoStart = e.target.checked; save(); }
 });
 render();
 start();

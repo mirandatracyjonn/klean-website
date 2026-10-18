@@ -24,8 +24,16 @@ contact support.
 Your money is safe: a wash credit is waiting on **Home**. Scan any free washer at the same laundromat business and it
 starts without another payment.
 
+**Will the machine start by itself after I pay?**
+No. For safety, a machine only starts when you start it: tap **Start wash** or **Start dry** on Home (Klean asks
+you to check that your laundry is inside and the door is closed), or press Start on the machine.
+
+**Can I just wash, or just dry?**
+Yes, where the laundromat offers it. Choose **Wash only** or **Dry only** in Start laundry, or when you scan a washer.
+Scanning a dryer with nothing saved gives you a dry-only load. Prices are on the laundromat's page.
+
 **How do I dry my clothes?**
-Every load includes a dry. When your wash finishes, scan any free dryer at the same business. Home shows
+Every wash + dry load includes a dry. When your wash finishes, scan any free dryer at the same business. Home shows
 "Your dry is paid" with a **Scan a dryer** button.
 
 **I have lots of laundry. Do I pay for each washer?**

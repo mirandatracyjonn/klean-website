@@ -69,6 +69,7 @@ function signedIn(a, v) {
   heading.textContent = a.first_name ? `Hi, ${a.first_name}` : "Your account";
   const parts = [el("div", { class: "card acct-card" },
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }))];
+  parts.push(machinesCard());
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(closeBusinessCard(m));
@@ -77,6 +78,42 @@ function signedIn(a, v) {
   parts.push(el("div", { class: "btn-row" }, out), deleteCard(a));
   box.replaceChildren(...parts);
   if (v.status === "in_progress" || new URLSearchParams(location.search).has("verification")) watch(v.status);
+}
+
+// M37 (TJ): machines never start by themselves. Paid machines wait here for Start wash / Start dry (or the
+// machine's own Start button). The card stays hidden when nothing is waiting.
+let machinesTimer;
+function machinesCard() {
+  const card = el("div", { class: "card acct-card", hidden: true });
+  const draw = async () => {
+    clearTimeout(machinesTimer);
+    if (!card.isConnected && card.dataset.drawn) return;
+    const { data, error } = await db.rpc("my_ready_machines");
+    card.dataset.drawn = "1";
+    const list = error ? [] : data ?? [];
+    card.hidden = list.length === 0;
+    card.replaceChildren(el("h2", { text: "Ready to start" }), ...list.map(machineRow));
+    if (list.length) machinesTimer = setTimeout(draw, 3000);
+  };
+  const machineRow = (m) => {
+    const title = m.machine_type === "dryer" ? "Start dry" : "Start wash";
+    const msg = el("p", { class: "meta" });
+    const b = el("button", { class: "btn btn-brand", type: "button", text: title, disabled: !m.ready });
+    b.addEventListener("click", async () => {
+      if (!window.confirm(`Start ${m.label} now?\n\nMake sure your laundry is inside and the door is closed.`)) return;
+      b.disabled = true; b.textContent = "Starting…";
+      const { error } = await db.rpc("start_machine", { activation: m.activation_id });
+      if (error) { msg.replaceChildren(errorLine(error.message)); b.disabled = false; b.textContent = title; return; }
+      msg.textContent = `Starting ${m.label}… If it hasn't started in a few seconds, press Start on the machine.`;
+    });
+    return el("div", { class: "acct-machine" },
+      el("p", { text: m.ready ? `${m.label} at ${m.branch_name} is ready` : `${m.label} at ${m.branch_name} is getting ready…` }),
+      el("p", { class: "meta", text: m.ready ? `Load your laundry and close the door, then tap ${title}, or press Start on the machine.`
+                                              : "Its light turns white in a few seconds." }),
+      b, msg);
+  };
+  draw();
+  return card;
 }
 
 function verificationCard(v) {

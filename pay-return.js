@@ -12,7 +12,7 @@ const title = paid
   ? (flow === "kyc_fee" ? "Payment received" : "Paid! Your machine is getting ready")
   : "Payment cancelled";
 const body = paid
-  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check." : "Go back to Klean. When the machine's light turns white, press Start on the machine.")
+  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check." : "Go back to Klean. When the machine's light turns white, tap Start wash (or Start dry) on Home, or press Start on the machine. Machines never start by themselves.")
   : "Nothing was charged. Go back to Klean to try again.";
 
 card.replaceChildren(

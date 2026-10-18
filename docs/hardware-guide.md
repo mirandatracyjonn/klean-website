@@ -12,10 +12,17 @@ keep accepting coins as before.
 1. A customer scans the machine's QR code in the Klean app and pays.
 2. Klean tells the controller to add a credit. The controller clicks a relay wired across the coin acceptor's signal
    wire, once per coin, so the machine sees coins. The machine's light in Klean turns **white** (paid, press Start).
-3. The customer presses Start. A current sensor on the machine's power line notices the motor running and the
+3. The customer presses Start on the machine, or taps **Start wash** / **Start dry** in Klean after confirming the
+   laundry is in and the door is closed. **Klean never starts a machine by itself.** A current sensor on the machine's power line notices the motor running and the
    controller reports **started** (light **blue**).
 4. When the machine has been stopped for 3 minutes, the controller reports **completed** (light **green**) and the
    customer gets a "laundry is done" notification.
+
+**Start from the app.** When the customer taps Start in Klean, the controller gets a START command. It presses the
+machine's Start button through an optional second relay wired across that button (set `START_PINS` in the
+firmware), or, for machines that start as soon as coins go in, it holds the coins until START (tick "These machines
+start as soon as coins go in" before downloading the controller file). Without either, START is ignored and the
+customer presses Start on the machine. Controller files downloaded before October 18, 2026 need downloading again.
 
 One controller box runs up to **4 machines**. A laundromat with 6 washers and 6 dryers needs 3 boxes.
 
@@ -82,7 +89,7 @@ top of the firmware for other boards.
 ## Test before opening
 
 Scan each machine's QR in the Klean app and pay. You should hear one relay click per coin and see the light turn
-white; press Start and it turns blue. If a light is **red**:
+white; press Start (on the machine, or Start wash in the app) and it turns blue. Nothing should start before that. If a light is **red**:
 
 | Red reason | Check |
 |---|---|
