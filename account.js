@@ -131,6 +131,7 @@ function verificationCard(v) {
     card.append(el("h2", { text: "Verify your identity" }),
       el("p", { text: "Everyone on Klean verifies once: one person, one account. It keeps points fair and stops fraud. Klean never sees or keeps your ID images; our partner Didit handles them." }),
       el("p", { text: `The fee covers the identity check: ${money(fee.PHP, "PHP")} or ${money(fee.USD, "USD")}, charged per attempt and non-refundable.` }),
+      el("p", { class: "meta", text: "Already use Klean in the app? Check this member code matches the one in the app (Account) before paying. If it doesn't, this is a new account: sign out and sign in the way you did in the app, or link this sign-in in the app first (Account → Sign-in methods)." }),
       el("div", { class: "btn-row" }, gcash, cardPay));
   }
   card.append(err);
