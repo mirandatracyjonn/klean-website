@@ -102,4 +102,5 @@ connection** until you're back on Wi-Fi or mobile data. A machine that's already
 
 ## Need help?
 
-See the [FAQ](../faq.md), or contact support from **Account → Help**.
+See the [FAQ](../faq.md), or contact us: **Account → Contact us** in the app, email **info@klean.ph**, or call or
+text **+1 (619) 796-1115**. Include your member code so we can find your account.

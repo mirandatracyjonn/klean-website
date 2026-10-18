@@ -198,4 +198,5 @@ from them, and may enforce these Terms against you.
 
 ## 13. Contact
 
-Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · info@klean.ph
+Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · info@klean.ph ·
++1 (619) 796-1115

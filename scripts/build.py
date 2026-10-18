@@ -86,7 +86,7 @@ def layout(name, title, description, body, scripts=(), wide=False):
 {body}
 </main>
 <footer class="site-footer"><div class="wrap">
-  <div><div class="tag">{TAGLINE}</div><div>{PROMISE}</div><div>Klean by Geerho · © 2026 Tracy Jon Miranda</div></div>
+  <div><div class="tag">{TAGLINE}</div><div>{PROMISE}</div><div>Klean by Geerho · © 2026 Tracy Jon Miranda</div><div><a href="mailto:info@klean.ph">info@klean.ph</a> · <a href="tel:+16197961115">+1 (619) 796-1115</a></div></div>
   <nav aria-label="Footer">
 {foot}
   </nav>

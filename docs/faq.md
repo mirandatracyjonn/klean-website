@@ -128,3 +128,7 @@ Read the reason on the card, check the machine, then tap Clear error. See the Mo
 
 **Can I ring up my own laundry?**
 No. Ask another attendant, or use self-service scan like any customer.
+
+**How do I contact Klean?**
+In the app: **Account → Contact us**. Or email **info@klean.ph**, or call or text **+1 (619) 796-1115**. Include your
+member code (Account) so we can find your account. We will never ask for your password or sign-in codes.

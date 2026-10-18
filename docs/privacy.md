@@ -6,7 +6,7 @@
 app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
 and act as controllers for their own use of it.
 
-**Data Protection Officer:** Tracy Jon Miranda · info@klean.ph · 676 Siena Way, Lemoore, CA 93245, USA
+**Data Protection Officer:** Tracy Jon Miranda · info@klean.ph · +1 (619) 796-1115 · 676 Siena Way, Lemoore, CA 93245, USA
 
 ## 1. What we collect
 
