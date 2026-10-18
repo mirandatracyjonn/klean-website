@@ -47,7 +47,15 @@
   .status { font-weight: 600; }
   .status small { display: block; font-weight: 400; color: var(--muted); }
   .qr { display: flex; gap: 10px; align-items: center; }
-  .qr svg { width: 92px; height: 92px; border: 6px solid #fff; border-radius: 6px; box-shadow: 0 0 0 1px var(--line); background: #fff; flex: none; }
+  .qr svg { width: 120px; height: 120px; border-radius: 6px; box-shadow: 0 0 0 1px var(--line); background: #fff; display: block; }
+  .qr-btn { padding: 0; border: 0; background: none; cursor: zoom-in; flex: none; }
+  .qr-zoom { position: fixed; inset: 0; z-index: 1000; background: #fff; color: #10201b; display: flex; flex-direction: column;
+             align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center; cursor: zoom-out; }
+  .qr-zoom-box svg { width: min(70vh, 88vw); height: min(70vh, 88vw); display: block; background: #fff; }
+  .qr-zoom b { font-size: 28px; }
+  .qr-zoom p { margin: 0; max-width: 560px; color: #3b4d47; }
+  .qr-zoom code { font-size: 15px; word-break: break-all; user-select: all; }
+  .qr-zoom small { color: #6b7d77; }
   .qr small { color: var(--muted); font-size: 12px; }
   .actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .actions button { font-size: 13px; padding: 6px 9px; }

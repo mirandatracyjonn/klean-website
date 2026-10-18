@@ -190,12 +190,30 @@ function machineArt(m, status) {
   </svg>`;
 }
 
-function qrSvg(token, cell = 3) {
+// `margin` is the white "quiet zone" (in squares) cameras need around a code; without it, phones struggle to find the
+// code, especially on a computer screen.
+function qrSvg(token, cell = 3, margin = 0) {
   const q = qrcode(0, "M");
   q.addData(QR_BASE + token);
   q.make();
-  return q.createSvgTag({ cellSize: cell, margin: 0, scalable: true });
+  return q.createSvgTag({ cellSize: cell, margin, scalable: true });
 }
+
+// Full-screen QR for scanning off the computer screen (click a machine's QR; click anywhere or Esc to close).
+function zoomQr(token, label) {
+  closeZoom();
+  const el = document.createElement("div");
+  el.className = "qr-zoom";
+  el.dataset.close = "";
+  el.innerHTML = `<div class="qr-zoom-box">${qrSvg(token, 10, 4)}</div>
+    <b>${esc(label)}</b>
+    <p>Scan with the Klean app. Tip: turn your screen brightness up and hold the phone about 30 cm away.</p>
+    <p class="code">Or type this code in the app (Scan → Machine code):<br><code>${esc(token)}</code></p>
+    <small>Click anywhere or press Esc to close</small>`;
+  document.body.append(el);
+}
+function closeZoom() { document.querySelector(".qr-zoom")?.remove(); }
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeZoom(); });
 
 const STATUS_TEXT = { available: "Available", paid_awaiting_start: "Paid: press Start", in_use: "In use", error: "Error" };
 
@@ -341,7 +359,7 @@ function renderFloor() {
     ${sims.length && S.isBeta ? `<div class="note" style="margin-bottom:14px">Simulated machines run while this page is open. Scan a QR code with the Klean app on your phone and pay with
        PayMongo test money: the machine's light turns white, then blue when it starts, then green when the cycle ends.</div>` : ""}
     ${cards || `<p>No machines here yet.</p>`}
-    <div class="stickers">${[...machines].sort((a, b) => (a.type === b.type ? byLabel(a, b) : a.type === "washer" ? -1 : 1)).map((m) => `<div class="sticker"><b>${esc(m.label)}</b>${qrSvg(m.qr_token, 4)}<span>Scan with the Klean app · ${esc(branch?.name ?? "")}</span></div>`).join("")}</div>`;
+    <div class="stickers">${[...machines].sort((a, b) => (a.type === b.type ? byLabel(a, b) : a.type === "washer" ? -1 : 1)).map((m) => `<div class="sticker"><b>${esc(m.label)}</b>${qrSvg(m.qr_token, 4, 4)}<span>Scan with the Klean app · ${esc(branch?.name ?? "")}</span></div>`).join("")}</div>`;
 }
 
 function machineCard(m) {
@@ -382,7 +400,7 @@ function machineCard(m) {
       <span class="light ${m.status}" title="${STATUS_TEXT[m.status]}"></span></div>
     <div class="art">${machineArt(m, m.status)}</div>
     <div class="status">${STATUS_TEXT[m.status] ?? m.status}<small>${m.type === "washer" ? "Washer" : "Dryer"} · ${m.cycle_minutes} min cycle${detail ? " · " + detail : ""}</small></div>
-    <div class="qr">${qrSvg(m.qr_token)}<small>Scan with the Klean app to pay and start ${esc(m.label)}.</small></div>
+    <div class="qr"><button class="qr-btn" data-zoom="${esc(m.qr_token)}" data-label="${esc(m.label)}" title="Show large to scan">${qrSvg(m.qr_token, 3, 2)}</button><small>Scan with the Klean app to pay and start ${esc(m.label)}. <b>Click the code to make it big.</b></small></div>
     <div class="actions">${actions}</div>
   </div>`;
 }
@@ -517,9 +535,11 @@ db.auth.onAuthStateChange((event) => { if (event === "SIGNED_IN" && !S.session) 
 
 // One listener for every button (no inline handlers, so the page can run under a strict Content Security Policy).
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-act],[data-go],[data-wizard],[data-do],[data-signin],[data-branch]");
+  const t = e.target.closest("[data-act],[data-go],[data-wizard],[data-do],[data-signin],[data-branch],[data-zoom],[data-close]");
   if (!t) return;
   const d = t.dataset;
+  if (d.close !== undefined) return closeZoom();
+  if (d.zoom) return zoomQr(d.zoom, d.label ?? "");
   if (d.act) return act(d.cid, d.act);
   if (d.go) { S.view = d.go; return render(); }
   if (d.wizard !== undefined) { wizardFor = d.wizard || null; S.view = "wizard"; return render(); }
