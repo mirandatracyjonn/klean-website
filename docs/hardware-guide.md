@@ -1,4 +1,4 @@
-# Klean Hardware Guide
+# Klean by Geerho Hardware Guide
 
 How to connect coin-operated washers and dryers to Klean so customers can pay by scanning a QR code. Your machines
 keep accepting coins as before.

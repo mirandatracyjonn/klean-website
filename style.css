@@ -186,3 +186,5 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .acct-error { color: #b42318; font-weight: 600; }
 .acct-danger { color: #b42318; border-color: #b42318; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.brand-lockup { display: inline-flex; flex-direction: column; line-height: 1; }
+.brand-lockup small { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; margin-top: 3px; }

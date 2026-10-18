@@ -1,12 +1,12 @@
-# Klean Privacy Policy
+# Klean by Geerho Privacy Policy
 
-*Effective date: October 17, 2026. Version 1.0.*
+*Effective date: October 18, 2026. Version 1.1.*
 
-**Tracy Jon Miranda, doing business as Klean by Geerho** ("Klean", "we") is the personal information controller for the Klean apps and web
-app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
+**Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
+for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
 and act as controllers for their own use of it.
 
-**Data Protection Officer:** Tracy Jon Miranda · info@klean.ph · +1 (619) 796-1115 · 676 Siena Way, Lemoore, CA 93245, USA
+**Data Protection Officer:** Tracy Jon Miranda, for Geerho Tech LLC · info@klean.ph · (619) 796-1115 · 2108 N St, Ste N, Sacramento, CA 95816, USA
 
 ## 1. What we collect
 
@@ -91,4 +91,4 @@ We'll notify you in the app before material changes take effect.
 
 ## 10. Contact
 
-Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · DPO: info@klean.ph
+Klean by Geerho, a business of Geerho Tech LLC · 2108 N St, Ste N, Sacramento, CA 95816, USA · (619) 796-1115 · DPO: info@klean.ph

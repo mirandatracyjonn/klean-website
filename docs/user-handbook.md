@@ -1,6 +1,6 @@
-# Klean User Manual
+# Klean by Geerho User Manual
 
-Welcome to Klean. This guide covers everything you need as a customer: signing up, washing, paying, and earning
+Welcome to Klean by Geerho. This guide covers everything you need as a customer: signing up, washing, paying, and earning
 free loads. Klean works on iPhone, iPad, Android phones and tablets, and in your web browser.
 
 ## Getting started
@@ -104,4 +104,4 @@ connection** until you're back on Wi-Fi or mobile data. A machine that's already
 ## Need help?
 
 See the [FAQ](../faq.md), or contact us: **Account → Contact us** in the app, email **info@klean.ph**, or call or
-text **+1 (619) 796-1115**. Include your member code so we can find your account.
+text **(619) 796-1115**. Include your member code so we can find your account.

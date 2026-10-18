@@ -1,9 +1,9 @@
-# Klean Terms of Service
+# Klean by Geerho Terms of Service
 
-*Effective date: October 17, 2026. Version 1.0.*
+*Effective date: October 18, 2026. Version 1.1.*
 
-These Terms are an agreement between you and **Tracy Jon Miranda, doing business as Klean by Geerho**, 676 Siena Way, Lemoore, CA 93245, USA ("**Klean**",
-"we", "us"). They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
+These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
+("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
 "**Service**"). By creating an account or using the Service, you agree to these Terms and to our
 [Privacy Policy](privacy.md).
 
@@ -198,5 +198,4 @@ from them, and may enforce these Terms against you.
 
 ## 13. Contact
 
-Tracy Jon Miranda, doing business as Klean by Geerho · 676 Siena Way, Lemoore, CA 93245, USA · info@klean.ph ·
-+1 (619) 796-1115
+Klean by Geerho, a business of Geerho Tech LLC · 2108 N St, Ste N, Sacramento, CA 95816, USA · info@klean.ph · (619) 796-1115

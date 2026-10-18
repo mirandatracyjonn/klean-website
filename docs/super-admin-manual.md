@@ -1,4 +1,4 @@
-# Klean Super Admin Manual
+# Klean by Geerho Super Admin Manual
 
 For laundromat business owners and managers. A Super Admin runs one Klean business ("operator"): prices,
 branches, machines, staff, reports and customers.
