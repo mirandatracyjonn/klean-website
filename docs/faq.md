@@ -35,7 +35,9 @@ you to check that your laundry is inside and the door is closed), or press Start
 **Can I just wash, or just dry?**
 Yes, where the laundromat offers it. Choose **Wash only** or **Dry only** in Start laundry, or when you scan a washer.
 Scanning a dryer with nothing saved gives you a dry-only load. Prices are on the laundromat's page. A wash-only load works only on washers and a dry-only load only on dryers, because their prices
-differ: scanning a dryer when you only have washes saved asks you to pay for a dry.
+differ: scanning a dryer when you only have washes paid first asks "You already paid for a washer. Are you sure you
+want to use this dryer?" Tap **Back** if you meant a washer; **Yes, use dryer** asks you to pay for a dry, and your
+paid washes stay saved.
 
 **How do I dry my clothes?**
 Every wash + dry load includes a dry. When your wash finishes, scan any free dryer at the same business. Home shows

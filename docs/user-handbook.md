@@ -52,6 +52,7 @@ Good to know:
 1. Go to a machine that isn't running.
 2. Tap **Scan**, and point your camera at the QR code on the machine.
 3. Scanned a washer? Choose **Wash + dry** or **Wash only**. Scanned a dryer with nothing saved? It's **Dry only**.
+   Scanned a dryer but you only have washes paid? Klean asks if you're sure; **Back** if you meant a washer.
    Choose how many loads (up to 5) and pay once. The machine is held for you for
    about 10 minutes while you pay.
 4. When payment clears, the machine is ready (its light turns white). Load your laundry, close the door, then tap
