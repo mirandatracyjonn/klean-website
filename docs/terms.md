@@ -19,20 +19,10 @@ account, or using someone else's account is prohibited. We may merge, suspend or
 our verification provider, Didit, using a valid government-issued ID and a live selfie. There are no exemptions,
 including for staff, business owners and Klean's own personnel.
 
-1.4 **Verification fee.** Each verification attempt costs a fee, which covers the cost of the identity check. The
-price is shown before you pay:
-- **In the iPhone/iPad app:** an in-app purchase through Apple (US$2.99, ₱199 in the Philippines, or the App Store's price for your
-  country), charged to your Apple account under Apple's terms.
-- **In the Android app:** an in-app purchase through Google Play, at the price Google Play shows for your country.
-- **On klean.ph:** US$2.99 by card, or ₱199 by GCash, Maya or QR Ph.
-
-The fee is charged per attempt, is paid to Klean, and is **non-refundable** (including if verification is declined or
-finds that you already have an account), except where the law or the App Store's / Google Play's own refund rules
-say otherwise; refunds for in-app purchases are handled by Apple or Google. Resuming an unfinished attempt is free.
-A refunded or reversed fee may void the attempt it paid for. We may change the fee for future attempts.
-
-While Klean is in testing we may offer verification free of charge. A verification completed for free counts the
-same as a paid one and stays valid when the fee returns.
+1.4 **Verification is free.** Klean currently pays for the identity check, so verifying costs you nothing. If we
+introduce a fee for future attempts, we'll show the price before you pay (in the iPhone and Android apps as an in-app
+purchase through Apple or Google; on klean.ph by card, GCash, Maya or QR Ph), and it won't apply to verifications
+already completed: once you're verified, you stay verified. Resuming an unfinished attempt is always free.
 
 ## 2. Your account
 

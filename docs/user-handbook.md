@@ -16,9 +16,8 @@ add other sign-in methods later in **Account → Sign-in methods**.
 
 Everyone on Klean verifies once: customers, staff and owners alike. It keeps accounts real and stops points abuse.
 
-1. Pay the verification fee: a small in-app purchase in the iPhone or Android app (**US$2.99**, or **₱199** in the
-   Philippines, shown in your local price), or in a web browser at **klean.ph/account.html**: sign in, then pay
-   **US$2.99** by card or **₱199** with GCash, Maya or QR Ph, and verify right there.
+1. Verification is **free**: Klean pays for the identity check. In a web browser you can also verify at
+   **klean.ph/account.html**.
 2. Tap **Start verification** and follow the steps: hold a valid ID in front of the camera, then look at the camera
    for a quick selfie. There's no button to press: each photo is taken automatically once it's steady.
    For a quick check, use good light without glare, lay your ID flat on a dark surface, and remove glasses, hats and
@@ -28,12 +27,11 @@ Everyone on Klean verifies once: customers, staff and owners alike. It keeps acc
 
 Good to know:
 
-- The fee is charged **per attempt** and is **non-refundable**. If you close the verification window before
-  finishing, tap **Continue verification** to reopen it at no extra cost.
+- If you close the verification window before finishing, tap **Continue verification** to reopen it.
 - Use a valid, unexpired ID, in good light, with nothing covering your face.
 - We don't keep a copy of your ID. Our verification partner, Didit, handles the images.
 - If we find you already have a Klean account, tap **Use my existing account** to continue with it.
-- While Klean is in testing, verification may be free (the app says so). Once you're verified, you stay verified.
+- Once you're verified, you stay verified.
 
 ## Washing and drying
 

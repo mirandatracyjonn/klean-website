@@ -6,15 +6,11 @@
 Klean is one person, one account, for everyone: customers, staff and owners. Verification keeps points fair,
 stops fraud, and protects your wallet.
 
-**Why does verification cost money?**
-The fee covers the cost of the identity check. In the iPhone and Android apps it's a small in-app purchase (about
-US$2.99, or ₱199 in the Philippines, shown in your local price); on klean.ph it's US$2.99 by card or ₱199 by GCash/Maya/QR Ph. It's charged per
-attempt. If you close the window halfway, reopening it is free. App Store and Google Play refunds follow their own
-rules.
+**Does verification cost anything?**
+No. Verification is free: Klean pays for the identity check. If you close the window halfway, you can reopen it.
 
-**I verified for free. Do I have to verify again later?**
-No. While Klean is in testing, verification is sometimes free. Once you're verified, you stay verified, even after
-the fee returns.
+**Do I have to verify again later?**
+No. Once you're verified, you stay verified, even if Klean ever adds a fee for new verifications.
 
 **Do you keep a copy of my ID?**
 No. Our verification partner, Didit, handles the images. Klean keeps only your verification result, your verified
