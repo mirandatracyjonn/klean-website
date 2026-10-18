@@ -132,3 +132,7 @@ member code (Account) so we can find your account. We will never ask for your pa
 **Who runs Klean?**
 Klean by Geerho is a business owned and operated by Geerho Tech LLC, a software company. Address: 2108 N St, Ste N, Sacramento, CA 95816, USA.
 Email info@klean.ph, or call or text (619) 796-1115.
+
+**What happens if my laundromat closes on Klean?**
+Its points and free loads end, and you can't scan its machines any more. A laundromat can only close after every
+customer's paid loads there are used or refunded, so you never lose a load you paid for.

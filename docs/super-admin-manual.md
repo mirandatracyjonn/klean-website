@@ -172,3 +172,14 @@ Wi-Fi or turn on mobile data (or connect the laptop/PC to the internet). Plan fo
 - Honor free loads earned at your business.
 - Use customer data only to run your laundromat, in line with the Privacy Policy and local law.
 - Don't take payments for Klean machines outside Klean.
+
+## 10. Closing or deleting your business
+
+**Business → Setup**, at the bottom (or **klean.ph/account.html**). Type the business name to confirm.
+
+- **Still in Beta:** **Delete business** removes it completely: branches, machines, staff, test orders and customers'
+  points at your business. Everyone keeps their Klean account.
+- **Taking real payments:** **Close business** switches off your machines, removes your staff's access and takes the
+  business off Klean. Payment records are kept as the law requires. You can close once no customer has unused paid
+  loads with you (they last 30 days, or ask Klean Support to help refund them), your last payout has arrived, and no
+  payment is in progress. Customers' points and free loads at your business end.

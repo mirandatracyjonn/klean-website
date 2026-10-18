@@ -71,6 +71,7 @@ function signedIn(a, v) {
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }))];
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
+  for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(closeBusinessCard(m));
   const out = el("button", { class: "btn btn-outline", type: "button", text: "Sign out" });
   out.addEventListener("click", async () => { await db.auth.signOut(); });
   parts.push(el("div", { class: "btn-row" }, out), deleteCard(a));
@@ -217,5 +218,33 @@ function businessCard() {
     el("div", { class: "btn-row" }, locate),
     el("p", { class: "meta", text: "Reports and daily payouts follow this time zone. Philippine businesses take payments through PayMongo; everywhere else through Stripe." }),
     out, el("div", { class: "btn-row" }, create));
+  return card;
+}
+
+// --- Delete (Beta) or close (real money) a business you run (M30; TJ 2026-10-18) -----------------------------------
+
+function closeBusinessCard(m) {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: m.operator_name }), el("p", { class: "meta", text: "Loading…" }));
+  db.from("operators").select("id, name, is_beta, status").eq("id", m.operator_id).maybeSingle().then(({ data: op }) => {
+    if (!op) { card.remove(); return; }
+    const beta = op.is_beta;
+    const name = el("input", { type: "text", placeholder: `Type ${op.name} to confirm`, "aria-label": "Business name to confirm", autocomplete: "off" });
+    const go = el("button", { type: "button", class: "btn btn-outline acct-danger", disabled: true, text: beta ? "Delete business" : "Close business" });
+    const out = el("div");
+    name.addEventListener("input", () => { go.disabled = name.value.trim().toLowerCase() !== op.name.trim().toLowerCase(); });
+    go.addEventListener("click", async () => {
+      if (!window.confirm(`${beta ? "Delete" : "Close"} ${op.name}? This can't be undone.`)) return;
+      go.disabled = true; out.replaceChildren();
+      const { data, error } = await db.rpc("delete_business", { operator: op.id, confirm_name: name.value.trim() });
+      if (error) { out.append(errorLine(error.message)); go.disabled = false; return; }
+      card.replaceChildren(el("h2", { text: data?.result === "closed" ? `${op.name} is closed` : `${op.name} was deleted` }),
+        el("p", { text: data?.result === "closed" ? "Its machines are off and staff no longer have access. Payment records are kept as the law requires." : "Its branches, machines, staff and test data are gone. Your Klean account stays." }));
+    });
+    card.replaceChildren(el("h2", { text: `${beta ? "Delete" : "Close"} ${op.name}` }),
+      el("p", { class: "meta", text: beta
+        ? "Deletes this business completely: branches, machines, staff, test orders and customers' points here. Everyone's Klean account stays."
+        : "Closes this business: machines stop taking payments, staff lose access, and it disappears from Klean. Payment records are kept as the law requires. You can close once no customer has unused paid loads here, your last payout has arrived, and no payment is in progress." }),
+      el("label", { class: "acct-field" }, "Confirm", name), out, el("div", { class: "btn-row" }, go));
+  });
   return card;
 }

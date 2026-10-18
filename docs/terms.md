@@ -55,7 +55,8 @@ and have no cash value.
 with the Operator where they were earned** (at any of its branches). They have no cash value, can't be
 transferred or sold, expire as shown in the app (currently 12 months after they're earned), and may be reversed
 if the underlying payment is refunded or was fraudulent. Each Operator sets and funds its own program and may
-change it for the future; points already earned keep their value until they expire.
+change it for the future; points already earned keep their value until they expire. If an Operator closes its
+business on Klean, its points and free loads end; paid loads must be used or refunded before it can close (4.8).
 
 3.5 **Problems with a wash.** Report machine problems to the Operator's staff. Klean returns credits
 automatically when a machine fails to start after payment. Questions about laundry quality, damage or lost items
@@ -110,6 +111,12 @@ marketing, sell it, or attempt to identify customers beyond what the Service sho
 
 4.7 **Suspension.** We may suspend an Operator's ability to take payments for fraud, unresolved disputes,
 legal requirements, or material breach of these Terms, with notice where the law and circumstances allow.
+
+4.8 **Closing your business.** A Super Admin can delete or close the business at any time (Business → Setup, or
+klean.ph). A business still in Beta is deleted completely. A business that has taken real payments is closed: its
+machines stop, its staff lose access, and it's removed from Klean, while payment and tax records are kept as the law
+requires. Closing is possible once no customer holds unused paid loads at the business, its last payout has been made,
+and no payment is in progress. Customers' points and free loads at a closed business end.
 
 ## 5. The Service requires an internet connection
 
