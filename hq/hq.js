@@ -4,8 +4,8 @@ const SUPABASE_URL = "https://allxvwnohkibfjbpoxvu.supabase.co";
 const PUBLISHABLE_KEY = "sb_publishable_CLX33VwJ8Ai6ZkEUT8utKA_NAzCW6Hl";
 const EVENTS_URL = `${SUPABASE_URL}/functions/v1/machine-events`;
 const QR_BASE = "https://klean.ph/m/";
-const TICK_MS = 3000;          // simulated controllers poll for commands this often
-const HEARTBEAT_EVERY = 10;    // ticks (30 s); the server marks a machine offline after 90 s without one
+const TICK_MS = 1000;          // simulated controllers poll for commands this often (1 s: Start feels instant)
+const HEARTBEAT_EVERY = 30;    // ticks (30 s); the server marks a machine offline after 90 s without one
 
 const db = supabase.createClient(SUPABASE_URL, PUBLISHABLE_KEY, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true } });
 const $ = (id) => document.getElementById(id);
