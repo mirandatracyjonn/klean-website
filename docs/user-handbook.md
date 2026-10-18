@@ -22,7 +22,8 @@ Everyone on Klean verifies once: customers, staff and owners alike. It keeps acc
    for a quick selfie. There's no button to press: each photo is taken automatically once it's steady.
    For a quick check, use good light without glare, lay your ID flat on a dark surface, and remove glasses, hats and
    masks for the selfie.
-3. Most people are approved within a minute or two. Some checks take up to a day; we'll let you know.
+3. Most people are approved within a minute or two. After the last step the app shows **Checking your
+   verification…**: keep Klean open and don't start again. Some checks take up to a day; we'll let you know.
 
 Good to know:
 
