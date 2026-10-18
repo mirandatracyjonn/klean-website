@@ -8,8 +8,9 @@ branches, machines, staff, reports and customers.
 Your business runs on your personal, verified Klean account. There's no separate business login.
 
 1. Sign in and complete identity verification.
-2. **Account → Start a laundromat business.** Enter the business name, country, and time zone. Currency is set
-   automatically for the Philippines (PHP) and fixed once created.
+2. **Account → Start a laundromat business** in the app, or on **klean.ph/account.html**. Enter the business name
+   and country, and pick the time zone from the menu (or tap **📍 Locate me** to use where you are now). Reports and
+   daily payouts follow it. Currency is set automatically for the Philippines (PHP) and fixed once created.
 3. A **Business** tab appears. You're the Super Admin.
 
 ## 1a. Beta testing (on until you go live)

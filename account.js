@@ -70,6 +70,7 @@ function signedIn(a, v) {
   const parts = [el("div", { class: "card acct-card" },
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }))];
   parts.push(verificationCard(v));
+  if (v.status === "verified") parts.push(businessCard());
   const out = el("button", { class: "btn btn-outline", type: "button", text: "Sign out" });
   out.addEventListener("click", async () => { await db.auth.signOut(); });
   parts.push(el("div", { class: "btn-row" }, out), deleteCard(a));
@@ -166,4 +167,55 @@ function watch(initial) {
     const { data } = await db.rpc("my_verification");
     if ((data && data.status !== initial) || tries >= 36) { clearInterval(timer); watching = false; history.replaceState(null, "", here); render(); }
   }, 5000);
+}
+
+// --- Start a laundromat business (same as the apps' Operator mode; TJ 2026-10-18: time zone menu + Locate me) ---------
+
+/** "Asia/Manila (GMT+8)". */
+function zoneLabel(zone) {
+  try {
+    const part = new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "shortOffset" }).formatToParts(new Date())
+      .find((p) => p.type === "timeZoneName")?.value ?? "";
+    return `${zone.replace(/_/g, " ")} (${part.replace("GMT", "GMT") || "GMT"})`;
+  } catch { return zone; }
+}
+
+function businessCard() {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Start a laundromat business" }),
+    el("p", { text: "Run a laundromat on Klean with this same account. You become its Super Admin: set prices, add branches and machines, hire verified staff, and see sales and customers. Free to start, in Beta with test money until you go live." }));
+  const name = el("input", { type: "text", maxlength: "80", placeholder: "Business name", "aria-label": "Business name" });
+  const country = el("input", { type: "text", maxlength: "2", value: "PH", "aria-label": "Country code, e.g. PH" });
+  const currency = el("input", { type: "text", maxlength: "3", value: "PHP", "aria-label": "Currency", disabled: true });
+  country.addEventListener("input", () => {
+    country.value = country.value.toUpperCase();
+    currency.disabled = country.value === "PH";
+    if (country.value === "PH") currency.value = "PHP";
+  });
+  const here = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const zones = (Intl.supportedValuesOf ? Intl.supportedValuesOf("timeZone") : [here]).filter((z) => z.includes("/"));
+  if (!zones.includes(here)) zones.push(here);
+  const zone = el("select", { "aria-label": "Time zone" }, ...zones.sort().map((z) => el("option", { value: z, selected: z === here }, zoneLabel(z))));
+  const locate = el("button", { type: "button", class: "btn btn-outline", text: "📍 Locate me" });
+  locate.addEventListener("click", () => { zone.value = Intl.DateTimeFormat().resolvedOptions().timeZone; });
+  const create = el("button", { type: "button", class: "btn btn-brand", text: "Create business" });
+  const out = el("div");
+  create.addEventListener("click", async () => {
+    out.replaceChildren();
+    if (name.value.trim().length < 2) { out.append(errorLine("Enter your business name.")); return; }
+    create.disabled = true;
+    const { error } = await db.rpc("create_operator", { name: name.value.trim(), country: country.value.trim() || "PH",
+      currency: (currency.value.trim() || "PHP").toUpperCase(), time_zone: zone.value });
+    if (error) { out.append(errorLine(error.message)); create.disabled = false; return; }
+    card.replaceChildren(el("h2", { text: "Business created ✓" }),
+      el("p", { text: "Next: open the Klean app → Business → Setup to add your branch, machines and payments, or use Klean HQ on this computer." }),
+      el("a", { class: "btn btn-brand", href: "/hq/", text: "Open Klean HQ" }));
+  });
+  card.append(
+    el("label", { class: "acct-field" }, "Business name", name),
+    el("div", { class: "acct-row" }, el("label", { class: "acct-field" }, "Country", country), el("label", { class: "acct-field" }, "Currency", currency)),
+    el("label", { class: "acct-field" }, "Time zone", zone),
+    el("div", { class: "btn-row" }, locate),
+    el("p", { class: "meta", text: "Reports and daily payouts follow this time zone. Philippine businesses take payments through PayMongo; everywhere else through Stripe." }),
+    out, el("div", { class: "btn-row" }, create));
+  return card;
 }

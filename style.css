@@ -188,3 +188,6 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .brand-lockup { display: inline-flex; flex-direction: column; line-height: 1; }
 .brand-lockup small { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; margin-top: 3px; }
+.acct-field { display: grid; gap: 6px; margin: 10px 0; font-weight: 600; font-size: 15px; }
+.acct-field input, .acct-field select { font: inherit; font-weight: 400; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.acct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
