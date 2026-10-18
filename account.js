@@ -117,7 +117,7 @@ function verificationCard(v) {
     consent.addEventListener("change", () => { go.disabled = !consent.checked; });
     card.append(el("h2", { text: v.status === "declined" ? "Try again" : "Ready to verify" }),
       v.status === "declined" ? el("p", { text: "Your last attempt wasn't approved. Use a valid, unexpired ID in good light." }) : "",
-      v.free_verification ? el("p", { class: "acct-free", text: "Free while Klean is in testing. Once you're verified, you stay verified." }) : "",
+      v.free_verification ? el("p", { class: "acct-free", text: "Verification is free. Once you're verified, you stay verified." }) : "",
       el("p", { text: "About two minutes: a photo of your ID, then a quick selfie, on our partner Didit's secure page. Use good light, lay your ID flat, and remove glasses and hats." }),
       el("label", { class: "acct-consent" }, consent, " I agree that Didit may process images of my ID and my face to verify my identity, as described in the Privacy Policy."),
       go);
