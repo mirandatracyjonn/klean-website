@@ -17,7 +17,8 @@ add other sign-in methods later in **Account → Sign-in methods**.
 Everyone on Klean verifies once: customers, staff and owners alike. It keeps accounts real and stops points abuse.
 
 1. Pay the verification fee: a small in-app purchase in the iPhone or Android app (**US$2.99**, or **₱199** in the
-   Philippines, shown in your local price), or on klean.ph **US$2.99** by card or **₱199** with GCash, Maya or QR Ph.
+   Philippines, shown in your local price), or in a web browser at **klean.ph/account.html**: sign in, then pay
+   **US$2.99** by card or **₱199** with GCash, Maya or QR Ph, and verify right there.
 2. Tap **Start verification** and follow the steps: hold a valid ID in front of the camera, then look at the camera
    for a quick selfie. There's no button to press: each photo is taken automatically once it's steady.
    For a quick check, use good light without glare, lay your ID flat on a dark surface, and remove glasses, hats and

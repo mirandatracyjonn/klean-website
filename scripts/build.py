@@ -25,7 +25,7 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' 
        f"connect-src 'self' {SUPABASE}; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'")
 
 NAV = [("index", "/", "Home"), ("find", "/find.html", "Find a laundromat"), ("owners", "/owners.html", "For owners"),
-       ("faq", "/faq.html", "Help")]
+       ("faq", "/faq.html", "Help"), ("account", "/account.html", "Account")]
 FOOTER = [("/terms.html", "Terms"), ("/privacy.html", "Privacy"), ("/faq.html", "FAQ"), ("/help.html", "User Handbook"),
           ("/manual.html", "Super Admin Manual"), ("/hardware.html", "Hardware Guide"), ("/hq/", "Klean HQ"),
           ("mailto:info@klean.ph", "info@klean.ph")]

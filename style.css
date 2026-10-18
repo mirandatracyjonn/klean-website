@@ -174,3 +174,15 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .intro.center { margin-left: auto; margin-right: auto; }
 .hero .wrap.single { grid-template-columns: 1fr; padding-bottom: 100px; }
+
+/* Account & verification (account.html) */
+.account { max-width: 640px; }
+.acct-card { margin: 16px 0; }
+.acct-card h2 { margin-top: 0; }
+.acct-code { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin: 4px 0 0; }
+.acct-consent { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; font-size: 15px; }
+.acct-consent input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+.acct-free { color: var(--brand); font-weight: 600; }
+.acct-error { color: #b42318; font-weight: 600; }
+.acct-danger { color: #b42318; border-color: #b42318; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }

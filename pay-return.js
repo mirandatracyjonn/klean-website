@@ -20,6 +20,7 @@ card.replaceChildren(
   el("h1", { text: title }),
   el("p", { text: body }),
   el("div", { class: "actions" },
-    el("a", { class: "btn btn-brand", href: "klean://home", text: "Back to Klean" })),
+    el("a", { class: "btn btn-brand", href: "klean://home", text: "Back to Klean" }),
+    flow === "kyc_fee" ? el("a", { class: "btn btn-outline", href: "/account.html", text: "Continue on klean.ph" }) : null),
   el("p", { class: "meta", style: "margin-top:14px", text: "In the app? Tap Done (top left) to close this page." }));
 document.title = `${title} | Klean`;
