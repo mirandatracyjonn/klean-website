@@ -35,7 +35,17 @@ Good to know:
 
 ## Washing and drying
 
-### Self-service: scan a machine
+### Self-service: start laundry (weigh, pay, scan)
+
+1. At the laundromat, tap **Start laundry** on Home and choose the laundromat you're at.
+2. Weigh your dirty laundry on the laundromat's scale and enter the kilos (or choose the number of loads). Klean works
+   out the loads: for example 9 kg with an 8 kg limit is **2 loads**.
+3. Pay once. The scanner opens: scan a free washer and press **Start** on it. Klean goes back to Home, which shows
+   what's still paid; tap **Scan a washer** for the next load.
+4. When a wash is done you get a notification: move the clothes to a free dryer, tap **Scan a dryer**, scan it and
+   press Start. You're notified again when the dry is done.
+
+### Self-service: scan a machine first
 
 1. Go to a machine that isn't running.
 2. Tap **Scan**, and point your camera at the QR code on the machine.

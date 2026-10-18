@@ -136,3 +136,7 @@ Email info@klean.ph, or call or text (619) 796-1115.
 **What happens if my laundromat closes on Klean?**
 Its points and free loads end, and you can't scan its machines any more. A laundromat can only close after every
 customer's paid loads there are used or refunded, so you never lose a load you paid for.
+
+**How does Klean know how many loads I need?**
+Weigh your laundry on the laundromat's scale and enter the kilos in **Start laundry**. Each load is up to the
+laundromat's limit (usually 8 kg), so 9 kg is 2 loads. Pay once, then scan a washer for each load and a dryer for each dry.
