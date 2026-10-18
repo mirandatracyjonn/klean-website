@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 18, 2026. Version 1.1.*
+*Effective date: October 18, 2026. Version 1.2.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -12,7 +12,7 @@ and act as controllers for their own use of it.
 
 | Category | What | Source |
 |---|---|---|
-| Account | Display name, email (as verified by your sign-in provider), profile photo, member code, sign-in provider identifiers | You; Apple/Google/GitHub |
+| Account | Display name, email (as verified by your sign-in provider), profile photo, member code, sign-in provider identifiers; your **mobile number** if you choose to save it | You; Apple/Google/GitHub |
 | Identity verification | **Collected by Didit, not by us:** ID document images, a live selfie and the biometric face template derived from it. **What we keep:** verification status; your verified legal name and the issuing country of your ID; and *keyed one-way hashes* of your document details and of your name + date of birth, used only to detect duplicate accounts. We do **not** store your ID number, ID images or selfie. | You, via Didit |
 | Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references. **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe |
 | In-app purchases | For the verification fee bought in the app: the store transaction ID, product, price, currency and date. Apple or Google handle the payment itself; we don't receive your payment details. | Apple (App Store), Google (Play) |
@@ -40,7 +40,8 @@ and act as controllers for their own use of it.
 - **Your employer** (if you're staff) sees your display name, **verified legal name** and verification status, so
   they know who works for them.
 - **Service providers** acting on our instructions: Didit (identity verification), PayMongo and Stripe
-  (payments), Apple and Google (sign-in, in-app purchases, push notifications), GitHub (sign-in), and our hosting,
+  (payments; when you pay, we send them your verified name, your email and, if you saved one, your mobile number, so
+  their payment page is filled in for you), Apple and Google (sign-in, in-app purchases, push notifications), GitHub (sign-in), and our hosting,
   database and messaging providers (Supabase, Google Firebase).
 - **Authorities**, when required by law or to protect rights and safety.
 - We **don't sell** personal information.
@@ -54,7 +55,7 @@ technical safeguards required by applicable law for these transfers. [List provi
 
 | Data | Retention |
 |---|---|
-| Account data | While your account exists; anonymized on deletion |
+| Account data | While your account exists; anonymized on deletion (a saved mobile number is deleted, and you can remove it any time in Account) |
 | Transaction and tax records | As long as tax and accounting laws require, with personal identifiers removed after account deletion |
 | Duplicate-detection hashes | While your account exists; deleted when you delete your account, **except** for accounts suspended for fraud or abuse, where they're kept for 5 years to stop re-registration |
 | ID images and selfies | Held by Didit under its retention policy (see didit.me/privacy); never stored by Klean |

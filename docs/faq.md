@@ -24,6 +24,10 @@ contact support.
 Your money is safe: a wash credit is waiting on **Home**. Scan any free washer at the same laundromat business and it
 starts without another payment.
 
+**Do I have to type my name every time I pay?**
+No. Your verified name and email are filled in on the payment page. Save your mobile number in **Account → Mobile
+number** and that's filled in too. GCash or Maya may still ask you to log in to approve.
+
 **Will the machine start by itself after I pay?**
 No. For safety, a machine only starts when you start it: tap **Start wash** or **Start dry** on Home (Klean asks
 you to check that your laundry is inside and the door is closed), or press Start on the machine.
