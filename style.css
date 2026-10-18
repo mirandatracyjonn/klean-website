@@ -128,7 +128,7 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .badge-soon { display: inline-block; font-size: 12px; font-weight: 800; color: #7a4a00; background: #ffe7b0; border-radius: 999px; padding: 3px 10px; margin-left: 6px; }
 
 /* Find / branch */
-.search { display: flex; gap: 10px; margin: 24px 0; }
+.search { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
 .search input { flex: 1; font: inherit; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
 .branch-card { display: grid; gap: 10px; }
 .branch-card .meta { color: var(--muted); font-size: 15px; }
@@ -193,3 +193,11 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .acct-field { display: grid; gap: 6px; margin: 10px 0; font-weight: 600; font-size: 15px; }
 .acct-field input, .acct-field select { font: inherit; font-weight: 400; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
 .acct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Find a laundromat map (M45) */
+.find-map { height: 360px; border-radius: 16px; margin: 16px 0 4px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
+.find-map-credit { margin: 0 0 16px; font-size: 12px; }
+.find-pin { background: var(--brand); border: 3px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+.find-pin.none { background: #8a8f8c; }
+.find-distance { font-weight: 700; color: var(--brand); }
+@media (max-width: 600px) { .find-map { height: 280px; } }

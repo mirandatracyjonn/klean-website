@@ -21,7 +21,7 @@ SUPABASE = "https://allxvwnohkibfjbpoxvu.supabase.co"
 TAGLINE = "Keep it simple. Keep it Klean."
 PROMISE = "No mess. No stress. Just spotless."
 
-CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
+CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; "
        f"connect-src 'self' {SUPABASE}; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'")
 
 NAV = [("index", "/", "Home"), ("find", "/find.html", "Find a laundromat"), ("owners", "/owners.html", "For owners"),

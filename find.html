@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://allxvwnohkibfjbpoxvu.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://allxvwnohkibfjbpoxvu.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Find a laundromat | Klean by Geerho</title>
@@ -46,7 +46,10 @@
     <form class="search" id="search-form" role="search">
       <input id="search" type="search" placeholder="City, street or laundromat" aria-label="Search laundromats">
       <button class="btn btn-brand" type="submit">Search</button>
+      <button class="btn btn-outline" type="button" id="near-me">📍 Near me</button>
     </form>
+    <div id="map" class="find-map" role="region" aria-label="Map of Klean laundromats"></div>
+    <p class="meta find-map-credit">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
     <div id="results" aria-live="polite"></div>
   </div>
 </section>

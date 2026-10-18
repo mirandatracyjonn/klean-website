@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://allxvwnohkibfjbpoxvu.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://allxvwnohkibfjbpoxvu.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Super Admin Manual | Klean by Geerho</title>
@@ -65,6 +65,7 @@
 <p>The screen previews the effect ("free load after about 10 paid loads"). <strong>Points belong to your business</strong>: earned at any of your branches, redeemable at any of your branches, never anywhere else. You fund the free loads, so set these numbers deliberately.</p>
 <p><strong>Welcome load</strong> (off by default): switch it on and brand-new Klean members get their <strong>first wash + dry free</strong> at your laundromat: people verified in the last 30 days who haven't done laundry anywhere on Klean yet. Each person gets one welcome load across all of Klean, at the first participating laundromat they scan; their machine starts without payment and they get a "Welcome to …" notification. It's your promotion: no payment, no commission, no payout.</p>
 <h2 id="4-branches-and-machines">4. Branches and machines</h2>
+<p><strong>Put each branch on the map</strong> so customers find it: <strong>Business → Setup → Branches</strong>. Standing inside the laundromat, tap <strong>📍 Use my current location</strong>; or tap <strong>Find address on map</strong> to use the branch's address. Customers then see it under <strong>Laundromats near you</strong> with live free machines and directions. (Beta laundromats show only to their testers until you go live.)</p>
 <p><strong>Klean HQ</strong> (on a computer) is the easiest way to set up a location: it asks how many washers and dryers you have, creates them all with their QR codes, and shows each machine's live light (green available, white paid and waiting for Start, blue in use, red error). Machines can be <strong>Real</strong> (a Klean controller is installed) or <strong>Simulated</strong> (Klean HQ plays the machine, so you can try everything before installing hardware). Its <strong>Hardware</strong> page lists what to buy or build, how it connects, and gives you the controller file to flash. Full details: the Hardware Guide.</p>
 <p><strong>Machines never start by themselves</strong> (real or simulated). After paying, the customer taps <strong>Start wash</strong> / <strong>Start dry</strong> in Klean (after confirming the laundry is in and the door is closed) or presses Start on the machine; on a simulated machine you can also click <strong>Press Start</strong> in Klean HQ. If your machines start as soon as coins go in, tick that box before downloading the controller file, so Klean holds the coins until the customer taps Start.</p>
 <p>In the app:</p>

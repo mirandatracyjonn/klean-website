@@ -86,6 +86,11 @@ payment and they get a "Welcome to …" notification. It's your promotion: no pa
 
 ## 4. Branches and machines
 
+**Put each branch on the map** so customers find it: **Business → Setup → Branches**. Standing inside the laundromat,
+tap **📍 Use my current location**; or tap **Find address on map** to use the branch's address. Customers then see it
+under **Laundromats near you** with live free machines and directions. (Beta laundromats show only to their testers
+until you go live.)
+
 **Klean HQ** (on a computer) is the easiest way to set up a location: it asks how many washers and dryers you
 have, creates them all with their QR codes, and shows each machine's live light (green available, white paid and
 waiting for Start, blue in use, red error). Machines can be **Real** (a Klean controller is installed) or

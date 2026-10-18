@@ -35,6 +35,12 @@ Good to know:
 
 ## Washing and drying
 
+### Find a laundromat near you
+
+Tap **Laundromats near you** on Home (or **Find a laundromat** on klean.ph). Allow location and Klean shows the nearest
+laundromats on a map and in a list, with how many washers and dryers are free right now, the price, and **Directions**.
+Your location is only used to sort the list; Klean doesn't store it.
+
 ### Self-service: start laundry (weigh, pay, scan)
 
 1. At the laundromat, tap **Start laundry** on Home and choose the laundromat you're at. Choose what you need:
