@@ -29,7 +29,12 @@ Your money is safe: a wash credit is waiting on **Home**. Scan any free washer a
 starts without another payment.
 
 **How do I dry my clothes?**
-Every load includes a dry. When your wash finishes, scan any free dryer at the same business.
+Every load includes a dry. When your wash finishes, scan any free dryer at the same business. Home shows
+"Your dry is paid" with a **Scan a dryer** button.
+
+**I have lots of laundry. Do I pay for each washer?**
+No. After you scan the first washer, choose how many loads (up to 5) and pay once. That washer starts; your other
+washes and all your dries are saved in your wallet. Scan each free washer or dryer and it starts with no payment.
 
 **How long do credits last?**
 30 days from purchase.

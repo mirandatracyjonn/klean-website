@@ -39,10 +39,12 @@ Good to know:
 
 1. Go to a machine that isn't running.
 2. Tap **Scan**, and point your camera at the QR code on the machine.
-3. Pay for one load: one wash and one dry. The machine is held for you for about 10 minutes while you pay.
+3. Choose how many loads (one load = one wash and one dry; up to 5) and pay once. The machine is held for you for
+   about 10 minutes while you pay.
 4. When payment clears, the machine is ready. **Press Start on the machine.**
 5. Your dry is saved in your wallet. When the wash is done, scan any free dryer at the same laundromat business.
-   No second payment.
+   No second payment. Home shows what's paid ("Your dry is paid", or "2 washes and 3 dries paid").
+6. Paid for more than one load? Scan the next free washer: it starts without payment. Saved loads last 30 days.
 
 If the camera doesn't work, type the code printed under the QR.
 

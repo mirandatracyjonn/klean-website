@@ -65,6 +65,10 @@ Klean is free to download and free to set up. There's no subscription. Klean ear
 | Welcome bonus | 10 | On a customer's first paid visit to your business |
 | Points expire after | 12 months | |
 
+Customers scanning a machine can pay for **up to 5 loads at once** (never more than the branch's washers): the
+scanned washer starts and the rest are saved in their wallet for 30 days. It's one order and one payment in your
+reports, with the loads counted; points and commission follow the amount paid.
+
 The screen previews the effect ("free load after about 10 paid loads"). **Points belong to your business**: earned
 at any of your branches, redeemable at any of your branches, never anywhere else. You fund the free loads, so set
 these numbers deliberately.

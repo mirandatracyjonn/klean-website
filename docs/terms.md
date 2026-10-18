@@ -53,10 +53,12 @@ its own prices, operates its own premises and machines, and is responsible for i
 provides the software and payment processing; Klean is not the laundromat.
 
 3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider.
-Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight.
+Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight. You
+may pay for several loads at once (up to five, and no more than the branch's washers); the machine you scanned is
+activated and the other loads are kept as load credits (3.3).
 
-3.3 **Load credits.** If you've paid but the machine you selected can't be activated, the load is kept as a credit
-in your wallet, usable on any available machine of the same Operator. Load credits expire 30 days after purchase
+3.3 **Load credits.** Extra loads you paid for, saved dries, and loads whose machine couldn't be activated are kept as
+credits in your wallet, usable on any available machine of the same Operator. Load credits expire 30 days after purchase
 and have no cash value.
 
 3.4 **Points.** Operators may offer loyalty points ("**Klean Points**"). Points are earned and redeemable **only

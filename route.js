@@ -23,7 +23,7 @@ if (parts[0] === "m" && parts[1]) {
   document.title = "Klean machine";
   page(el("div", { class: "big-icon" }, icon(QR)),
     el("h1", { text: "This is a Klean machine" }),
-    el("p", { text: "Pay with GCash, Maya or card in the Klean app, and the machine starts by itself. No coins needed." }),
+    el("p", { text: "Pay with GCash, Maya or card in the Klean app, and the machine starts by itself. No coins needed. Lots of laundry? Pay for up to 5 loads at once." }),
     el("p", { class: "meta", text: "Already have Klean? Open the app, tap Scan, and point your camera at the sticker." }),
     el("div", { class: "actions" },
       el("a", { class: "btn btn-brand", href: "/#download", text: "Get the Klean app" }),
