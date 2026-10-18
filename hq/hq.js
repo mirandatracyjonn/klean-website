@@ -347,7 +347,7 @@ function renderFloor() {
         <span><i class="dot" style="background:var(--blue)"></i>In use</span><span><i class="dot" style="background:var(--red)"></i>Error</span></div>
       <span class="sp"></span>
       ${sims.length ? `<label>Simulation speed <select data-set="speed">${[1, 10, 60, 300].map((v) => `<option value="${v}" ${local.speed === v ? "selected" : ""}>${v}×</option>`).join("")}</select></label>
-        <label><input type="checkbox" ${local.autoStart ? "checked" : ""} data-set="autoStart"> Customer presses Start automatically</label>` : ""}
+        <label><input type="checkbox" ${local.autoStart ? "checked" : ""} data-set="autoStart"> Customer presses Start automatically (simulation only: real machines wait for the customer to press Start)</label>` : ""}
       <button class="ghost" data-wizard="${local.branchId}">+ Add machines</button>
       <button class="ghost" data-do="print">Print QR stickers</button>
     </div>
