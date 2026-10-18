@@ -31,9 +31,8 @@ finds that you already have an account), except where the law or the App Store's
 say otherwise; refunds for in-app purchases are handled by Apple or Google. Resuming an unfinished attempt is free.
 A refunded or reversed fee may void the attempt it paid for. We may change the fee for future attempts.
 
-While Klean is in testing we may offer verification free of charge. A free verification is temporary: when the fee
-returns, accounts verified for free go back to unverified and must verify again (paying the fee) to keep using
-features that need verification. Your account, points and history are not affected.
+While Klean is in testing we may offer verification free of charge. A verification completed for free counts the
+same as a paid one and stays valid when the fee returns.
 
 ## 2. Your account
 

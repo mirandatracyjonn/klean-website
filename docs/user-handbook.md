@@ -31,8 +31,7 @@ Good to know:
 - Use a valid, unexpired ID, in good light, with nothing covering your face.
 - We don't keep a copy of your ID. Our verification partner, Didit, handles the images.
 - If we find you already have a Klean account, tap **Use my existing account** to continue with it.
-- While Klean is in testing, verification may be free (the app says so). Free verifications are temporary: at launch
-  you'll verify again, with the fee. Your points and history stay.
+- While Klean is in testing, verification may be free (the app says so). Once you're verified, you stay verified.
 
 ## Washing and drying
 
