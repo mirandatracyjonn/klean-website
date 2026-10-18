@@ -40,6 +40,12 @@ export function mapsURL(b) {
   return `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
 }
 
+/** "Wash only ₱175 · Dry only ₱199", or "" when the business offers wash + dry only (M36). */
+export function services(b) {
+  return [[b.wash_only_price_minor, "Wash only"], [b.dry_only_price_minor, "Dry only"]]
+    .filter(([p]) => p != null).map(([p, t]) => `${t} ${money(p, b.currency)}`).join(" · ");
+}
+
 /** A laundromat card used by Find and branch pages. */
 export function branchCard(b, { link = true } = {}) {
   const title = el("h3", {}, link ? el("a", { href: `/b/${b.id}`, text: b.operator_name }) : b.operator_name);
@@ -49,6 +55,8 @@ export function branchCard(b, { link = true } = {}) {
     title,
     el("div", { class: "meta", text: [b.name, b.address].filter(Boolean).join(" · ") }),
     el("div", { class: "meta", text: `${money(b.price_per_load_minor, b.currency)} per load · wash + dry · up to ${b.max_kg_per_load} kg` }),
+    // M36: wash only / dry only, when the business offers them.
+    ...[services(b)].filter(Boolean).map((text) => el("div", { class: "meta", text })),
     el("div", { class: "avail" }, free(b.washers_free, b.washers, "washers"), free(b.dryers_free, b.dryers, "dryers")),
     el("div", { class: "actions", style: null }, el("a", { class: "btn btn-outline", href: mapsURL(b), target: "_blank", rel: "noopener", text: "Directions" })));
 }
