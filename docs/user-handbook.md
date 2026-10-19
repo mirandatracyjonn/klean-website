@@ -146,6 +146,9 @@ Your name comes from your verified ID, so the payment page fills it in for you. 
 Maya number) in **Account → Mobile number** and it's filled in too. You can change or remove it any time. GCash and Maya
 may still ask you to log in to approve the payment; that's their own security.
 
+You can also save your **address** (Account → Address). It's optional and helps Klean Support help you with your
+account; laundromats don't see it.
+
 ## Points and free loads
 
 - You earn points every time you pay: usually **10 points per load**, plus a **10-point welcome bonus** on your

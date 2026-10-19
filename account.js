@@ -92,6 +92,7 @@ function signedIn(a, v) {
   parts.push(machinesCard());
   if (v.status === "verified") parts.push(commsCard(a));
   if (v.status === "verified") parts.push(phoneCard(a));
+  if (v.status === "verified") parts.push(addressCard(a));
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
@@ -290,6 +291,24 @@ function ordersCard(m) {
 }
 
 // M40: an optional mobile number, so payment pages are filled in (GCash / Maya number).
+// M57: an optional address (Klean Support can see it to help; laundromats can't).
+function addressCard(a) {
+  const input = el("input", { type: "text", autocomplete: "street-address", placeholder: "Street, barangay, city, province", value: a.address ?? "", maxlength: "300" });
+  const msg = el("p", { class: "meta" });
+  const save = el("button", { class: "btn btn-brand", type: "button", text: "Save" });
+  save.addEventListener("click", async () => {
+    save.disabled = true;
+    const { data, error } = await db.rpc("set_my_address", { address: input.value });
+    save.disabled = false;
+    if (error) { msg.replaceChildren(errorLine(error.message)); return; }
+    input.value = data ?? "";
+    msg.textContent = data ? "Address saved." : "Address removed.";
+  });
+  return el("div", { class: "card acct-card" }, el("h2", { text: "Address" }),
+    el("p", { class: "meta", text: "Optional. Helps Klean Support help you. It isn't shown to laundromats." }),
+    el("div", { class: "btn-row" }, input, save), msg);
+}
+
 function phoneCard(a) {
   const input = el("input", { type: "tel", autocomplete: "tel", placeholder: "0917 123 4567", value: a.phone ?? "" });
   const msg = el("p", { class: "meta" });
@@ -303,7 +322,7 @@ function phoneCard(a) {
     msg.textContent = data ? "Mobile number saved." : "Mobile number removed.";
   });
   return el("div", { class: "card acct-card" }, el("h2", { text: "Mobile number" }),
-    el("p", { class: "meta", text: "Optional. Saved so you don't type it when you pay (use your GCash or Maya number). Only you and the payment page see it." }),
+    el("p", { class: "meta", text: "Optional. Saved so you don't type it when you pay (use your GCash or Maya number). Only you, the payment page and Klean Support see it." }),
     el("div", { class: "btn-row" }, input, save), msg);
 }
 
