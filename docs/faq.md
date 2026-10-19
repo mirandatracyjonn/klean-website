@@ -45,8 +45,8 @@ Yes: add it from your Home Screen's widget list (iPhone: also on the Lock Screen
 laundromat, your points, what's paid, and when your machine will be done.
 
 **Can I pay with Apple Pay or Google Pay?**
-At Philippine laundromats you pay on PayMongo's page with GCash, Maya, QR Ph, card or **Google Pay** (on phones and
-browsers that support it). Apple Pay isn't offered by PayMongo yet. At laundromats that use card payments through
+At Philippine laundromats you pay on PayMongo's page with GCash, Maya, QR Ph or card. Google Pay and Apple Pay
+aren't available there yet; we'll add them when our payment provider turns them on. At laundromats that use card payments through
 Stripe (for example in the US), Apple Pay and Google Pay appear on the payment page automatically.
 
 **Can I message the laundromat?**
