@@ -100,6 +100,27 @@ Next to each machine's QR sticker you can add an **NFC sticker**, so customers j
 - **Customers:** iPhone (XS or newer) and most Android phones read it by just touching the sticker with the phone
   unlocked; Klean opens on that machine. iPhone users can also tap **Tap NFC sticker** on the Scan screen.
 
+## Klean Scale (optional)
+
+A laundry scale that sends each settled weight to Klean. Customers tap **Use the Klean Scale** in Start laundry instead
+of typing the kilos.
+
+- **Buy:** a platform (bench) scale of 30–60 kg with a standard 4-wire load cell, **certified for trade** (in the
+  Philippines it must be tested and sealed by your city or municipal treasurer's weights and measures office, renewed
+  every 6 months), an **HX711** load-cell amplifier board (₱80–150), an **ESP32 DevKit V1** (₱250–450) and a 5 V USB
+  supply. Total for the electronics: about ₱500–800.
+- **Connect:** load cell red/black/white/green → HX711 E+/E−/A−/A+ (check your cell's colour code). HX711 VCC → ESP32
+  3V3, GND → GND, DT → GPIO 16, SCK → GPIO 4. Keep it dry; mount the board under the platform.
+- **Set up:** in the Klean app, Business → Setup → Branches → the branch → **+ Add a Klean Scale**. Copy the
+  **Controller ID** and **Secret** (shown once) into `firmware/klean-scale/klean-scale.ino` with your Wi-Fi details,
+  upload it with the Arduino IDE (library "HX711" by Bogdan Necula), then calibrate: empty the scale, type `t` in the
+  Serial Monitor; put a known weight on it (a 5 kg bag of rice) and type `c 5000`; copy the printed factor into the
+  file and upload again.
+- **Check:** put something on it. Within about 2 seconds of the number settling, the branch's Klean Scale card in
+  the app shows the weight. In Start laundry, **Use the Klean Scale** fills it in.
+- **Rules:** one weight is sent per load; nothing more is sent until the scale is emptied. Each weighing can be used
+  once, within 2 minutes. Business → **Require the scale** stops customers typing weights.
+
 ## Test before opening
 
 Scan each machine's QR in the Klean app and pay. You should hear one relay click per coin and see the light turn

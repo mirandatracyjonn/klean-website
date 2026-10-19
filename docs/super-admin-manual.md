@@ -128,6 +128,19 @@ In the app:
 4. A QR code appears. Print it and stick it on the machine at eye level. Customers scan it to pay.
 5. If a sticker is ever copied or damaged, rotate the machine's QR (old stickers stop working).
 
+### Klean Scale (optional)
+
+A **Klean Scale** sends each settled weight to Klean, so customers don't type it (and can't under-weigh).
+Business → Setup → Branches → the branch → **Klean Scale** → **+ Add a Klean Scale**. In Beta it's **simulated**: weigh
+things in Klean HQ (klean.ph/hq → the branch → Klean Scale → type kilos → **Put on scale**). For a real scale, the app
+shows its **Controller ID** and **Secret** once: put them in the scale's firmware (Hardware Guide → Klean Scale).
+
+Customers tap **Use the Klean Scale** in Start laundry; the newest weighing from the last 2 minutes fills in, and each
+weighing is used once. **Require the scale (whole business)** stops typed weights at every branch of your business
+(customers can still choose a number of loads only if Require is off). Each branch card shows the scale's last weight.
+You're responsible for the scale's accuracy and, in the Philippines, for having it tested and sealed by your city or
+municipal treasurer (Terms 4.4d).
+
 ## 5. Staff
 
 **Business → Staff.**

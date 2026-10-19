@@ -46,7 +46,9 @@ Your location is only used to sort the list; Klean doesn't store it.
 1. At the laundromat, tap **Start laundry** on Home and choose the laundromat you're at. Choose what you need:
    **Wash + dry**, **Wash only** or **Dry only** (each laundromat sets its prices; Start laundry shows them).
 2. Weigh your dirty laundry on the laundromat's scale and enter the kilos (or choose the number of loads). Klean works
-   out the loads: for example 9 kg with an 8 kg limit is **2 loads**.
+   out the loads: for example 9 kg with an 8 kg limit is **2 loads**. If the laundromat has a **Klean Scale**, put
+   your laundry on it, wait for the number to settle, and tap **Use the Klean Scale**: the kilos fill in by themselves
+   (use it within 2 minutes; each weighing counts once). Where the laundromat requires the scale, that's the only way.
 3. Pay once. The scanner opens: scan a free washer, load your laundry and close the door, then tap **Start wash**
    on Home (or press Start on the machine). Machines never start by themselves. Klean goes back to Home, which shows
    what's still paid; tap **Scan a washer** for the next load.

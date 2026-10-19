@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 18, 2026. Version 1.4.*
+*Effective date: October 19, 2026. Version 1.5.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -48,7 +48,8 @@ inside and the door is closed first.
 Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight,
 unless you choose **wash only** or **dry only** where the Operator offers them; then a load is that one service. You
 may pay for several loads at once (up to five, and no more than the branch's washers); the machine you scanned is
-activated and the other loads are kept as load credits (3.3).
+activated and the other loads are kept as load credits (3.3). Where a laundromat has a **Klean Scale**, the weight it
+reports is used for your loads; check the number before you pay.
 
 3.3 **Load credits.** Extra loads you paid for, saved dries, and loads whose machine couldn't be activated are kept as
 credits in your wallet, usable on any available machine of the same Operator. Load credits expire 30 days after purchase
@@ -120,6 +121,12 @@ legal requirements, or material breach of these Terms, with notice where the law
 4.4c **Branches.** The branch details you enter (name, address, map location, phone and email) are shown to
 customers. Deleting a branch needs Klean's approval; a branch that has had sales is closed instead of deleted, and its
 records are kept. Machines that have been used are retired instead of deleted, for the same reason.
+
+4.4d **Klean Scale.** If you connect a Klean Scale, customers' loads are worked out from the weight it reports. You're
+responsible for the scale being accurate and, where the law requires it (in the Philippines, testing and sealing by
+your city or municipal treasurer under the Consumer Act), certified for trade. If you turn on **Require the scale**,
+customers can't type a weight in Start laundry at your business. Keep the scale's secret private, as with controllers
+(4.4a).
 
 4.8 **Closing your business.** A Super Admin can delete or close the business at any time (Business → Setup, or
 klean.ph). A business still in Beta is deleted completely. A business that has taken real payments is closed: its

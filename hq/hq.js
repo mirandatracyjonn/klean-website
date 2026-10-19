@@ -3,6 +3,7 @@
 const SUPABASE_URL = "https://allxvwnohkibfjbpoxvu.supabase.co";
 const PUBLISHABLE_KEY = "sb_publishable_CLX33VwJ8Ai6ZkEUT8utKA_NAzCW6Hl";
 const EVENTS_URL = `${SUPABASE_URL}/functions/v1/machine-events`;
+const SCALE_URL = `${SUPABASE_URL}/functions/v1/scale-events`;  // M53 Klean Scale
 const QR_BASE = "https://klean.ph/m/";
 const TICK_MS = 1000;          // simulated controllers poll for commands this often (1 s: Start feels instant)
 const HEARTBEAT_EVERY = 30;    // ticks (30 s); the server marks a machine offline after 90 s without one
@@ -20,7 +21,7 @@ function loadLocal() {
 const local = loadLocal();
 const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify(local)); } catch {} };
 
-const S = { isBeta: true, session: null, account: null, operators: [], branches: [], machines: {}, view: "loading", error: null, tick: 0, busy: false };
+const S = { isBeta: true, session: null, account: null, operators: [], branches: [], machines: {}, scales: {}, scaleMsg: null, view: "loading", error: null, tick: 0, busy: false };
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Data
@@ -48,7 +49,52 @@ async function loadBranches() {
   S.branches = all.filter((b) => b.operator_id === local.operatorId);
   if (!S.branches.some((b) => b.id === local.branchId)) local.branchId = S.branches[0]?.id ?? null;
   save();
-  await Promise.all(S.branches.map((b) => loadMachines(b.id)));
+  await Promise.all(S.branches.map((b) => Promise.all([loadMachines(b.id), loadScales(b.id)])));
+}
+
+// Roadmap 9 (M53): the branch's Klean Scales. A simulated one is "weighed" here; a real one reports by itself.
+async function loadScales(branchId) {
+  S.scales[branchId] = await rpc("branch_scales", { branch: branchId }).catch(() => []);
+}
+
+async function weigh(controllerId, grams) {
+  if (!(grams > 0 && grams <= 100000)) { S.scaleMsg = "Type a weight between 0.1 and 100 kg."; return renderFloor(); }
+  try {
+    const token = (await db.auth.getSession()).data.session?.access_token;
+    const response = await fetch(SCALE_URL, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                                              body: JSON.stringify({ controller_id: controllerId, grams }) });
+    if (response.status === 401) throw new Error("this sign-in can't use this scale (simulated scales work only in Beta, for the business's Super Admin).");
+    if (!response.ok) throw new Error(`scale-events ${response.status}`);
+    S.scaleMsg = `Weighed ${(grams / 1000).toFixed(1)} kg. In the Klean app: Start laundry → Use the Klean Scale (within 2 minutes).`;
+    await loadScales(local.branchId);
+  } catch (e) { S.scaleMsg = `The scale couldn't send: ${e.message}`; }
+  renderFloor();
+}
+
+async function addScale() {
+  try { await rpc("add_scale", { branch: local.branchId }); await loadScales(local.branchId); S.scaleMsg = "Scale added."; }
+  catch (e) { S.scaleMsg = e.message; }
+  renderFloor();
+}
+
+function scalesSection() {
+  const list = S.scales[local.branchId] ?? [];
+  const card = (sc) => {
+    const last = sc.last_grams != null ? `Last: ${(sc.last_grams / 1000).toFixed(1)} kg` : "No weighings yet";
+    const play = sc.is_simulated && S.isBeta
+      ? `<div class="row" style="align-items:center;gap:6px;flex-wrap:wrap">
+           <input id="scaleKg-${esc(sc.controller_id)}" type="number" min="0.1" max="100" step="0.1" placeholder="kg" style="width:90px">
+           <button class="primary" data-weigh="${esc(sc.controller_id)}">Put on scale</button>
+           ${[3, 6, 9].map((k) => `<button class="ghost" data-weigh="${esc(sc.controller_id)}" data-kg="${k}">${k} kg</button>`).join("")}
+         </div>`
+      : sc.is_simulated ? `<small>Switched off: this business is live.</small>` : `<small>Real scale · controller ${esc(sc.controller_id)}</small>`;
+    return `<div class="machine"><div class="mhead"><b>⚖️ ${esc(sc.label)}</b><span class="mode ${sc.is_simulated ? "" : "real"}">${sc.is_simulated ? "Simulated" : "Real"}</span></div>
+      <div class="status">${last}<small>Customers tap <b>Use the Klean Scale</b> in Start laundry; each weighing is used once.</small></div>${play}</div>`;
+  };
+  return `<h3 class="section">Klean Scale <span>${list.length}</span></h3>
+    ${S.scaleMsg ? `<p class="note">${esc(S.scaleMsg)}</p>` : ""}
+    ${list.length ? `<div class="floor">${list.map(card).join("")}</div>`
+                  : `<p>No Klean Scale at this location. <button class="ghost" data-do="add-scale">+ Add a ${S.isBeta ? "simulated " : ""}Klean Scale</button></p>`}`;
 }
 
 async function loadMachines(branchId) {
@@ -128,6 +174,7 @@ async function tickOnce() {
   // Refresh what the server says (the lights are the server's truth, the same as the app shows).
   try {
     if (local.branchId) await loadMachines(local.branchId);
+    if (S.tick % 5 === 0 && local.branchId) await loadScales(local.branchId);
     if (S.tick % 5 === 0) await Promise.all(S.branches.filter((b) => b.id !== local.branchId).map((b) => loadMachines(b.id)));
   } catch {}
   if (S.view === "floor") renderFloor();
@@ -363,7 +410,10 @@ function renderFloor() {
     const list = machines.filter((m) => m.type === type).sort(byLabel);
     return list.length ? `<h3 class="section">${title} <span>${list.length}</span></h3><div class="floor">${list.map(machineCard).join("")}</div>` : "";
   };
-  const cards = section("washer", "Washers") + section("dryer", "Dryers");
+  const cards = section("washer", "Washers") + section("dryer", "Dryers") + scalesSection();
+  // The floor redraws every second; keep whatever is being typed in a scale's weight box.
+  const typing = document.activeElement?.id?.startsWith("scaleKg-") ? { id: document.activeElement.id, value: document.activeElement.value } : null;
+  const typed = [...document.querySelectorAll("[id^=scaleKg-]")].map((el) => [el.id, el.value]);
   $("app").innerHTML = `
     <div class="tabs">${S.branches.map((b) => `<button class="${b.id === local.branchId ? "on" : ""}" data-branch="${b.id}">${esc(b.name)}</button>`).join("")}
       <button data-wizard="">+ Add location</button></div>
@@ -385,6 +435,8 @@ function renderFloor() {
        PayMongo test money: the machine's light turns white, then blue when it starts, then green when the cycle ends.</div>` : ""}
     ${cards || `<p>No machines here yet.</p>`}
     <div class="stickers">${[...machines].sort((a, b) => (a.type === b.type ? byLabel(a, b) : a.type === "washer" ? -1 : 1)).map((m) => `<div class="sticker"><b>${esc(m.label)}</b>${qrSvg(m.qr_token, 4, 4)}<span>Scan with the Klean app · ${esc(branch?.name ?? "")}</span></div>`).join("")}</div>`;
+  for (const [id, value] of typed) { const el = $(id); if (el) el.value = value; }
+  if (typing) $(typing.id)?.focus();
 }
 
 function machineCard(m) {
@@ -559,6 +611,11 @@ db.auth.onAuthStateChange((event) => { if (event === "SIGNED_IN" && !S.session) 
 
 // One listener for every button (no inline handlers, so the page can run under a strict Content Security Policy).
 document.addEventListener("click", (e) => {
+  const w = e.target.closest("[data-weigh]");
+  if (w) {
+    const kg = w.dataset.kg ?? $(`scaleKg-${w.dataset.weigh}`)?.value;
+    return weigh(w.dataset.weigh, Math.round(parseFloat(String(kg ?? "").replace(",", ".")) * 1000));
+  }
   const t = e.target.closest("[data-act],[data-go],[data-wizard],[data-do],[data-signin],[data-branch],[data-zoom],[data-close]");
   if (!t) return;
   const d = t.dataset;
@@ -569,7 +626,7 @@ document.addEventListener("click", (e) => {
   if (d.wizard !== undefined) { wizardFor = d.wizard || null; S.view = "wizard"; return render(); }
   if (d.signin) return signIn(d.signin);
   if (d.branch) return pickBranch(d.branch);
-  ({ print: () => window.print(), "wizard-run": runWizard, reload: () => location.reload(), config: downloadConfig })[d.do]?.();
+  ({ print: () => window.print(), "wizard-run": runWizard, reload: () => location.reload(), config: downloadConfig, "add-scale": addScale })[d.do]?.();
 });
 document.addEventListener("change", (e) => {
   const d = e.target.dataset ?? {};
