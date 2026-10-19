@@ -142,7 +142,8 @@ things in Klean HQ (klean.ph/hq → the branch → Klean Scale → type kilos �
 shows its **Controller ID** and **Secret** once: put them in the scale's firmware (Hardware Guide → Klean Scale).
 
 Customers tap **Use the Klean Scale** in Start laundry; the newest weighing from the last 2 minutes fills in, and each
-weighing is used once. **Require the scale (whole business)** stops typed weights at every branch of your business
+weighing is used once. Attendants get the same **Use the Klean Scale** button in Work → Intake. **Require the scale
+(whole business)** stops typed weights at every branch of your business (in Start laundry and at the counter)
 (customers can still choose a number of loads only if Require is off). Each branch card shows the scale's last weight.
 You're responsible for the scale's accuracy and, in the Philippines, for having it tested and sealed by your city or
 municipal treasurer (Terms 4.4d).

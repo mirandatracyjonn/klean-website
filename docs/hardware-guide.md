@@ -119,7 +119,8 @@ of typing the kilos.
 - **Check:** put something on it. Within about 2 seconds of the number settling, the branch's Klean Scale card in
   the app shows the weight. In Start laundry, **Use the Klean Scale** fills it in.
 - **Rules:** one weight is sent per load; nothing more is sent until the scale is emptied. Each weighing can be used
-  once, within 2 minutes. Business → **Require the scale** stops customers typing weights.
+  once, within 2 minutes. Attendants use it at the counter too (Work → Intake → Use the Klean Scale). Business →
+  **Require the scale** stops typed weights in Start laundry and at the counter.
 
 ## Test before opening
 
