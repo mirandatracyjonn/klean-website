@@ -40,6 +40,11 @@ Android, and you're notified when it's done. iPhone: Settings → Klean → Live
 Yes: add it from your Home Screen's widget list (iPhone: also on the Lock Screen). It shows free machines at your
 laundromat, your points, what's paid, and when your machine will be done.
 
+**Can I pay with Apple Pay or Google Pay?**
+At Philippine laundromats you pay on PayMongo's page with GCash, Maya, QR Ph, card or **Google Pay** (on phones and
+browsers that support it). Apple Pay isn't offered by PayMongo yet. At laundromats that use card payments through
+Stripe (for example in the US), Apple Pay and Google Pay appear on the payment page automatically.
+
 **Does Klean work with Siri?**
 Yes: "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean member code",
 "Scan a machine in Klean". On Android, touch and hold the Klean icon for quick actions.
