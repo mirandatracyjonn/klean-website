@@ -40,6 +40,10 @@ Android, and you're notified when it's done. iPhone: Settings → Klean → Live
 Yes: add it from your Home Screen's widget list (iPhone: also on the Lock Screen). It shows free machines at your
 laundromat, your points, what's paid, and when your machine will be done.
 
+**Can I put my Klean card in Apple Wallet?**
+Yes: Account → **Add to Apple Wallet** (or on klean.ph → Account in Safari). It shows your member code as a QR for the
+counter, your points and your laundromat. Add it again to refresh the points. Google Wallet is coming.
+
 **What's the round sticker next to the QR?**
 An NFC sticker. Touch it with your unlocked phone and Klean opens on that machine (iPhone: or tap **Tap NFC sticker**
 on Scan). If a sticker doesn't open Klean, scan the QR instead and tell the staff.

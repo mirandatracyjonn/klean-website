@@ -68,7 +68,7 @@ function signedOut() {
 function signedIn(a, v) {
   heading.textContent = a.first_name ? `Hi, ${a.first_name}` : "Your account";
   const parts = [el("div", { class: "card acct-card" },
-    el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }))];
+    el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }), walletButton())];
   parts.push(machinesCard());
   if (v.status === "verified") parts.push(phoneCard(a));
   parts.push(verificationCard(v));
@@ -133,6 +133,27 @@ function phoneCard(a) {
   return el("div", { class: "card acct-card" }, el("h2", { text: "Mobile number" }),
     el("p", { class: "meta", text: "Optional. Saved so you don't type it when you pay (use your GCash or Maya number). Only you and the payment page see it." }),
     el("div", { class: "btn-row" }, input, save), msg);
+}
+
+// Roadmap 5: the member card in Apple Wallet (Safari on iPhone and Mac). The server signs it (wallet-pass).
+function walletButton() {
+  if (!/iPhone|iPad|Macintosh/.test(navigator.userAgent)) return null;
+  const msg = el("p", { class: "meta" });
+  const b = el("button", { class: "btn btn-outline", type: "button", text: "Add to Apple Wallet" });
+  b.addEventListener("click", async () => {
+    b.disabled = true; msg.textContent = "Making your card…";
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      const r = await fetch(`${SUPABASE_URL}/functions/v1/wallet-pass`, { method: "POST",
+        headers: { Authorization: `Bearer ${session?.access_token ?? ""}`, apikey: SUPABASE_KEY } });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? `error ${r.status}`);
+      const url = URL.createObjectURL(new Blob([await r.arrayBuffer()], { type: "application/vnd.apple.pkpass" }));
+      location.href = url;   // Safari opens it in Wallet
+      msg.textContent = "";
+    } catch (e) { msg.replaceChildren(errorLine(`Couldn't make your card: ${e.message}`)); }
+    b.disabled = false;
+  });
+  return el("div", { class: "btn-row" }, b, msg);
 }
 
 function verificationCard(v) {
