@@ -93,7 +93,8 @@ is connected. Klean creates the machines labelled W1, W2… and D1, D2…, each 
 
 **Manage a branch:** tap it to edit its details or map position, and to manage its machines: **+ Add washer** /
 **+ Add dryer** (the next label, like W6), **Rename** a label, show a machine's **QR** code to print, or **Delete** a
-machine. A machine that has never been used is deleted; one that has is **retired** (its QR stops working, it
+machine, or **Write NFC sticker** (Android: **NFC**) to put a tap-to-pay sticker beside its QR (Hardware Guide → NFC
+tap stickers). A machine that has never been used is deleted; one that has is **retired** (its QR stops working, it
 disappears from lists, its history stays). Machines can't be deleted while paid, held or running.
 
 **Deleting a branch:** Business → Setup → Branches → **Delete branch…**, type its name. Klean approves each request

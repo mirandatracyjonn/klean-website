@@ -68,7 +68,8 @@ Your location is only used to sort the list; Klean doesn't store it.
    No second payment. Home shows what's paid ("Your dry is paid", or "2 washes and 3 dries paid").
 6. Paid for more than one load? Scan the next free washer: it starts without payment. Saved loads last 30 days.
 
-If the camera doesn't work, type the code printed under the QR.
+If the camera doesn't work, type the code printed under the QR. Some machines also have an **NFC sticker** beside the QR:
+just touch it with your unlocked phone and Klean opens on that machine (iPhone: or tap **Tap NFC sticker** on Scan).
 
 ### With an attendant
 

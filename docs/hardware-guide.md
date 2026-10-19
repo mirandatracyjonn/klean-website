@@ -86,6 +86,18 @@ top of the firmware for other boards.
    `KLEAN_BOX_NUMBER` (1 for the first box, 2 for the second…), connect the board by USB, and click **Upload**.
 5. Power the box. Within a minute the machines turn **green** in Klean HQ and the app.
 
+## NFC tap stickers (optional)
+
+Next to each machine's QR sticker you can add an **NFC sticker**, so customers just tap their phone on it.
+
+- **Buy:** NTAG213 (or NTAG215/216) NFC stickers, round 25–30 mm, about ₱15–30 each. On a metal machine use
+  **anti-metal (on-metal)** NFC stickers, or the tag won't read through the steel.
+- **Write:** in the Klean app, Business → Setup → Branches → the branch → the machine's menu → **Write NFC sticker**
+  (Android: **NFC**). Hold the blank sticker against the phone; it gets the same link as the machine's QR.
+- **Place:** right beside the QR, at a comfortable height. Optional: a small "Tap or scan to pay" label.
+- **Customers:** iPhone (XS or newer) and most Android phones read it by just touching the sticker with the phone
+  unlocked; Klean opens on that machine. iPhone users can also tap **Tap NFC sticker** on the Scan screen.
+
 ## Test before opening
 
 Scan each machine's QR in the Klean app and pay. You should hear one relay click per coin and see the light turn
