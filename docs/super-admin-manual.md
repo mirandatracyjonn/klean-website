@@ -86,6 +86,11 @@ payment and they get a "Welcome to …" notification. It's your promotion: no pa
 
 ## 4. Branches and machines
 
+**Deleting a branch:** Business → Setup → Branches → **Delete branch…**, type its name. Klean approves each request
+(you'll get a notification). A branch that never had a sale is deleted with its machines; one with sales is **closed**
+instead: its machines stop, customers no longer see it, and its sales stay in your reports. It can't happen while a
+machine there is paid, held or running.
+
 **Put each branch on the map** so customers find it: **Business → Setup → Branches**. Standing inside the laundromat,
 tap **📍 Use my current location**; or tap **Find address on map** to use the branch's address. Customers then see it
 under **Laundromats near you** with live free machines and directions. (Beta laundromats show only to their testers
