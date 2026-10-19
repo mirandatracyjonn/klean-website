@@ -201,3 +201,15 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .find-pin.none { background: #8a8f8c; }
 .find-distance { font-weight: 700; color: var(--brand); }
 @media (max-width: 600px) { .find-map { height: 280px; } }
+
+/* Messages (roadmap 10) */
+.chat-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 6px 0; font: inherit; cursor: pointer; color: var(--ink); }
+.chat-row-title { font-weight: 700; flex: 1 1 auto; }
+.chat-unread { background: var(--brand); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 12px; font-weight: 700; }
+.chat { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.chat-log { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.chat-msg { align-self: flex-start; max-width: 80%; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 8px 12px; white-space: pre-wrap; }
+.chat-msg.mine { align-self: flex-end; background: var(--brand); color: #fff; border-color: var(--brand); }
+.chat-msg.hidden { font-style: italic; opacity: .7; }
+.chat textarea, .announce input, .announce textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); margin: 4px 0; }
+.news p { margin: 6px 0; }

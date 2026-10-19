@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 18, 2026. Version 1.3.*
+*Effective date: October 18, 2026. Version 1.4.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -138,6 +138,11 @@ internet connection or your premises' network.
 You must not: create multiple accounts or help others do so; submit false identity information; tamper with
 machines, controllers or QR codes; attempt to obtain wash cycles without paying; reverse-engineer, scrape or
 overload the Service; misuse other users' data; or use the Service for anything illegal.
+
+6.1 **Messages and announcements.** Messages between customers and a laundromat's staff, and Operators'
+announcements, must be about laundry and the laundromat. No harassment, threats, hate, spam, scams, sexual content, or
+requests for passwords, card numbers or ID numbers. Operators may announce only to their own customers and only about
+their business. Anyone can report a message; Klean may remove messages and suspend accounts that break these rules.
 
 ## 7. Fees, refunds and chargebacks
 

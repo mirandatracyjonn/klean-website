@@ -45,6 +45,12 @@ At Philippine laundromats you pay on PayMongo's page with GCash, Maya, QR Ph, ca
 browsers that support it). Apple Pay isn't offered by PayMongo yet. At laundromats that use card payments through
 Stripe (for example in the US), Apple Pay and Google Pay appear on the payment page automatically.
 
+**Can I message the laundromat?**
+Yes: open the laundromat's page (from Home or Laundromats near you) and tap **Message**. Its staff reply in Klean and you
+get a notification. Your conversations are under Home → **Messages**. Laundromats you've used can also post
+announcements ("Closed Monday"), which appear on Home. To report a message, touch and hold it (iPhone) or tap it
+(Android) → **Report**.
+
 **Does Klean work with Siri?**
 Yes: "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean member code",
 "Scan a machine in Klean". On Android, touch and hold the Klean icon for quick actions.

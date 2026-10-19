@@ -81,6 +81,12 @@ just touch it with your unlocked phone and Klean opens on that machine (iPhone: 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Messages and announcements
+
+Open a laundromat's page and tap **Message [laundromat]** to ask its staff anything; replies arrive in Klean with a
+notification, and all your conversations are under Home → **Messages**. Announcements from laundromats you've used
+("Closed Monday", "Promo on dries") appear on Home. Report a bad message: touch and hold it (iPhone) or tap it (Android).
+
 ### Siri, Shortcuts and quick actions
 
 **iPhone:** ask Siri "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean

@@ -187,6 +187,14 @@ All times are in your business's time zone.
 
 For privacy, you see customers' display names and a masked email, never their ID documents or legal names.
 
+## 7a. Messages and announcements
+
+- **Customer messages:** Business (and Work for attendants) → **Customer messages**. Customers write from your
+  laundromat's page; every Super Admin and attendant is notified and can reply. Keep replies about laundry; never ask
+  for passwords, card or ID numbers (Terms 6.1).
+- **Announcements:** Business → **Announcements** → title and message → **Post**. Everyone who used your laundromat in
+  the last 90 days gets a notification and sees it on Home for 30 days. Up to 3 a day; delete one any time.
+
 ## 8. Internet is required
 
 Klean is online-only, on every device: phones, tablets and computers. Payments (and Klean's commission on them)

@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 18, 2026. Version 1.4.*
+*Effective date: October 18, 2026. Version 1.5.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -18,6 +18,7 @@ and act as controllers for their own use of it.
 | In-app purchases | For the verification fee bought in the app: the store transaction ID, product, price, currency and date. Apple or Google handle the payment itself; we don't receive your payment details. | Apple (App Store), Google (Play) |
 | Laundry activity | Machines scanned, orders, loads, weight at intake, cycle start/finish times, points earned and redeemed, branches visited | Your use of the Service |
 | Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status. **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |
+| Messages | Messages you exchange with a laundromat (text, time), and announcements Operators post. | You; Operators |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |
 | Wallet card (optional) | If you add your Klean card to Apple Wallet or Google Wallet, it holds your name, member code (as a QR), points and laundromat. Apple keeps it on your device (and in iCloud if you use it); for Google Wallet, Klean sends those details to Google, which stores the card in your Google account. Remove it in Wallet any time. | You; Google |
@@ -36,6 +37,10 @@ and act as controllers for their own use of it.
 | Marketing messages, if offered | Your consent, which you can withdraw at any time |
 
 ## 3. Who sees your information
+
+- **Messages** you send to a laundromat are seen by that business's staff (Super Admins and attendants), and their
+  replies by you. Klean staff read a message only when someone reports it, to decide whether to remove it.
+  Messages are kept while your account exists and are deleted with it.
 
 - **Operators** where you do laundry see your **display name**, a **masked email** (e.g. `j***@gmail.com`), your
   points with them, your visits and spend with them, and the times you used their machines. They **don't** see your

@@ -70,6 +70,7 @@ function signedIn(a, v) {
   const parts = [el("div", { class: "card acct-card" },
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }), walletButton())];
   parts.push(machinesCard());
+  if (v.status === "verified") parts.push(commsCard(a));
   if (v.status === "verified") parts.push(phoneCard(a));
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
@@ -174,6 +175,76 @@ function googleWalletButton() {
     b.disabled = false;
   });
   return el("div", { class: "btn-row" }, b, msg);
+}
+
+// Roadmap 10 (M52): announcements, messages with laundromats, and (for staff) the business inbox and announcements.
+function commsCard(a) {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Messages" }), el("p", { class: "meta", text: "Loading…" }));
+  const chat = el("div", { class: "chat", hidden: true });
+  let timer;
+  const ago = (iso) => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? "now" : m < 60 ? `${m}m` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`; };
+  async function openChat(id, title) {
+    clearTimeout(timer);
+    const log = el("div", { class: "chat-log" });
+    const input = el("textarea", { rows: 2, placeholder: "Message", maxlength: 2000 });
+    const send = el("button", { class: "btn btn-brand", type: "button", text: "Send" });
+    const msg = el("p", { class: "meta" });
+    async function refresh() {
+      if (!chat.isConnected || chat.hidden) return;
+      const { data } = await db.rpc("conversation_messages", { conversation: id });
+      log.replaceChildren(...(data ?? []).map((m) => el("div", { class: "chat-msg" + (m.mine ? " mine" : "") + (m.hidden ? " hidden" : ""), text: m.body })));
+      log.scrollTop = log.scrollHeight;
+      timer = setTimeout(refresh, 4000);
+    }
+    send.addEventListener("click", async () => {
+      const body = input.value.trim(); if (!body) return;
+      send.disabled = true;
+      const { error } = await db.rpc("send_message", { conversation: id, body });
+      send.disabled = false;
+      if (error) { msg.replaceChildren(errorLine(error.message)); return; }
+      input.value = ""; msg.textContent = ""; clearTimeout(timer); refresh();
+    });
+    const close = el("button", { class: "btn btn-outline", type: "button", text: "Close" });
+    close.addEventListener("click", () => { chat.hidden = true; clearTimeout(timer); });
+    chat.hidden = false;
+    chat.replaceChildren(el("h3", { text: title }), log, input, el("div", { class: "btn-row" }, send, close), msg);
+    refresh();
+  }
+  const row = (title, preview, at, unread, onClick) => {
+    const b = el("button", { class: "chat-row", type: "button" },
+      el("span", { class: "chat-row-title", text: title }), el("span", { class: "meta", text: `${preview ?? ""} · ${ago(at)}` }),
+      unread > 0 ? el("span", { class: "chat-unread", text: String(unread) }) : null);
+    b.addEventListener("click", onClick);
+    return b;
+  };
+  (async () => {
+    const parts = [el("h2", { text: "Messages" })];
+    const [{ data: news }, { data: convs }] = await Promise.all([db.rpc("my_announcements"), db.rpc("my_conversations")]);
+    if (news?.length) parts.push(el("div", { class: "news" }, el("h3", { text: "From your laundromats" }),
+      ...news.slice(0, 3).map((n) => el("p", {}, el("strong", { text: `${n.operator_name} · ${n.title}` }), el("br"), n.body))));
+    parts.push(el("p", { class: "meta", text: convs?.length ? "Your conversations with laundromats:" : "Open a laundromat's page in the app and tap Message to ask its staff anything." }));
+    for (const c of convs ?? []) parts.push(row(c.operator_name, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.operator_name)));
+    for (const m of a.memberships ?? []) {
+      const { data: inbox } = await db.rpc("operator_conversations", { operator: m.operator_id });
+      parts.push(el("h3", { text: `${m.operator_name}: customer messages` }));
+      if (!inbox?.length) parts.push(el("p", { class: "meta", text: "None yet." }));
+      for (const c of inbox ?? []) parts.push(row(`${c.customer_name} · ${c.member_code}`, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.customer_name)));
+      if (m.role === "super_admin") {
+        const t = el("input", { placeholder: "Announcement title (e.g. Closed Monday)", maxlength: 80 });
+        const body = el("textarea", { rows: 2, placeholder: "Message to your customers", maxlength: 1000 });
+        const post = el("button", { class: "btn btn-outline", type: "button", text: "Post announcement" });
+        const note = el("p", { class: "meta" });
+        post.addEventListener("click", async () => {
+          const { error } = await db.rpc("post_announcement", { operator: m.operator_id, title: t.value.trim(), body: body.value.trim() });
+          if (error) note.replaceChildren(errorLine(error.message)); else { note.textContent = "Posted. Your customers are notified."; t.value = ""; body.value = ""; }
+        });
+        parts.push(el("div", { class: "announce" }, t, body, post, note));
+      }
+    }
+    parts.push(chat);
+    card.replaceChildren(...parts);
+  })();
+  return card;
 }
 
 function verificationCard(v) {
