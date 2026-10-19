@@ -86,6 +86,16 @@ payment and they get a "Welcome to …" notification. It's your promotion: no pa
 
 ## 4. Branches and machines
 
+**Add a branch:** Business → Setup → Branches → **+ Add a branch**. One form: the branch's name and address
+(**📍 Use my current location** or **Find address** puts it on the map), a contact phone and email (shown to
+customers), how many **washers** and **dryers** with their cycle minutes and brand/model, and whether a **weigh scale**
+is connected. Klean creates the machines labelled W1, W2… and D1, D2…, each with its QR code.
+
+**Manage a branch:** tap it to edit its details or map position, and to manage its machines: **+ Add washer** /
+**+ Add dryer** (the next label, like W6), **Rename** a label, show a machine's **QR** code to print, or **Delete** a
+machine. A machine that has never been used is deleted; one that has is **retired** (its QR stops working, it
+disappears from lists, its history stays). Machines can't be deleted while paid, held or running.
+
 **Deleting a branch:** Business → Setup → Branches → **Delete branch…**, type its name. Klean approves each request
 (you'll get a notification). A branch that never had a sale is deleted with its machines; one with sales is **closed**
 instead: its machines stop, customers no longer see it, and its sales stay in your reports. It can't happen while a
