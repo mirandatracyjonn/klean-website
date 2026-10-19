@@ -81,6 +81,12 @@ just touch it with your unlocked phone and Klean opens on that machine (iPhone: 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Klean on your Home Screen
+
+Add the **Klean widget**: iPhone: touch and hold the Home Screen → **Edit** → **Add Widget** → Klean (small or medium; also
+on the Lock Screen). Android: touch and hold the Home Screen → **Widgets** → Klean. It shows your laundromat's free
+washers and dryers (live), your points, what's paid, and when a running machine will be done. Tap it to open Klean.
+
 ### Time left on your wash or dry
 
 Once your machine starts, Klean shows a countdown: on iPhone on the **Lock Screen and in the Dynamic Island**
