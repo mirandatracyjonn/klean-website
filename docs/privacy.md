@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 18, 2026. Version 1.3.*
+*Effective date: October 18, 2026. Version 1.4.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -17,9 +17,10 @@ and act as controllers for their own use of it.
 | Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references. **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe |
 | In-app purchases | For the verification fee bought in the app: the store transaction ID, product, price, currency and date. Apple or Google handle the payment itself; we don't receive your payment details. | Apple (App Store), Google (Play) |
 | Laundry activity | Machines scanned, orders, loads, weight at intake, cycle start/finish times, points earned and redeemed, branches visited | Your use of the Service |
-| Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status | You; Operators; Stripe/PayMongo |
+| Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status. **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |
+| On your device only | The Home Screen widget's summary (points, paid loads, your laundromat) and the Lock Screen countdown are kept on your phone; reading an NFC sticker happens on your phone. | Your device |
 
 ## 2. Why we use it, and our legal basis
 

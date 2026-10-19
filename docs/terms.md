@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 18, 2026. Version 1.2.*
+*Effective date: October 18, 2026. Version 1.3.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -97,7 +97,9 @@ hardware guide), you're responsible for installing it safely and lawfully, inclu
 do any work on electrical supply, and for any effect on your machines' warranties. The hardware guide and
 controller software are provided as-is, as guidance. Keep controller files private: anyone with a machine's secret
 key can act as that machine. Klean HQ's simulated machines are for testing; don't take real customers' payments
-on a simulated machine.
+on a simulated machine. Klean never starts a machine by itself: a cycle starts only when the customer starts it (in
+the app or with the machine's own Start button); don't wire or configure a controller to start a machine without
+that. Lock the NFC stickers you put on machines, so nobody can rewrite them.
 
 4.4b **Beta mode.** Every business starts in Beta. In Beta, payments use test money only (no real money is charged
 or paid out), simulated machines may be used, and the Super Admin can delete the business's beta orders, test
@@ -114,6 +116,10 @@ marketing, sell it, or attempt to identify customers beyond what the Service sho
 
 4.7 **Suspension.** We may suspend an Operator's ability to take payments for fraud, unresolved disputes,
 legal requirements, or material breach of these Terms, with notice where the law and circumstances allow.
+
+4.4c **Branches.** The branch details you enter (name, address, map location, phone and email) are shown to
+customers. Deleting a branch needs Klean's approval; a branch that has had sales is closed instead of deleted, and its
+records are kept. Machines that have been used are retired instead of deleted, for the same reason.
 
 4.8 **Closing your business.** A Super Admin can delete or close the business at any time (Business → Setup, or
 klean.ph). A business still in Beta is deleted completely. A business that has taken real payments is closed: its

@@ -28,6 +28,22 @@ starts without another payment.
 No. Your verified name and email are filled in on the payment page. Save your mobile number in **Account → Mobile
 number** and that's filled in too. GCash or Maya may still ask you to log in to approve.
 
+**How do I find a laundromat near me?**
+On Home, tap **Laundromats near you** (or **Find a laundromat** on klean.ph). Allow location to see the nearest ones on
+a map with free washers and dryers right now, and tap **Directions**.
+
+**Can I see how long my wash has left?**
+Yes. Once it starts, the time left shows on your iPhone's Lock Screen and Dynamic Island, or in a notification on
+Android, and you're notified when it's done. iPhone: Settings → Klean → Live Activities must be on.
+
+**Is there a Klean widget?**
+Yes: add it from your Home Screen's widget list (iPhone: also on the Lock Screen). It shows free machines at your
+laundromat, your points, what's paid, and when your machine will be done.
+
+**What's the round sticker next to the QR?**
+An NFC sticker. Touch it with your unlocked phone and Klean opens on that machine (iPhone: or tap **Tap NFC sticker**
+on Scan). If a sticker doesn't open Klean, scan the QR instead and tell the staff.
+
 **Will the machine start by itself after I pay?**
 No. For safety, a machine only starts when you start it: tap **Start wash** or **Start dry** on Home (Klean asks
 you to check that your laundry is inside and the door is closed), or press Start on the machine.
