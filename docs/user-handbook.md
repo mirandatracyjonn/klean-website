@@ -80,6 +80,12 @@ If the camera doesn't work, type the code printed under the QR.
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Time left on your wash or dry
+
+Once your machine starts, Klean shows a countdown: on iPhone on the **Lock Screen and in the Dynamic Island**
+("W1 · Washing · 32:10"), on Android as a notification that stays until the cycle ends. It updates by itself; when the
+cycle is done you also get a notification. (iPhone: Settings → Klean → Live Activities must be on.)
+
 ### After you pay
 
 The app tells you when your machine is ready. Press **Start** on the machine within a few minutes. If the
