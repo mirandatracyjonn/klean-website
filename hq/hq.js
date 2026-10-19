@@ -91,7 +91,15 @@ function event(m, kind, extra = {}) {
   return { controller_id: m.controller_id, ...(secret ? { secret } : {}), kind, ...extra };
 }
 
+// One check at a time: if the last one hasn't answered yet, skip this beat (piled-up requests caused 504s, M50).
+let ticking_busy = false;
 async function tick() {
+  if (ticking_busy) return;
+  ticking_busy = true;
+  try { await tickOnce(); } finally { ticking_busy = false; }
+}
+
+async function tickOnce() {
   S.tick++;
   const machines = simulated().filter((m) => simOf(m).plugged);
   const events = [];
