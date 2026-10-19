@@ -108,8 +108,9 @@ member code" or "Scan a machine in Klean". They're also in the Shortcuts app and
 ### Your Klean card in Apple Wallet or Google Wallet
 
 Account → **Add to Apple Wallet** (iPhone) or **Save to Google Wallet** (Android); on klean.ph, Account has the same
-buttons. Show its QR at the counter so the attendant can add points to your visit. It shows your points when you added
-it; add it again to refresh.
+buttons. Show its QR at the counter so the attendant can add points to your visit. Your points on the card update by
+themselves within a minute or so of earning or using them (iPhone: turn on **Automatic Updates** on the back of the
+card; it's on by default).
 
 ### Klean on your Home Screen
 

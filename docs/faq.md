@@ -61,6 +61,7 @@ Yes: "How long is left on my laundry in Klean?", "How many washers are free at K
 
 **Can I put my Klean card in Apple Wallet or Google Wallet?**
 Yes: Account → **Add to Apple Wallet** (iPhone) or **Save to Google Wallet** (Android), also on klean.ph → Account.
+The points on the card update by themselves when you earn or use points.
 It shows your member code as a QR for the counter, your points and your laundromat. Add it again to refresh the
 points.
 

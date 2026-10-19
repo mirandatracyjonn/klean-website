@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 1.7.*
+*Effective date: October 19, 2026. Version 1.8.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -21,7 +21,7 @@ and act as controllers for their own use of it.
 | Messages | Messages you exchange with a laundromat (text, time), and announcements Operators post. | You; Operators |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |
-| Wallet card (optional) | If you add your Klean card to Apple Wallet or Google Wallet, it holds your name, member code (as a QR), points and laundromat. Apple keeps it on your device (and in iCloud if you use it); for Google Wallet, Klean sends those details to Google, which stores the card in your Google account. Remove it in Wallet any time. | You; Google |
+| Wallet card (optional) | If you add your Klean card to Apple Wallet or Google Wallet, it holds your name, member code (as a QR), points and laundromat. Apple keeps it on your device (and in iCloud if you use it); for Google Wallet, Klean sends those details to Google, which stores the card in your Google account. Remove it in Wallet any time. To keep the points on it current, Klean stores a random code for your card and, for Apple Wallet, an identifier for each device that has the card and its push token (deleted when you remove the card). | You; Google |
 | On your device only | The Home Screen widget's summary (points, paid loads, your laundromat) and the Lock Screen countdown are kept on your phone; reading an NFC sticker happens on your phone. On klean.ph, the machine you scanned is remembered in your browser for up to 2 hours (so you can sign in and verify first), and forgotten once you pay. | Your device |
 
 ## 2. Why we use it, and our legal basis
