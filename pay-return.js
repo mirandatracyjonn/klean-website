@@ -12,7 +12,7 @@ const title = paid
   ? (flow === "kyc_fee" ? "Payment received" : "Paid! Your machine is getting ready")
   : "Payment cancelled";
 const body = paid
-  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check." : "Go back to Klean. When the machine's light turns white, tap Start wash (or Start dry) on Home, or press Start on the machine. Machines never start by themselves.")
+  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check." : "Go back to Klean (or, if you paid in your browser, tap Continue on klean.ph). When the machine's light turns white, tap Start wash (or Start dry), or press Start on the machine. Machines never start by themselves.")
   : "Nothing was charged. Go back to Klean to try again.";
 
 card.replaceChildren(
@@ -21,6 +21,7 @@ card.replaceChildren(
   el("p", { text: body }),
   el("div", { class: "actions" },
     el("a", { class: "btn btn-brand", href: "klean://home", text: "Back to Klean" }),
-    flow === "kyc_fee" ? el("a", { class: "btn btn-outline", href: "/account.html", text: "Continue on klean.ph" }) : null),
+    // Paid in a phone's browser (no app, TJ 2026-10-19): Start wash / Start dry is on klean.ph's account page.
+    el("a", { class: "btn btn-outline", href: flow === "laundry" && paid ? "/account.html?paid=1" : "/account.html", text: "Continue on klean.ph" })),
   el("p", { class: "meta", style: "margin-top:14px", text: "In the app? Tap Done (top left) to close this page." }));
 document.title = `${title} | Klean`;

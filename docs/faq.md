@@ -28,6 +28,10 @@ starts without another payment.
 No. Your verified name and email are filled in on the payment page. Save your mobile number in **Account → Mobile
 number** and that's filled in too. GCash or Maya may still ask you to log in to approve.
 
+**Do I need the app to pay for a machine?**
+No. Scan the machine's QR code with your phone's camera and tap **Pay in your browser** on klean.ph. Sign in, verify
+once if you're new, pay, then tap **Start wash** (or **Start dry**) on the same page. The app is faster next time.
+
 **How do I find a laundromat near me?**
 On Home, tap **Laundromats near you** (or **Find a laundromat** on klean.ph). Allow location to see the nearest ones on
 a map with free washers and dryers right now, and tap **Directions**.

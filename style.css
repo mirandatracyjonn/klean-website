@@ -185,6 +185,8 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .acct-consent { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; font-size: 15px; }
 .acct-consent input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
 .acct-free { color: var(--brand); font-weight: 600; }
+.acct-total { font-size: 20px; font-weight: 700; margin: 12px 0; }
+.acct-machine-pay { border: 2px solid var(--brand); }
 .acct-error { color: #b42318; font-weight: 600; }
 .acct-danger { color: #b42318; border-color: #b42318; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }

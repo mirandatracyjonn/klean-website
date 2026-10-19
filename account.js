@@ -9,6 +9,23 @@ const heading = document.getElementById("acct-title");
 const here = location.origin + location.pathname;
 let db;
 
+// Pay without the app (TJ, 2026-10-19, instead of an App Clip): a machine's sticker link (/m/<token>) brings people
+// here with ?m=<token>. The token is kept in this browser through sign-in, ID verification and the fee payment (each
+// leaves the page), then "Pay for this machine" scans it exactly as the app does (scan_machine) and opens checkout.
+const MACHINE_KEY = "klean-machine";
+const urlMachine = new URLSearchParams(location.search).get("m");
+if (urlMachine && /^[A-Za-z0-9_-]{6,64}$/.test(urlMachine)) {
+  try { localStorage.setItem(MACHINE_KEY, JSON.stringify({ token: urlMachine, at: Date.now() })); } catch { /* private mode */ }
+  history.replaceState(null, "", here);
+}
+function pendingMachine() {
+  try {
+    const p = JSON.parse(localStorage.getItem(MACHINE_KEY) || "null");
+    return p && Date.now() - p.at < 2 * 3600 * 1000 ? p.token : null;   // a scan is good for 2 hours
+  } catch { return null; }
+}
+function forgetMachine() { try { localStorage.removeItem(MACHINE_KEY); } catch { /* ignore */ } }
+
 // supabase-js (the same vendored build Klean HQ uses) as a classic script, then start.
 const tag = document.createElement("script");
 tag.src = "/hq/vendor/supabase-js-2.117.2.js";
@@ -58,6 +75,8 @@ function signedOut() {
   google.addEventListener("click", signIn("google"));
   github.addEventListener("click", signIn("github"));
   box.replaceChildren(
+    pendingMachine() ? el("div", { class: "card acct-card acct-machine-pay" }, el("h2", { text: "Pay for this machine" }),
+      el("p", { text: "Sign in to pay right here in your browser, no app needed. First time? You'll verify your ID once (about 2 minutes), then come back to pay." })) : "",
     el("p", { text: "One person, one Klean account. If you already use Klean, sign in the same way you did in the app." }),
     el("div", { class: "btn-row" }, google, github),
     el("p", { class: "meta", text: "Signed up with Apple? Use the Klean app on your iPhone." }),
@@ -69,6 +88,7 @@ function signedIn(a, v) {
   heading.textContent = a.first_name ? `Hi, ${a.first_name}` : "Your account";
   const parts = [el("div", { class: "card acct-card" },
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }), walletButton())];
+  if (pendingMachine()) parts.unshift(payMachineCard(pendingMachine(), v.status === "verified"));
   parts.push(machinesCard());
   if (v.status === "verified") parts.push(commsCard(a));
   if (v.status === "verified") parts.push(phoneCard(a));
@@ -85,6 +105,8 @@ function signedIn(a, v) {
 // M37 (TJ): machines never start by themselves. Paid machines wait here for Start wash / Start dry (or the
 // machine's own Start button). The card stays hidden when nothing is waiting.
 let machinesTimer;
+const justPaid = new URLSearchParams(location.search).has("paid") ? Date.now() : 0;
+if (justPaid) forgetMachine();
 function machinesCard() {
   const card = el("div", { class: "card acct-card", hidden: true });
   const draw = async () => {
@@ -95,7 +117,8 @@ function machinesCard() {
     const list = error ? [] : data ?? [];
     card.hidden = list.length === 0;
     card.replaceChildren(el("h2", { text: "Ready to start" }), ...list.map(machineRow));
-    if (list.length) machinesTimer = setTimeout(draw, 3000);
+    // Just paid on the web: keep checking for a minute while the payment confirms.
+    if (list.length || (justPaid && Date.now() - justPaid < 60000)) machinesTimer = setTimeout(draw, 3000);
   };
   const machineRow = (m) => {
     const title = m.machine_type === "dryer" ? "Start dry" : "Start wash";
@@ -115,6 +138,100 @@ function machinesCard() {
       b, msg);
   };
   draw();
+  return card;
+}
+
+// The machine from the sticker link: same questions and choices as the app's scanner (scan_machine, M28/M34/M35/M43).
+function payMachineCard(token, verified) {
+  const card = el("div", { class: "card acct-card acct-machine-pay" });
+  const msg = el("div");
+  const forget = el("button", { class: "btn btn-outline", type: "button", text: "Not now" });
+  forget.addEventListener("click", () => { forgetMachine(); card.remove(); });
+  if (!verified) {
+    card.append(el("h2", { text: "Pay for this machine" }),
+      el("p", { text: "Verify your ID once below (about 2 minutes). Then this card lets you pay for the machine you scanned." }),
+      el("div", { class: "btn-row" }, forget));
+    return card;
+  }
+  const button = (text, cls = "btn btn-brand") => el("button", { class: cls, type: "button", text });
+  const scan = async (opts = {}) => {
+    msg.replaceChildren(el("p", { class: "meta", text: "Checking the machine…" }));
+    const { data: r, error } = await db.rpc("scan_machine", { qr_token: token, dry_without_wash: !!opts.dry, use_saved: !!opts.saved });
+    if (error) { msg.replaceChildren(errorLine(error.message)); return; }
+    if (r.mode === "confirm_use_saved" || r.mode === "confirm_dry_without_wash" || r.mode === "confirm_dryer_wash_saved") {
+      const w = r.washes_left ?? 1;
+      const kind = r.machine_type === "dryer" || r.mode !== "confirm_use_saved" ? "dryer" : "washer";
+      const question = r.mode === "confirm_dryer_wash_saved"
+        ? `You already paid for a washer (${w === 1 ? "1 wash" : `${w} washes`}). Are you sure you want to use this dryer (${r.machine_label})?`
+        : `Are you sure you want to use this ${kind} (${r.machine_label})?` + (r.mode === "confirm_use_saved" ? " It uses one of your saved loads." : "");
+      const yes = button(r.mode === "confirm_dryer_wash_saved" ? "Yes, use dryer" : "Yes, go");
+      const back = button("Back", "btn btn-outline");
+      yes.addEventListener("click", () => scan({ dry: r.mode !== "confirm_use_saved", saved: true }));
+      back.addEventListener("click", () => { forgetMachine(); card.remove(); });
+      msg.replaceChildren(el("p", { text: question }), el("div", { class: "btn-row" }, yes, back));
+      return;
+    }
+    if (r.mode === "credit_used") {
+      forgetMachine();
+      msg.replaceChildren(el("p", { text: `${r.machine_label} is ready, already paid. Tap ${r.machine_type === "dryer" ? "Start dry" : "Start wash"} under Ready to start, or press Start on the machine.` }));
+      setTimeout(render, 2500);
+      return;
+    }
+    choose(r);
+  };
+  // "How many loads?" and wash + dry / wash only, then one payment.
+  const choose = (r) => {
+    const cur = r.currency ?? "PHP";
+    const isDryer = r.machine_type === "dryer";
+    let service = r.service ?? "wash_dry";
+    let loads = r.loads ?? 1;
+    const max = r.checkout_open ? loads : Math.max(1, r.max_loads ?? 1);
+    const unit = () => ({ wash_only: r.wash_only_price_minor, dry_only: r.dry_only_price_minor }[service] ?? r.wash_dry_price_minor ?? r.price_per_load_minor ?? r.total_minor);
+    const total = el("p", { class: "acct-total" });
+    const pay = button("Pay");
+    const redraw = () => {
+      total.textContent = `${loads === 1 ? "1 load" : `${loads} loads`}: ${money(unit() * loads, cur)}`;
+      pay.textContent = `Pay ${money(unit() * loads, cur)} · GCash, Maya, card`;
+    };
+    const rows = [el("h2", { text: `${r.machine_label} is held for you` })];
+    if (isDryer) {
+      rows.push(el("p", { text: service === "dry_only" ? "Dry only" : "Wash + dry" }));
+      if ((r.washes_left ?? 0) > 0) rows.push(el("p", { class: "meta", text: `You also have ${r.washes_left === 1 ? "1 wash" : `${r.washes_left} washes`} paid. Scan a free washer to use ${r.washes_left === 1 ? "it" : "them"}.` }));
+    } else if (r.wash_only_price_minor != null && !r.checkout_open) {
+      const pick = el("select", { "aria-label": "Service" },
+        el("option", { value: "wash_dry", text: `Wash + dry · ${money(r.wash_dry_price_minor, cur)}` }),
+        el("option", { value: "wash_only", text: `Wash only · ${money(r.wash_only_price_minor, cur)}` }));
+      pick.value = service;
+      pick.addEventListener("change", () => { service = pick.value; redraw(); });
+      rows.push(el("label", { class: "acct-field" }, "What do you need? ", pick));
+    }
+    if (max > 1) {
+      const n = el("select", { "aria-label": "Loads" }, ...Array.from({ length: max }, (_, i) => el("option", { value: String(i + 1), text: i ? `${i + 1} loads` : "1 load" })));
+      n.value = String(loads);
+      n.addEventListener("change", () => { loads = +n.value; redraw(); });
+      rows.push(el("label", { class: "acct-field" }, "How many loads? ", n),
+        el("p", { class: "meta", text: "This machine starts the first load; the others are saved for 30 days. Scan another free machine to use them." }));
+    }
+    pay.addEventListener("click", async () => {
+      pay.disabled = true;
+      try {
+        const body = { action: "checkout", order_id: r.order_id };
+        if (service !== (r.service ?? "wash_dry")) body.service = service;
+        if (loads !== (r.loads ?? 1)) body.loads = loads;
+        const c = await call("payments", body);
+        if (c.checkout_url) location.href = c.checkout_url;
+      } catch (e) { msg.append(errorLine(e.message)); pay.disabled = false; }
+    });
+    redraw();
+    rows.push(total, el("div", { class: "btn-row" }, pay, forget),
+      el("p", { class: "meta", text: "After paying, come back here: tap Start wash (or Start dry), or press Start on the machine. Machines never start by themselves." }));
+    msg.replaceChildren(...rows);
+  };
+  const go = button("Pay for this machine");
+  go.addEventListener("click", () => { go.remove(); scan(); });
+  card.append(el("h2", { text: "You scanned a Klean machine" }),
+    el("p", { text: "Pay here in your browser. Load your laundry first if you like; the machine waits for you to start it." }),
+    el("div", { class: "btn-row" }, go, forget), msg);
   return card;
 }
 

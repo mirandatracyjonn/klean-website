@@ -73,6 +73,15 @@ Your location is only used to sort the list; Klean doesn't store it.
 If the camera doesn't work, type the code printed under the QR. Some machines also have an **NFC sticker** beside the QR:
 just touch it with your unlocked phone and Klean opens on that machine (iPhone: or tap **Tap NFC sticker** on Scan).
 
+### No app? Pay in your browser
+
+Scan a machine's QR code with your phone's camera (or tap its NFC sticker) without the Klean app installed, and
+klean.ph opens. Tap **Pay in your browser**, sign in with Google or GitHub, verify your ID once if you're new (about
+2 minutes), then tap **Pay for this machine**. You get the same choices as in the app (wash + dry or wash only, how
+many loads) and pay with GCash, Maya or card. After paying, tap **Continue on klean.ph**: under **Ready to start**, tap
+**Start wash** (or **Start dry**), or press Start on the machine. Klean remembers the machine you scanned in that
+browser for 2 hours, so you can sign in and verify first and still come back to it.
+
 ### With an attendant
 
 1. Hand your laundry to the attendant. They'll weigh it and tell you how many loads you need (one load per 8 kg,
