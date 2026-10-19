@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ph.klean.app",
+      "sha256_cert_fingerprints": [
+        "9F:E6:98:5E:2D:38:6A:19:04:FA:A8:FE:22:F4:9D:C7:BB:37:E9:35:A0:2C:A6:F2:AC:CC:1B:4C:31:B1:0D:C3"
+      ]
+    }
+  }
+]

@@ -13,6 +13,7 @@ Klean's website: a static site on GitHub Pages that uses the same Supabase proje
   (machine stickers) and `/b/<id>` (laundromat pages).
 - `pay-return.html` — where PayMongo/Stripe send people after paying; it sends them back to the app.
 - `.well-known/apple-app-site-association` — lets `/m/*` and `/b/*` links open the iPhone app.
+- `.well-known/assetlinks.json` — the same for the Android app (release key fingerprint; add Google Play's app-signing key once on Play).
 
 ## Build and preview
 ```
