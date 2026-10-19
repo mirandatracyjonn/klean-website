@@ -37,6 +37,10 @@ Ask the laundromat: message them in the app (Home → the laundromat → Message
 refund. A refund goes back to how you paid (GCash/Maya usually within days, cards up to 2 weeks); you get a
 notification, the refunded loads' unused washes/dries are cancelled, and the points they earned are taken back.
 
+**It says "Test payment: no real money". What does that mean?**
+That laundromat is still testing Klean (Beta). Nothing is charged: on the payment page, use PayMongo's test options
+(for example the test GCash button). Points and loads from test payments are for testing only.
+
 **How do I find a laundromat near me?**
 On Home, tap **Laundromats near you** (or **Find a laundromat** on klean.ph). Allow location to see the nearest ones on
 a map with free washers and dryers right now, and tap **Directions**.

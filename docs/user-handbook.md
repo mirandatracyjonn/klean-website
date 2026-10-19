@@ -55,6 +55,9 @@ Your location is only used to sort the list; Klean doesn't store it.
 4. When a wash is done you get a notification: move the clothes to a free dryer, tap **Scan a dryer**, scan it, then tap
    **Start dry** (or press Start on the dryer). You're notified again when the dry is done.
 
+**Beta laundromats:** if Start laundry or the pay screen shows **Test payment: no real money**, that laundromat is
+still testing Klean. Nothing is charged; use the test options on the payment page.
+
 ### Self-service: scan a machine first
 
 1. Go to a machine that isn't running.

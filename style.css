@@ -187,6 +187,8 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .acct-free { color: var(--brand); font-weight: 600; }
 .acct-total { font-size: 20px; font-weight: 700; margin: 12px 0; }
 .acct-machine-pay { border: 2px solid var(--brand); }
+.acct-beta { background: rgba(217,119,6,.12); color: #92400e; border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
+.acct-beta p { margin: 4px 0 0; font-size: 14px; }
 .acct-error { color: #b42318; font-weight: 600; }
 .acct-danger { color: #b42318; border-color: #b42318; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }

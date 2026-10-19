@@ -196,6 +196,12 @@ function payMachineCard(token, verified) {
       pay.textContent = `Pay ${money(unit() * loads, cur)} · GCash, Maya, card`;
     };
     const rows = [el("h2", { text: `${r.machine_label} is held for you` })];
+    // Beta laundromat (M13): test money. Shown before paying.
+    const beta = el("div", { class: "acct-beta", hidden: true },
+      el("strong", { text: "🧪 Test payment: no real money" }),
+      el("p", { text: "This laundromat is testing Klean (Beta). Nothing is charged; on the payment page use PayMongo's test options." }));
+    rows.push(beta);
+    db.from("orders").select("is_test").eq("id", r.order_id).maybeSingle().then(({ data }) => { beta.hidden = !data?.is_test; });
     if (isDryer) {
       rows.push(el("p", { text: service === "dry_only" ? "Dry only" : "Wash + dry" }));
       if ((r.washes_left ?? 0) > 0) rows.push(el("p", { class: "meta", text: `You also have ${r.washes_left === 1 ? "1 wash" : `${r.washes_left} washes`} paid. Scan a free washer to use ${r.washes_left === 1 ? "it" : "them"}.` }));
