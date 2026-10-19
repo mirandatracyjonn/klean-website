@@ -65,17 +65,21 @@ const simOf = (m) => (local.sim[m.controller_id] ??= { state: "IDLE", plugged: t
 // The simulated controllers. They speak exactly the protocol a real Klean controller speaks (machine-events).
 async function sendEvents(events) {
   if (!events.length) return { results: [], commands: {} };
-  const response = await fetch(EVENTS_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(events) });
+  // M47: your sign-in drives your Beta business's simulated machines on any device (no keys saved in this browser needed).
+  const token = (await db.auth.getSession()).data.session?.access_token;
+  const headers = { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  const response = await fetch(EVENTS_URL, { method: "POST", headers, body: JSON.stringify(events) });
   if (!response.ok) throw new Error(`machine-events ${response.status}`);
   return response.json();
 }
 
 function simulated() {
-  return allMachines().filter((m) => modeOf(m) === "sim" && local.secrets[m.controller_id] && m.is_enabled && S.isBeta);
+  return allMachines().filter((m) => modeOf(m) === "sim" && m.is_enabled && S.isBeta);
 }
 
 function event(m, kind, extra = {}) {
-  return { controller_id: m.controller_id, secret: local.secrets[m.controller_id], kind, ...extra };
+  const secret = local.secrets[m.controller_id];
+  return { controller_id: m.controller_id, ...(secret ? { secret } : {}), kind, ...extra };
 }
 
 async function tick() {
@@ -369,7 +373,6 @@ function renderFloor() {
 function machineCard(m) {
   const mode = modeOf(m);
   const sim = simOf(m);
-  const hasKey = !!local.secrets[m.controller_id];
   const seen = m.last_heartbeat_at ? Math.round((Date.now() - new Date(m.last_heartbeat_at)) / 1000) : null;
   let detail = m.status === "in_use" ? minutesLeft(m.cycle_ends_at) : m.status === "error" ? esc(m.error_reason ?? "") : "";
   if (mode === "sim" && sim.state === "RUNNING" && sim.endsAt) detail = `Simulated: ${Math.max(0, Math.ceil((sim.endsAt - Date.now()) / 1000))} s left at ${local.speed}×`;
@@ -377,10 +380,7 @@ function machineCard(m) {
   if (mode === "sim" && !S.isBeta) {
     actions = `<button class="ghost" data-act="real" data-cid="${m.controller_id}">Use real machine</button>`;
     detail = "Switched off: this business is live, and simulated machines can't take real payments.";
-  } else if (mode === "sim" && !hasKey) {
-    actions = `<button class="ghost" data-act="takeover" data-cid="${m.controller_id}">Simulate here</button>`;
-    detail = "Another browser or device holds this machine's key.";
-  } else if (mode === "sim") {
+  } else if (mode === "sim") {   // M47: any device you're signed in on can play it; no key needed in this browser
     actions = [
       sim.state === "ARMED" ? `<button class="primary" data-act="start" data-cid="${m.controller_id}">Press Start</button>` : "",
       sim.state === "RUNNING" ? `<button class="ghost" data-act="finish" data-cid="${m.controller_id}">Finish now</button>` : "",
