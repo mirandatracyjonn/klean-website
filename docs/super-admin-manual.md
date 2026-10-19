@@ -179,10 +179,13 @@ You'll see each staff member's **verified legal name**, so you know exactly who 
 Use **‹ Prev / Next ›** to move between periods. Each report shows:
 
 - **Gross sales**, with % change vs. the previous period
-- **Net to you** (after Klean commission, before processor fees) and **Klean commission**
+- **Net to you** (after Klean commission and refunds, before processor fees) and **Klean commission**
+- **Refunds** made in the period (counted on the day you refunded, like a bank statement), with **net sales** =
+  gross − refunds; Klean's commission on a refund is given back, so Net to you only drops by the rest
 - Orders, average ticket, paid loads, free (points) loads, new customers
 - Sales over time, by branch, and by payment method
-- **Export CSV** for your accountant (amounts in centavos/cents)
+- **Export CSV** for your accountant (amounts in centavos/cents), including refunds, net sales and the commission
+  returned, per time bucket and per branch
 
 All times are in your business's time zone.
 
