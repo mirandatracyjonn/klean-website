@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 1.5.*
+*Effective date: October 19, 2026. Version 1.6.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -154,12 +154,17 @@ their business. Anyone can report a message; Klean may remove messages and suspe
 ## 7. Fees, refunds and chargebacks
 
 7.1 Laundry payments are made to the Operator through Klean. Refund requests for laundry services go to the
-Operator, who decides in line with law and their policies. Klean may issue refunds where the Service itself failed
-(e.g. a double charge).
+Operator (message them in the app, or ask an attendant), who decides in line with law and their policies. Klean may
+issue refunds where the Service itself failed (e.g. a double charge).
 
-7.2 If a payment is refunded or charged back, related points and credits may be reversed. Klean's commission on a
-refunded payment is handled as set out in the Operator's payment-partner terms and our fee schedule [to be
-defined].
+7.2 **How refunds work.** An Operator can refund some or all loads of a paid order within 90 days of payment. The
+money goes back to the payment method you used, through our payment partners (GCash and Maya usually within a few
+days, cards up to about two weeks, depending on your bank). The refunded loads' unused washes and dries are cancelled,
+and the points that payment earned are taken back in proportion. Refunds of Beta (test) payments move only test money.
+
+7.3 **Operators and refunds.** A refund (less Klean's commission on it, which Klean returns) is deducted from the
+Operator's next payout. The payment processor's fee on the original payment isn't returned by the processor and isn't
+refunded to the Operator. If a payment is charged back, related points and credits may be reversed in the same way.
 
 ## 8. Availability and changes
 

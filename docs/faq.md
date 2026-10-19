@@ -32,6 +32,11 @@ number** and that's filled in too. GCash or Maya may still ask you to log in to 
 No. Scan the machine's QR code with your phone's camera and tap **Pay in your browser** on klean.ph. Sign in, verify
 once if you're new, pay, then tap **Start wash** (or **Start dry**) on the same page. The app is faster next time.
 
+**Can I get a refund?**
+Ask the laundromat: message them in the app (Home → the laundromat → Message) or ask an attendant. Only the owner can
+refund. A refund goes back to how you paid (GCash/Maya usually within days, cards up to 2 weeks); you get a
+notification, the refunded loads' unused washes/dries are cancelled, and the points they earned are taken back.
+
 **How do I find a laundromat near me?**
 On Home, tap **Laundromats near you** (or **Find a laundromat** on klean.ph). Allow location to see the nearest ones on
 a map with free washers and dryers right now, and tap **Directions**.

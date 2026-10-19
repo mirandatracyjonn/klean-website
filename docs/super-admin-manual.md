@@ -180,11 +180,29 @@ Use **‹ Prev / Next ›** to move between periods. Each report shows:
 
 - **Gross sales**, with % change vs. the previous period
 - **Net to you** (after Klean commission, before processor fees) and **Klean commission**
-- Orders, average ticket, paid loads, free (points) loads, new customers, refunds
+- Orders, average ticket, paid loads, free (points) loads, new customers
 - Sales over time, by branch, and by payment method
 - **Export CSV** for your accountant (amounts in centavos/cents)
 
 All times are in your business's time zone.
+
+## 6a. Orders and refunds
+
+Business → Sales → **Orders and refunds** (on klean.ph: Account → Orders and refunds) lists your paid orders, newest
+first. Search by member code, customer name, or the order number (#1A2B3C4D).
+
+To refund: tap **Refund…** on the order, choose how many loads (up to the loads not yet refunded), write a short
+reason (the customer sees it), and confirm. Rules:
+
+- Only Super Admins can refund; attendants send customers to you.
+- Up to **90 days** after payment, some or all loads. A load running on a machine right now can't be cancelled
+  (wait until it finishes); refunding a load that was used (for example after a machine fault) is allowed.
+- The money goes back to the customer's payment method through PayMongo/Stripe. Most refunds finish at once; some
+  show **processing** for a while.
+- The refunded loads' unused washes/dries are cancelled, and the points that order earned are taken back in proportion.
+- **Your payout:** the refund minus Klean's commission on it (Klean returns its commission) comes off your next payout.
+  The processor's fee on the original payment isn't returned. Payout statements show the refunds.
+- Beta (test) orders refund test money only.
 
 ## 7. Customers
 

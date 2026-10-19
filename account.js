@@ -94,6 +94,7 @@ function signedIn(a, v) {
   if (v.status === "verified") parts.push(phoneCard(a));
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
+  for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(closeBusinessCard(m));
   const out = el("button", { class: "btn btn-outline", type: "button", text: "Sign out" });
   out.addEventListener("click", async () => { await db.auth.signOut(); });
@@ -232,6 +233,59 @@ function payMachineCard(token, verified) {
   card.append(el("h2", { text: "You scanned a Klean machine" }),
     el("p", { text: "Pay here in your browser. Load your laundry first if you like; the machine waits for you to start it." }),
     el("div", { class: "btn-row" }, go, forget), msg);
+  return card;
+}
+
+// M55: a Super Admin's paid orders, with Refund (same rules as the apps; the payments function asks PayMongo/Stripe).
+function ordersCard(m) {
+  const card = el("div", { class: "card acct-card" });
+  const list = el("div");
+  const msg = el("div");
+  const search = el("input", { type: "search", placeholder: "Member code, name or order #", "aria-label": "Search orders" });
+  const find = el("button", { class: "btn btn-outline", type: "button", text: "Show orders" });
+  const load = async () => {
+    list.replaceChildren(el("p", { class: "meta", text: "Loading…" }));
+    const { data, error } = await db.rpc("operator_orders", { operator: m.operator_id, search: search.value.trim() || null, max_rows: 30 });
+    if (error) { list.replaceChildren(errorLine(error.message)); return; }
+    list.replaceChildren(...(data.length ? data.map(row) : [el("p", { class: "meta", text: "No paid orders yet." })]));
+  };
+  const row = (o) => {
+    const box = el("div", { class: "acct-machine" },
+      el("p", { text: `${o.customer_name}${o.member_code ? " · " + o.member_code : ""} · ${money(o.total_minor, o.currency)}` }),
+      el("p", { class: "meta", text: `#${o.short_id} · ${o.branch_name} · ${o.loads === 1 ? "1 load" : o.loads + " loads"}${o.is_test ? " · Beta (test)" : ""}${o.paid_at ? " · " + new Date(o.paid_at).toLocaleString() : ""}` }),
+      o.refunded_minor > 0 ? el("p", { class: "acct-error", text: `Refunded ${money(o.refunded_minor, o.currency)} (${o.refunded_loads} of ${o.loads} loads)${o.refund_status === "pending" ? ", processing" : ""}` }) : "");
+    if (o.refundable_loads > 0) {
+      const b = el("button", { class: "btn btn-outline", type: "button", text: "Refund…" });
+      b.addEventListener("click", () => box.append(refundForm(o, () => load())));
+      box.append(b);
+    }
+    return box;
+  };
+  const refundForm = (o, done) => {
+    const unit = Math.round(o.total_minor / o.loads);
+    const n = el("select", { "aria-label": "Loads" }, ...Array.from({ length: o.refundable_loads }, (_, i) => el("option", { value: String(i + 1), text: `${i + 1} of ${o.refundable_loads} loads` })));
+    const reason = el("input", { type: "text", placeholder: "Reason (the customer sees it)", maxlength: "300" });
+    const go = el("button", { class: "btn btn-brand acct-danger", type: "button", text: `Refund ${money(unit, o.currency)}` });
+    const err = el("div");
+    n.addEventListener("change", () => { go.textContent = `Refund ${money(unit * +n.value, o.currency)}`; });
+    go.addEventListener("click", async () => {
+      if (reason.value.trim().length < 3) { err.replaceChildren(errorLine("Write a short reason for the customer.")); return; }
+      if (!window.confirm(`Refund ${money(unit * +n.value, o.currency)} to ${o.customer_name}? This can't be undone.`)) return;
+      go.disabled = true;
+      try {
+        const r = await call("payments", { action: "refund", order_id: o.order_id, loads: n.value, reason: reason.value.trim() });
+        if (r.error) { err.replaceChildren(errorLine(r.message ?? "The refund didn't go through.")); go.disabled = false; return; }
+        msg.replaceChildren(el("p", { text: r.status === "succeeded" ? `Refunded ${money(r.amount_minor, o.currency)}. The customer was told.` : `Refund of ${money(r.amount_minor, o.currency)} sent; the payment provider is processing it.` }));
+        done();
+      } catch (e) { err.replaceChildren(errorLine(e.message)); go.disabled = false; }
+    });
+    return el("div", { class: "acct-field" }, n, reason,
+      el("p", { class: "meta", text: "Goes back to how the customer paid (GCash/Maya usually within days, cards up to 2 weeks). Unused washes/dries for these loads are cancelled and their points taken back. Klean returns its commission; the processor's fee isn't returned. It comes off your next payout." }),
+      go, err);
+  };
+  find.addEventListener("click", load);
+  search.addEventListener("keydown", (e) => { if (e.key === "Enter") load(); });
+  card.append(el("h2", { text: `Orders and refunds · ${m.operator_name}` }), el("div", { class: "btn-row" }, search, find), msg, list);
   return card;
 }
 

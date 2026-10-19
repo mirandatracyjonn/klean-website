@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 1.8.*
+*Effective date: October 19, 2026. Version 1.9.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -14,7 +14,7 @@ and act as controllers for their own use of it.
 |---|---|---|
 | Account | Display name, email (as verified by your sign-in provider), profile photo, member code, sign-in provider identifiers; your **mobile number** if you choose to save it | You; Apple/Google/GitHub |
 | Identity verification | **Collected by Didit, not by us:** ID document images, a live selfie and the biometric face template derived from it. **What we keep:** verification status; your verified legal name and the issuing country of your ID; and *keyed one-way hashes* of your document details and of your name + date of birth, used only to detect duplicate accounts. We do **not** store your ID number, ID images or selfie. | You, via Didit |
-| Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references. **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe |
+| Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references; refunds (amount, loads, the reason the laundromat gave, status). **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe |
 | In-app purchases | For the verification fee bought in the app: the store transaction ID, product, price, currency and date. Apple or Google handle the payment itself; we don't receive your payment details. | Apple (App Store), Google (Play) |
 | Laundry activity | Machines scanned, orders, loads, weight at intake (typed, or read from the laundromat's Klean Scale: each weighing is kept with its time and, once you use it, your order), cycle start/finish times, points earned and redeemed, branches visited | Your use of the Service |
 | Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status. **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |

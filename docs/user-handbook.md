@@ -136,6 +136,9 @@ machine shows an error, ask an attendant: your credit is safe.
 - **The machine shows red after you paid:** the credit goes back to your wallet automatically. Use another
   machine, or ask an attendant.
 - Load credits are valid for **30 days**.
+- **Want a refund?** Message the laundromat in the app or ask an attendant; the owner decides. If they refund, you get a
+  notification and the money goes back to how you paid (GCash/Maya usually within days, cards up to 2 weeks). Unused
+  washes/dries for the refunded loads are cancelled and their points taken back.
 
 ### Faster payments
 
