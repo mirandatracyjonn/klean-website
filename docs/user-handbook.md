@@ -81,6 +81,13 @@ just touch it with your unlocked phone and Klean opens on that machine (iPhone: 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Siri, Shortcuts and quick actions
+
+**iPhone:** ask Siri "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean
+member code" or "Scan a machine in Klean". They're also in the Shortcuts app and Spotlight.
+**Android:** touch and hold the Klean icon for **Scan a machine**, **Start laundry**, **Laundromats near you** and
+**My member code** (Google Assistant and Gemini can open them too).
+
 ### Your Klean card in Apple Wallet or Google Wallet
 
 Account → **Add to Apple Wallet** (iPhone) or **Save to Google Wallet** (Android); on klean.ph, Account has the same

@@ -40,6 +40,10 @@ Android, and you're notified when it's done. iPhone: Settings → Klean → Live
 Yes: add it from your Home Screen's widget list (iPhone: also on the Lock Screen). It shows free machines at your
 laundromat, your points, what's paid, and when your machine will be done.
 
+**Does Klean work with Siri?**
+Yes: "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean member code",
+"Scan a machine in Klean". On Android, touch and hold the Klean icon for quick actions.
+
 **Can I put my Klean card in Apple Wallet or Google Wallet?**
 Yes: Account → **Add to Apple Wallet** (iPhone) or **Save to Google Wallet** (Android), also on klean.ph → Account.
 It shows your member code as a QR for the counter, your points and your laundromat. Add it again to refresh the
