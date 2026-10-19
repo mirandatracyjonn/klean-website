@@ -93,7 +93,9 @@ Next to each machine's QR sticker you can add an **NFC sticker**, so customers j
 - **Buy:** NTAG213 (or NTAG215/216) NFC stickers, round 25–30 mm, about ₱15–30 each. On a metal machine use
   **anti-metal (on-metal)** NFC stickers, or the tag won't read through the steel.
 - **Write:** in the Klean app, Business → Setup → Branches → the branch → the machine's menu → **Write NFC sticker**
-  (Android: **NFC**). Hold the blank sticker against the phone; it gets the same link as the machine's QR.
+  (Android: **NFC**) → **Write and lock**. Hold the blank sticker against the phone; it gets the same link as the
+  machine's QR and is **locked**, so nobody can rewrite it to point somewhere else (locking is permanent; use
+  **Write without locking (test)** for trying things out).
 - **Place:** right beside the QR, at a comfortable height. Optional: a small "Tap or scan to pay" label.
 - **Customers:** iPhone (XS or newer) and most Android phones read it by just touching the sticker with the phone
   unlocked; Klean opens on that machine. iPhone users can also tap **Tap NFC sticker** on the Scan screen.
