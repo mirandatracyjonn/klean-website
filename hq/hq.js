@@ -71,7 +71,12 @@ async function sendEvents(events) {
   const response = await fetch(EVENTS_URL, { method: "POST", headers, body: JSON.stringify(events) });
   if (response.status === 401) {
     // M47: simulated machines follow the signed-in Super Admin; anyone else (or a signed-out page) is refused.
-    throw new Error("it didn't accept this sign-in for these machines. Sign out (top right) and sign in with the account that owns this business. (machine-events 401)");
+    const reason = (await response.json().catch(() => ({}))).reason;
+    throw new Error({
+      sign_in_expired: "your sign-in expired. Sign out (top right) and sign in again.",
+      not_signed_in: "this page isn't signed in. Sign in (top right).",
+      not_allowed: "this account isn't the Super Admin of this business, or the machines aren't simulated in Beta. Sign in with the business owner's account.",
+    }[reason] ?? "it didn't accept this sign-in. Sign out and sign in again." + ` (machine-events 401${reason ? ", " + reason : ""})`);
   }
   if (!response.ok) throw new Error(`machine-events ${response.status}`);
   return response.json();
