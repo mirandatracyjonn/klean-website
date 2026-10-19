@@ -137,7 +137,7 @@ function phoneCard(a) {
 
 // Roadmap 5: the member card in Apple Wallet (Safari on iPhone and Mac). The server signs it (wallet-pass).
 function walletButton() {
-  if (!/iPhone|iPad|Macintosh/.test(navigator.userAgent)) return null;
+  if (!/iPhone|iPad|Macintosh/.test(navigator.userAgent)) return googleWalletButton();
   const msg = el("p", { class: "meta" });
   const b = el("button", { class: "btn btn-outline", type: "button", text: "Add to Apple Wallet" });
   b.addEventListener("click", async () => {
@@ -150,6 +150,26 @@ function walletButton() {
       const url = URL.createObjectURL(new Blob([await r.arrayBuffer()], { type: "application/vnd.apple.pkpass" }));
       location.href = url;   // Safari opens it in Wallet
       msg.textContent = "";
+    } catch (e) { msg.replaceChildren(errorLine(`Couldn't make your card: ${e.message}`)); }
+    b.disabled = false;
+  });
+  return el("div", { class: "btn-row" }, b, msg);
+}
+
+// Roadmap 5: the member card in Google Wallet (Android and other browsers).
+function googleWalletButton() {
+  const msg = el("p", { class: "meta" });
+  const b = el("button", { class: "btn btn-outline", type: "button", text: "Save to Google Wallet" });
+  b.addEventListener("click", async () => {
+    b.disabled = true; msg.textContent = "Making your card…";
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      const r = await fetch(`${SUPABASE_URL}/functions/v1/wallet-pass`, { method: "POST",
+        headers: { Authorization: `Bearer ${session?.access_token ?? ""}`, apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "google" }) });
+      const body = await r.json().catch(() => ({}));
+      if (!r.ok || !body.url) throw new Error(body.error ?? `error ${r.status}`);
+      location.href = body.url;
     } catch (e) { msg.replaceChildren(errorLine(`Couldn't make your card: ${e.message}`)); }
     b.disabled = false;
   });

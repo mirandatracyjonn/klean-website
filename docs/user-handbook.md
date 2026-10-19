@@ -81,10 +81,11 @@ just touch it with your unlocked phone and Klean opens on that machine (iPhone: 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
-### Your Klean card in Apple Wallet
+### Your Klean card in Apple Wallet or Google Wallet
 
-Account → **Add to Apple Wallet**. Show its QR at the counter so the attendant can add points to your visit. It shows
-your points when you added it; add it again to refresh. (Google Wallet for Android is coming.)
+Account → **Add to Apple Wallet** (iPhone) or **Save to Google Wallet** (Android); on klean.ph, Account has the same
+buttons. Show its QR at the counter so the attendant can add points to your visit. It shows your points when you added
+it; add it again to refresh.
 
 ### Klean on your Home Screen
 
