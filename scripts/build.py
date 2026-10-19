@@ -14,6 +14,7 @@ import argparse
 import html
 import pathlib
 import re
+import hashlib
 import shutil
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -210,6 +211,13 @@ def main():
     if hq_out.exists():
         shutil.rmtree(hq_out)
     shutil.copytree(hq_src, hq_out)
+    # Cache-busting: browsers (iPad Safari especially) kept an old hq.js after a release. Version the links by content.
+    index = hq_out / "index.html"
+    html = index.read_text()
+    for asset in ("hq.js", "hq.css"):
+        digest = hashlib.sha256((hq_out / asset).read_bytes()).hexdigest()[:10]
+        html = html.replace(f'"{asset}"', f'"{asset}?v={digest}"')
+    index.write_text(html)
     print(f"Built {len(list((ROOT / 'pages').glob('*.html')))} pages, {len(DOCS)} documents, and Klean HQ.")
 
 

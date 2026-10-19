@@ -69,6 +69,10 @@ async function sendEvents(events) {
   const token = (await db.auth.getSession()).data.session?.access_token;
   const headers = { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) };
   const response = await fetch(EVENTS_URL, { method: "POST", headers, body: JSON.stringify(events) });
+  if (response.status === 401) {
+    // M47: simulated machines follow the signed-in Super Admin; anyone else (or a signed-out page) is refused.
+    throw new Error("it didn't accept this sign-in for these machines. Sign out (top right) and sign in with the account that owns this business. (machine-events 401)");
+  }
   if (!response.ok) throw new Error(`machine-events ${response.status}`);
   return response.json();
 }
