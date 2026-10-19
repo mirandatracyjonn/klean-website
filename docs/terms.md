@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 1.6.*
+*Effective date: October 19, 2026. Version 1.7.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -75,8 +75,10 @@ authority to bind the business you register.
 services at your business. A customer's payment to Klean counts as payment to you. Customers pay Klean through its
 payment partners (PayMongo for businesses in the Philippines, Stripe elsewhere), and Klean pays your business its
 share automatically, normally once a day, to the
-payout account you set up (in the Philippines, a GCash, Maya or bank account in the Super Admin's verified name;
-elsewhere, a Stripe account whose onboarding you complete). Payouts below a minimum amount roll over to the next
+payout account you set up (in the Philippines, a GCash, Maya or bank account in the Super Admin's verified name, or a
+bank account in the business's registered name once Klean has checked its DTI, SEC or CDA registration; elsewhere, a
+Stripe account whose onboarding you complete). You confirm that the business registration you submit is genuine and
+that you're authorised to receive payments for it. Payouts below a minimum amount roll over to the next
 day. You may not accept
 payments for Klean-connected machines outside the Service, or bypass the Service to activate machines.
 

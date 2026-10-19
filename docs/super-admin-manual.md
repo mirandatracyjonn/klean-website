@@ -30,8 +30,14 @@ all beta data and switches simulated machines off. You can turn Beta back on lat
 
 **Business → Setup → Payments.** You can't take payments until your payout account is ready.
 
-- **Philippines:** choose your GCash, Maya or bank account and enter the account number. The account must be **in
-  your own verified name** (the name on the ID you verified with). Payments switch on immediately.
+- **Philippines, personal account:** choose your GCash, Maya or bank account and enter the account number. The account
+  must be **in your own verified name** (the name on the ID you verified with). Payments switch on immediately.
+- **Philippines, business account:** tap **Business bank account (company name)…**. Enter the registered business name,
+  whether it's registered with DTI, SEC or CDA, the registration number, the bank and account number (the account name
+  must match the business name), and add a clear photo or PDF of the registration certificate. Klean checks it, usually
+  within a day, and you get a notification. Until it's approved, payouts keep going to your current account (a new
+  business can't take payments until one account is ready). If it's declined, the reason shows under Payments; fix it
+  and send it again. Saving a personal account later switches payouts back to it.
 - **Everywhere else (Stripe):** tap **Connect payouts** and finish Stripe's short sign-up. Payments switch on as soon
   as Stripe confirms your account.
 
