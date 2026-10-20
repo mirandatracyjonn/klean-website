@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 1.8.*
+*Effective date: October 19, 2026. Version 1.9.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -42,8 +42,8 @@ Privacy Policy.
 its own prices, operates its own premises and machines, and is responsible for its laundry services. Klean
 provides the software and payment processing; Klean is not the laundromat.
 
-3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider,
-and it starts only when you start it (in the app or with the machine's Start button); make sure your laundry is
+3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider
+(or, when you pay cash at a laundromat's counter, after the attendant records your cash payment in Klean), and it starts only when you start it (in the app or with the machine's Start button); make sure your laundry is
 inside and the door is closed first.
 Prices are shown before you pay. One "load" means one wash and one dry, up to the Operator's maximum weight,
 unless you choose **wash only** or **dry only** where the Operator offers them; then a load is that one service. You
@@ -88,6 +88,9 @@ is the amount paid less the commission, the payment partner's processing fees, a
 (currently ₱10 per payout in the Philippines). Only Klean can
 set or change the commission rate. Each transaction is charged at the rate in effect when the checkout was opened.
 We'll give you at least **30 days' notice** of any increase. Free loads redeemed with points, and welcome loads you choose to offer new members, carry no commission.
+**Cash sales** recorded at your counter carry the same commission. Klean doesn't hold that cash, so the commission on
+cash sales is deducted from your next payout of digital payments; if there's not enough to deduct it from, it waits
+until there is.
 Downloading and setting up Klean is free; there's no subscription fee.
 
 4.4 **Your obligations.** You're responsible for: your prices; keeping machines safe and in working order;
@@ -103,6 +106,14 @@ key can act as that machine. Klean HQ's simulated machines are for testing; don'
 on a simulated machine. Klean never starts a machine by itself: a cycle starts only when the customer starts it (in
 the app or with the machine's own Start button); don't wire or configure a controller to start a machine without
 that. Lock the NFC stickers you put on machines, so nobody can rewrite them.
+
+4.4e **Cash at the counter.** Cash a customer hands over at your counter must be recorded in Klean as a counter order
+("Paid in cash") before the machines are used; that's the only way a cash load gets a machine. Klean records who took
+each cash payment and when, and shows the business its cash taken per person and branch. Klean doesn't hold, count or
+guarantee cash; matching the cash drawer to Klean's records, and any shortfall, is the business's responsibility.
+
+4.4f **Expenses.** Super Admins can log the business's expenses in Klean to see its profit. These are the business's own
+records; Klean doesn't check them, and they aren't tax filings or official receipts.
 
 4.4b **Beta mode.** Every business starts in Beta. In Beta, payments use test money only (no real money is charged
 or paid out), simulated machines may be used, and the Super Admin can delete the business's beta orders, test
@@ -162,10 +173,12 @@ issue refunds where the Service itself failed (e.g. a double charge).
 7.2 **How refunds work.** An Operator can refund some or all loads of a paid order within 90 days of payment. The
 money goes back to the payment method you used, through our payment partners (GCash and Maya usually within a few
 days, cards up to about two weeks, depending on your bank). The refunded loads' unused washes and dries are cancelled,
-and the points that payment earned are taken back in proportion. Refunds of Beta (test) payments move only test money.
+and the points that payment earned are taken back in proportion. If you paid **cash** at the counter, the refund is
+handed back in cash by the laundromat. Refunds of Beta (test) payments move only test money.
 
 7.3 **Operators and refunds.** A refund (less Klean's commission on it, which Klean returns) is deducted from the
-Operator's next payout. The payment processor's fee on the original payment isn't returned by the processor and isn't
+Operator's next payout. A cash refund is handed back by the Operator from its own cash; Klean returns its commission on
+it in the next payout. The payment processor's fee on the original payment isn't returned by the processor and isn't
 refunded to the Operator. If a payment is charged back, related points and credits may be reversed in the same way.
 
 7.4 **Chargebacks.** If a customer disputes a payment with their bank or card issuer, Klean tells the Operator, who

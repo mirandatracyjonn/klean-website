@@ -96,6 +96,7 @@ function signedIn(a, v) {
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
+  for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(expensesCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(closeBusinessCard(m));
   const out = el("button", { class: "btn btn-outline", type: "button", text: "Sign out" });
   out.addEventListener("click", async () => { await db.auth.signOut(); });
@@ -296,6 +297,65 @@ function ordersCard(m) {
   return card;
 }
 
+// M67/M68: a Super Admin's expenses (add, list, delete), profit, and cash taken at the counter per person.
+const EXPENSE_CATEGORIES = { utilities: "Utilities (power, water)", detergent: "Detergent and soap", rent: "Rent", repairs: "Repairs",
+  wages: "Wages", supplies: "Supplies", equipment: "Equipment", fees: "Fees and permits", other: "Other" };
+function expensesCard(m) {
+  const card = el("div", { class: "card acct-card" });
+  const period = el("select", { "aria-label": "Period" }, ...[["daily", "Day"], ["weekly", "Week"], ["monthly", "Month"], ["yearly", "Year"]]
+    .map(([v, t]) => el("option", { value: v, text: t, selected: v === "monthly" })));
+  const body = el("div");
+  const cat = el("select", { "aria-label": "Category" }, ...Object.entries(EXPENSE_CATEGORIES).map(([v, t]) => el("option", { value: v, text: t })));
+  const amount = el("input", { type: "number", min: "0.01", step: "0.01", inputmode: "decimal", placeholder: "Amount", "aria-label": "Amount" });
+  const day = el("input", { type: "date", "aria-label": "Date", value: new Date().toLocaleDateString("en-CA") });
+  const note = el("input", { type: "text", maxlength: "300", placeholder: "Note (optional)", "aria-label": "Note" });
+  const add = el("button", { class: "btn btn-brand", type: "button", text: "Add expense" });
+  const msg = el("div");
+  const load = async () => {
+    body.replaceChildren(el("p", { class: "meta", text: "Loading…" }));
+    const [{ data: r, error }, { data: cash }] = await Promise.all([
+      db.rpc("expense_report", { operator: m.operator_id, period: period.value }),
+      db.rpc("cash_report", { operator: m.operator_id, period: period.value })]);
+    if (error) { body.replaceChildren(errorLine(error.message)); return; }
+    const c = r.currency;
+    const rows = [el("h3", { text: r.label }),
+      el("p", { text: `Net to you ${money(r.net_to_you_minor, c)} − expenses ${money(r.total_minor, c)} = profit ${money(r.profit_minor, c)}` }),
+      el("p", { class: "meta", text: "Net to you is all sales, cash included, after Klean's commission and refunds." })];
+    for (const x of r.by_category) rows.push(el("p", { class: "meta", text: `${EXPENSE_CATEGORIES[x.category] ?? x.category}: ${money(x.total_minor, c)}` }));
+    for (const e of r.items) {
+      const del = el("button", { class: "btn btn-outline", type: "button", text: "Delete" });
+      del.addEventListener("click", async () => {
+        if (!window.confirm("Delete this expense?")) return;
+        const { error: err } = await db.rpc("delete_expense", { expense: e.id });
+        if (err) msg.replaceChildren(errorLine(err.message)); else load();
+      });
+      rows.push(el("div", { class: "acct-machine" },
+        el("p", { text: `${EXPENSE_CATEGORIES[e.category] ?? e.category} · ${money(e.amount_minor, c)}` }),
+        el("p", { class: "meta", text: [e.spent_on, e.branch, e.note].filter(Boolean).join(" · ") }), del));
+    }
+    if (!r.items.length) rows.push(el("p", { class: "meta", text: "No expenses in this period." }));
+    rows.push(el("h3", { text: `Cash taken at the counter: ${money(cash?.total_minor ?? 0, c)}` }));
+    for (const x of cash?.rows ?? []) rows.push(el("p", { class: "meta", text: `${x.branch} · ${x.person}: ${x.orders === 1 ? "1 order" : x.orders + " orders"}, ${money(x.total_minor, c)}` }));
+    if (!cash?.rows?.length) rows.push(el("p", { class: "meta", text: "No cash orders in this period." }));
+    body.replaceChildren(...rows);
+  };
+  add.addEventListener("click", async () => {
+    const minor = Math.round(parseFloat(amount.value) * 100);
+    if (!(minor > 0)) { msg.replaceChildren(errorLine("Enter an amount.")); return; }
+    add.disabled = true;
+    const { error } = await db.rpc("add_expense", { operator: m.operator_id, category: cat.value, amount_minor: minor,
+      spent_on: day.value || null, note: note.value.trim() || null });
+    add.disabled = false;
+    if (error) { msg.replaceChildren(errorLine(error.message)); return; }
+    amount.value = ""; note.value = ""; msg.replaceChildren(el("p", { class: "meta", text: "Added." })); load();
+  });
+  period.addEventListener("change", load);
+  card.append(el("h2", { text: `Expenses and cash · ${m.operator_name}` }),
+    el("div", { class: "acct-field" }, cat, amount, day, note, add), msg, el("div", { class: "btn-row" }, period), body);
+  load();
+  return card;
+}
+
 // M40: an optional mobile number, so payment pages are filled in (GCash / Maya number).
 // M57: an optional address (Klean Support can see it to help; laundromats can't).
 function addressCard(a) {
@@ -379,7 +439,7 @@ function commsCard(a) {
   const chat = el("div", { class: "chat", hidden: true });
   let timer;
   const ago = (iso) => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? "now" : m < 60 ? `${m}m` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`; };
-  async function openChat(id, title) {
+  async function openChat(id, title, asCustomer = false) {
     clearTimeout(timer);
     const log = el("div", { class: "chat-log" });
     const input = el("textarea", { rows: 2, placeholder: "Message", maxlength: 2000 });
@@ -392,6 +452,12 @@ function commsCard(a) {
       log.scrollTop = log.scrollHeight;
       timer = setTimeout(refresh, 4000);
     }
+    // M69: "your wash is done" updates arrive in this chat; customers answer with one tap.
+    const quick = asCustomer ? el("div", { class: "btn-row" }, ...["I'm on my way", "I'll pick it up later", "Thank you!"].map((t) => {
+      const q = el("button", { class: "btn btn-outline", type: "button", text: t });
+      q.addEventListener("click", () => { input.value = t; send.click(); });
+      return q;
+    })) : "";
     send.addEventListener("click", async () => {
       const body = input.value.trim(); if (!body) return;
       send.disabled = true;
@@ -403,7 +469,7 @@ function commsCard(a) {
     const close = el("button", { class: "btn btn-outline", type: "button", text: "Close" });
     close.addEventListener("click", () => { chat.hidden = true; clearTimeout(timer); });
     chat.hidden = false;
-    chat.replaceChildren(el("h3", { text: title }), log, input, el("div", { class: "btn-row" }, send, close), msg);
+    chat.replaceChildren(el("h3", { text: title }), log, quick, input, el("div", { class: "btn-row" }, send, close), msg);
     refresh();
   }
   const row = (title, preview, at, unread, onClick) => {
@@ -419,7 +485,7 @@ function commsCard(a) {
     if (news?.length) parts.push(el("div", { class: "news" }, el("h3", { text: "From your laundromats" }),
       ...news.slice(0, 3).map((n) => el("p", {}, el("strong", { text: `${n.operator_name} · ${n.title}` }), el("br"), n.body))));
     parts.push(el("p", { class: "meta", text: convs?.length ? "Your conversations with laundromats:" : "Open a laundromat's page in the app and tap Message to ask its staff anything." }));
-    for (const c of convs ?? []) parts.push(row(c.operator_name, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.operator_name)));
+    for (const c of convs ?? []) parts.push(row(c.operator_name, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.operator_name, true)));
     for (const m of a.memberships ?? []) {
       const { data: inbox } = await db.rpc("operator_conversations", { operator: m.operator_id });
       parts.push(el("h3", { text: `${m.operator_name}: customer messages` }));

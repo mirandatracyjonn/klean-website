@@ -53,6 +53,9 @@ pays your business its share of the previous day's payments:
 - Payouts under ₱100 (US$5) wait until the next day. A failed payout (e.g. a closed account) is retried after you
   fix the account; you'll get a notification.
 - Free loads redeemed with points carry no commission and no payout.
+- **Cash sales** (recorded at the counter) are already in your drawer, so they aren't paid out; their commission (same
+  rate) comes off your next payout of digital payments instead. A cash refund you hand back gives you back that
+  commission in the next payout.
 
 The commission rate is set by Klean, not by you, and isn't editable from your dashboard. Every order records
 the rate it was charged at, so a future change never affects past orders. Klean may give your business its own
@@ -222,6 +225,32 @@ was given: photos, messages with the customer, the machine's start and finish ti
 bank sides with the customer, it's handled like a full refund of that order (its refund reason starts with
 "Chargeback", and it counts as a refund in your reports), and you're told "Dispute lost"; if it sides with you, nothing changes ("Dispute won").
 
+## 6b. Cash at the counter
+
+Customers who don't use GCash, Maya or a card can pay cash at the counter. In Work → Intake, after **Charge**, the
+attendant taps **Paying cash instead**, optionally types the amount handed over (Klean shows the change), and taps
+**Cash received**. Only then do the loads become paid and machines can be assigned: **entering the sale in Klean is the
+only way a cash load gets a machine**, so cash that isn't rung up can't run a wash.
+
+Every cash payment records who took it and when. **Business → Sales → Cash by person** (and klean.ph → Account →
+Expenses and cash) shows cash taken per branch and person for the day, week, month or year: count the drawer against
+it at the end of each shift. Attendants see their own cash for today in Work. Refunds of cash orders work like any
+refund (6a), but you hand the money back in cash; Klean doesn't send it anywhere.
+
+## 6c. Expenses and profit
+
+**Business → Expenses** (or klean.ph → Account → Expenses and cash). Tap **Add an expense**: category (utilities,
+detergent and soap, rent, repairs, wages, supplies, equipment, fees and permits, other), amount, date, optional branch
+and note. Pick a period to see:
+
+- **Expenses** by category and each item (delete a wrong one; Klean keeps a record of it).
+- **Net to you**: all sales, cash included, after Klean's commission and refunds.
+- **Profit** = net to you − expenses.
+- **Cash sales** in the period, for the drawer.
+
+Only Super Admins see or log expenses. They're your own bookkeeping; Klean doesn't check them, and they aren't
+official receipts or tax filings.
+
 ## 7. Customers
 
 **Business → Customers.**
@@ -241,6 +270,8 @@ For privacy, you see customers' display names and a masked email, never their ID
 - **Customer messages:** Business (and Work for attendants) → **Customer messages**. Customers write from your
   laundromat's page; every Super Admin and attendant is notified and can reply. Keep replies about laundry; never ask
   for passwords, card or ID numbers (Terms 6.1).
+- **Laundry updates:** when a wash or dry finishes, or laundry is marked ready for pickup, Klean posts the update in the
+  customer's chat with your business, so their reply ("I'm on my way") reaches your staff in Customer messages.
 - **Announcements:** Business → **Announcements** → title and message → **Post**. Everyone who used your laundromat in
   the last 90 days gets a notification and sees it on Home for 30 days. Up to 3 a day; delete one any time.
 

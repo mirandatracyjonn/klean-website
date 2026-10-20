@@ -62,7 +62,9 @@ Stripe (for example in the US), Apple Pay and Google Pay appear on the payment p
 **Can I message the laundromat?**
 Yes: open the laundromat's page (from Home or Laundromats near you) and tap **Message**. Its staff reply in Klean and you
 get a notification. Your conversations are under Home → **Messages**. Laundromats you've used can also post
-announcements ("Closed Monday"), which appear on Home. To report a message, touch and hold it (iPhone) or tap it
+announcements ("Closed Monday"), which appear on Home. When your wash or dry is done, the update arrives in your chat
+with that laundromat; tap the notification and answer with one tap (**I'm on my way**, **I'll pick it up later**,
+**Thank you!**). To report a message, touch and hold it (iPhone) or tap it
 (Android) → **Report**.
 
 **Does Klean work with Siri?**
@@ -119,7 +121,9 @@ Only at branches of the same business where you earned them. Points from differe
 Yes, 12 months after you earn them.
 
 **Can I pay cash?**
-No. Klean takes GCash, Maya, QR Ph and cards in the Philippines, and cards elsewhere.
+At the counter, yes: hand the cash to the attendant, who records it in Klean and gives you your change before
+assigning your machines. Self-service (scanning a machine yourself) takes GCash, Maya, QR Ph and cards in the
+Philippines, and cards elsewhere.
 
 **Why won't the app open without internet?**
 Klean needs a live connection to take payments and start machines. Connect to Wi-Fi or mobile data and it unlocks
@@ -173,7 +177,17 @@ You see display names, masked emails, points, visits, spend and usage times for 
 You don't see their ID or legal name.
 
 **Which reports can I get?**
-Daily, weekly, semi-monthly, monthly, quarterly, semi-annual and annual sales, with CSV export.
+Daily, weekly, semi-monthly, monthly, quarterly, semi-annual and annual sales, with CSV export; cash taken per
+attendant and branch; and expenses with profit (Business → Expenses).
+
+**Can my attendants take cash?**
+Yes, at the counter: they record it in Work (**Paying cash instead** → **Cash received**), and only then can machines be
+assigned, so cash that isn't rung up can't run a machine. Business → Sales → **Cash by person** shows who took how
+much. Cash sales carry the same commission, deducted from your next payout.
+
+**Can I track my expenses?**
+Yes: Business → **Expenses**. Log utilities, detergent, rent, repairs, wages and more; Klean shows each period's
+expenses by category and your profit (net sales minus expenses).
 
 **What happens if the shop internet goes down?**
 Klean locks on every device until it's back online, and machine controllers show red. Keep reliable Wi-Fi, ideally

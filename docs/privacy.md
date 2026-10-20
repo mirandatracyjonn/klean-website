@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 2.2.*
+*Effective date: October 19, 2026. Version 2.3.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -14,11 +14,12 @@ and act as controllers for their own use of it.
 |---|---|---|
 | Account | Display name, email (as verified by your sign-in provider), profile photo, member code, sign-in provider identifiers; your **mobile number** and **address** if you choose to save them | You; Apple/Google/GitHub |
 | Identity verification | **Collected by Didit, not by us:** ID document images, a live selfie and the biometric face template derived from it. **What we keep:** verification status; your verified legal name and the issuing country of your ID; and *keyed one-way hashes* of your document details and of your name + date of birth, used only to detect duplicate accounts. We do **not** store your ID number, ID images or selfie. | You, via Didit |
-| Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references; refunds (amount, loads, the reason the laundromat gave, status). **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe |
+| Payments | Payment amount, currency, method type (e.g. "GCash", "card"), payment status, provider references; refunds (amount, loads, the reason the laundromat gave, status). For **cash paid at a counter**: the amount, the cash handed over (if entered), and which staff member recorded it and when. **We never receive full card numbers or e-wallet credentials.** | PayMongo, Stripe; laundromat staff |
 | In-app purchases | For the verification fee bought in the app: the store transaction ID, product, price, currency and date. Apple or Google handle the payment itself; we don't receive your payment details. | Apple (App Store), Google (Play) |
 | Laundry activity | Machines scanned, orders, loads, weight at intake (typed, or read from the laundromat's Klean Scale: each weighing is kept with its time and, once you use it, your order), cycle start/finish times, points earned and redeemed, branches visited | Your use of the Service |
 | Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status; if a business asks to be paid into a company account, its registered name and number, the bank details and a copy of its registration certificate (stored privately, seen only by Klean, kept while the business uses that account and as long as the law requires afterwards). **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |
-| Messages | Messages you exchange with a laundromat (text, time), and announcements Operators post. | You; Operators |
+| Messages | Messages you exchange with a laundromat (text, time), announcements Operators post, and automatic laundry updates ("your wash is done") Klean posts in your chat with that laundromat. | You; Operators; Klean |
+| Business expenses (Operators) | Expenses a Super Admin logs: category, amount, date, branch, note, and who logged it. Seen only by the business's Super Admins (and Klean, to help). | Operators |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
 | Beta testing (invited testers only) | Your roles, each task you check off (Done, Problem or Blocked), your notes, platform and app build, the time, and Klean's confirmation or request to try again. | You; Klean |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |
@@ -47,7 +48,7 @@ and act as controllers for their own use of it.
   points with them, your visits and spend with them, and the times you used their machines. They **don't** see your
   ID, legal name, date of birth, or activity at other businesses.
 - **Your employer** (if you're staff) sees your display name, **verified legal name** and verification status, so
-  they know who works for them.
+  they know who works for them, and the cash payments you recorded at the counter (to match the cash drawer).
 - **Service providers** acting on our instructions: Didit (identity verification), PayMongo and Stripe
   (payments; when you pay, we send them your verified name, your email and, if you saved one, your mobile number, so
   their payment page is filled in for you), Apple and Google (sign-in, in-app purchases, push notifications), GitHub (sign-in), and our hosting,

@@ -89,7 +89,8 @@ browser for 2 hours, so you can sign in and verify first and still come back to 
 
 1. Hand your laundry to the attendant. They'll weigh it and tell you how many loads you need (one load per 8 kg,
    or your laundromat's limit).
-2. Scan the payment QR on their screen with your phone and pay.
+2. Scan the payment QR on their screen with your phone and pay, or pay the attendant in **cash**: they record it in
+   Klean (and tell you your change) before your machines are assigned.
 3. The attendant assigns your machines. Press **Start** when the light turns white.
 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
@@ -98,7 +99,9 @@ add it to your order.
 ### Messages and announcements
 
 Open a laundromat's page and tap **Message [laundromat]** to ask its staff anything; replies arrive in Klean with a
-notification, and all your conversations are under Home → **Messages**. Announcements from laundromats you've used
+notification, and all your conversations are under Home → **Messages**. Laundry updates ("Your wash is done",
+"Your laundry is ready for pickup") arrive in that same chat: tap the notification to open it, then answer with one tap
+(**I'm on my way**, **I'll pick it up later**, **Thank you!**) or type your own reply. Announcements from laundromats you've used
 ("Closed Monday", "Promo on dries") appear on Home. Report a bad message: touch and hold it (iPhone) or tap it (Android).
 
 ### Siri, Shortcuts and quick actions
