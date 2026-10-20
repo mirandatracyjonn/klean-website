@@ -1,18 +1,20 @@
 // Where PayMongo and Stripe send people after paying (RETURN_BASE in the app's Edge Functions):
-//   /pay-return.html?flow=laundry|kyc_fee&status=paid|cancelled[&order=<id>]
+//   /pay-return.html?flow=laundry|kyc_fee|commission&status=paid|cancelled[&order=<id>|&operator=<id>]
 // The app opened checkout in an in-app browser; this page tells them what happened and how to get back.
 import { el } from "./site.js";
 
 const q = new URLSearchParams(location.search);
 const paid = q.get("status") === "paid";
-const flow = q.get("flow") === "kyc_fee" ? "kyc_fee" : "laundry";
+const flow = ["kyc_fee", "commission"].includes(q.get("flow")) ? q.get("flow") : "laundry";
 const card = document.getElementById("result");
 
 const title = paid
-  ? (flow === "kyc_fee" ? "Payment received" : "Paid! Your machine is getting ready")
+  ? (flow === "laundry" ? "Paid! Your machine is getting ready" : flow === "commission" ? "Commission paid. Thank you!" : "Payment received")
   : "Payment cancelled";
 const body = paid
-  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check." : "Go back to Klean (or, if you paid in your browser, tap Continue on klean.ph). When the machine's light turns white, tap Start wash (or Start dry), or press Start on the machine. Machines never start by themselves.")
+  ? (flow === "kyc_fee" ? "Go back to Klean to start your identity check."
+     : flow === "commission" ? "Klean received the commission on your cash sales. Cash at the counter keeps working. It can take a minute to show in Business → Sales."
+     : "Go back to Klean (or, if you paid in your browser, tap Continue on klean.ph). When the machine's light turns white, tap Start wash (or Start dry), or press Start on the machine. Machines never start by themselves.")
   : "Nothing was charged. Go back to Klean to try again.";
 
 card.replaceChildren(

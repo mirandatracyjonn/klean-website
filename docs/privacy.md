@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 2.3.*
+*Effective date: October 19, 2026. Version 2.4.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -19,7 +19,9 @@ and act as controllers for their own use of it.
 | Laundry activity | Machines scanned, orders, loads, weight at intake (typed, or read from the laundromat's Klean Scale: each weighing is kept with its time and, once you use it, your order), cycle start/finish times, points earned and redeemed, branches visited | Your use of the Service |
 | Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status; if a business asks to be paid into a company account, its registered name and number, the bank details and a copy of its registration certificate (stored privately, seen only by Klean, kept while the business uses that account and as long as the law requires afterwards). **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |
 | Messages | Messages you exchange with a laundromat (text, time), announcements Operators post, and automatic laundry updates ("your wash is done") Klean posts in your chat with that laundromat. | You; Operators; Klean |
-| Business expenses (Operators) | Expenses a Super Admin logs: category, amount, date, branch, note, and who logged it. Seen only by the business's Super Admins (and Klean, to help). | Operators |
+| Business expenses (Operators) | Expenses a Super Admin logs: category, amount, date, branch, note, an optional photo or PDF of the receipt (kept in private storage), and who logged it. Seen only by the business's Super Admins (and Klean, to help). | Operators |
+| Shift counts, supplies, maintenance (staff) | End-of-shift cash counts (the amount counted, what Klean expected, the difference, who counted and when); supply restocks and counts; machine maintenance and repair notes. Each records the staff member who entered it. Seen by the business's Super Admins (staff see their own counts and their branch's supplies and maintenance). | Staff; Operators |
+| Receipts | Your receipts are made from your order (laundromat, branch, date, what you bought, how you paid, points, refunds, and your display name and member code). You and the laundromat's staff can open them. | Your use of the Service |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
 | Beta testing (invited testers only) | Your roles, each task you check off (Done, Problem or Blocked), your notes, platform and app build, the time, and Klean's confirmation or request to try again. | You; Klean |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |

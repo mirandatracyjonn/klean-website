@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 1.9.*
+*Effective date: October 19, 2026. Version 2.0.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -51,6 +51,10 @@ may pay for several loads at once (up to five, and no more than the branch's was
 activated and the other loads are kept as load credits (3.3). Where a laundromat has a **Klean Scale**, the weight it
 reports is used for your loads; check the number before you pay.
 
+3.2a **Receipts.** Every paid order has a Klean receipt in the app (Account → Receipts) and on klean.ph, which you can
+share, print or save as PDF. It records the payment but is **not a BIR official receipt**; ask the laundromat if you
+need one (issuing official receipts is the laundromat's job, 4.4).
+
 3.3 **Load credits.** Extra loads you paid for, saved dries, and loads whose machine couldn't be activated are kept as
 credits in your wallet, usable on any available machine of the same Operator. Load credits expire 30 days after purchase
 and have no cash value.
@@ -89,8 +93,9 @@ is the amount paid less the commission, the payment partner's processing fees, a
 set or change the commission rate. Each transaction is charged at the rate in effect when the checkout was opened.
 We'll give you at least **30 days' notice** of any increase. Free loads redeemed with points, and welcome loads you choose to offer new members, carry no commission.
 **Cash sales** recorded at your counter carry the same commission. Klean doesn't hold that cash, so the commission on
-cash sales is deducted from your next payout of digital payments; if there's not enough to deduct it from, it waits
-until there is.
+cash sales is deducted from your next payout of digital payments. You can also pay it online at any time (Business →
+Sales → Commission on cash sales). If any of it stays unpaid for **30 days**, recording new cash sales is paused until
+it's paid; digital payments keep working. We remind you 7 days before.
 Downloading and setting up Klean is free; there's no subscription fee.
 
 4.4 **Your obligations.** You're responsible for: your prices; keeping machines safe and in working order;
@@ -111,9 +116,16 @@ that. Lock the NFC stickers you put on machines, so nobody can rewrite them.
 ("Paid in cash") before the machines are used; that's the only way a cash load gets a machine. Klean records who took
 each cash payment and when, and shows the business its cash taken per person and branch. Klean doesn't hold, count or
 guarantee cash; matching the cash drawer to Klean's records, and any shortfall, is the business's responsibility.
+Staff can record an end-of-shift cash count; Klean compares it with the cash recorded under their name and tells the
+Super Admins about any difference. A difference is information for the business, not a finding by Klean about anyone.
 
-4.4f **Expenses.** Super Admins can log the business's expenses in Klean to see its profit. These are the business's own
-records; Klean doesn't check them, and they aren't tax filings or official receipts.
+4.4g **Supplies and maintenance.** Supply levels, low-stock reminders, maintenance tasks and reminders are tools to
+help you; Klean doesn't check supplies or machines. Keeping machines safe, maintained and in working order stays your
+responsibility (4.4), whatever the reminders say.
+
+4.4f **Expenses.** Super Admins can log the business's expenses in Klean, with an optional photo or PDF of the receipt,
+to see its profit. These are the business's own records; Klean doesn't check them, and they aren't tax filings or
+official receipts.
 
 4.4b **Beta mode.** Every business starts in Beta. In Beta, payments use test money only (no real money is charged
 or paid out), simulated machines may be used, and the Super Admin can delete the business's beta orders, test

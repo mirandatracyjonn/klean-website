@@ -95,6 +95,9 @@ function signedIn(a, v) {
   if (v.status === "verified") parts.push(addressCard(a));
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
+  if (v.status === "verified") parts.push(receiptsCard());
+  if ((a.memberships ?? []).length) parts.push(staffCard(a));
+  for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(commissionCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(expensesCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(closeBusinessCard(m));
@@ -261,7 +264,8 @@ function ordersCard(m) {
     const box = el("div", { class: "acct-machine" },
       el("p", { text: `${o.customer_name}${o.member_code ? " · " + o.member_code : ""} · ${money(o.total_minor, o.currency)}` }),
       el("p", { class: "meta", text: `#${o.short_id} · ${o.branch_name} · ${o.loads === 1 ? "1 load" : o.loads + " loads"}${o.is_test ? " · Beta (test)" : ""}${o.paid_at ? " · " + new Date(o.paid_at).toLocaleString() : ""}` }),
-      o.refunded_minor > 0 ? el("p", { class: "acct-error", text: `Refunded ${money(o.refunded_minor, o.currency)} (${o.refunded_loads} of ${o.loads} loads)${o.refund_status === "pending" ? ", processing" : ""}` }) : "");
+      o.refunded_minor > 0 ? el("p", { class: "acct-error", text: `Refunded ${money(o.refunded_minor, o.currency)} (${o.refunded_loads} of ${o.loads} loads)${o.refund_status === "pending" ? ", processing" : ""}` }) : "",
+      el("a", { class: "btn btn-outline", href: `/receipt.html?order=${o.order_id}`, text: "Receipt" }));
     if (o.refundable_loads > 0) {
       const b = el("button", { class: "btn btn-outline", type: "button", text: "Refund…" });
       b.addEventListener("click", () => box.append(refundForm(o, () => load())));
@@ -309,13 +313,16 @@ function expensesCard(m) {
   const amount = el("input", { type: "number", min: "0.01", step: "0.01", inputmode: "decimal", placeholder: "Amount", "aria-label": "Amount" });
   const day = el("input", { type: "date", "aria-label": "Date", value: new Date().toLocaleDateString("en-CA") });
   const note = el("input", { type: "text", maxlength: "300", placeholder: "Note (optional)", "aria-label": "Note" });
+  // M73: an optional receipt photo or PDF (only the business's Super Admins see it).
+  const file = el("input", { type: "file", accept: "image/jpeg,image/png,image/heic,application/pdf", "aria-label": "Receipt photo or PDF (optional)" });
   const add = el("button", { class: "btn btn-brand", type: "button", text: "Add expense" });
   const msg = el("div");
   const load = async () => {
     body.replaceChildren(el("p", { class: "meta", text: "Loading…" }));
-    const [{ data: r, error }, { data: cash }] = await Promise.all([
+    const [{ data: r, error }, { data: cash }, { data: counts }] = await Promise.all([
       db.rpc("expense_report", { operator: m.operator_id, period: period.value }),
-      db.rpc("cash_report", { operator: m.operator_id, period: period.value })]);
+      db.rpc("cash_report", { operator: m.operator_id, period: period.value }),
+      db.rpc("cash_counts", { operator: m.operator_id, period: period.value })]);
     if (error) { body.replaceChildren(errorLine(error.message)); return; }
     const c = r.currency;
     const rows = [el("h3", { text: r.label }),
@@ -329,30 +336,223 @@ function expensesCard(m) {
         const { error: err } = await db.rpc("delete_expense", { expense: e.id });
         if (err) msg.replaceChildren(errorLine(err.message)); else load();
       });
+      const receipt = e.receipt_path ? el("button", { class: "btn btn-outline", type: "button", text: "Receipt" }) : "";
+      if (receipt) receipt.addEventListener("click", async () => {
+        try { window.open((await call("business-docs", { action: "receipt_view", path: e.receipt_path })).url, "_blank", "noopener"); }
+        catch (err) { msg.replaceChildren(errorLine(err.message)); }
+      });
       rows.push(el("div", { class: "acct-machine" },
         el("p", { text: `${EXPENSE_CATEGORIES[e.category] ?? e.category} · ${money(e.amount_minor, c)}` }),
-        el("p", { class: "meta", text: [e.spent_on, e.branch, e.note].filter(Boolean).join(" · ") }), del));
+        el("p", { class: "meta", text: [e.spent_on, e.branch, e.note].filter(Boolean).join(" · ") }), el("div", { class: "btn-row" }, receipt, del)));
     }
     if (!r.items.length) rows.push(el("p", { class: "meta", text: "No expenses in this period." }));
     rows.push(el("h3", { text: `Cash taken at the counter: ${money(cash?.total_minor ?? 0, c)}` }));
     for (const x of cash?.rows ?? []) rows.push(el("p", { class: "meta", text: `${x.branch} · ${x.person}: ${x.orders === 1 ? "1 order" : x.orders + " orders"}, ${money(x.total_minor, c)}` }));
     if (!cash?.rows?.length) rows.push(el("p", { class: "meta", text: "No cash orders in this period." }));
+    // M71: end-of-shift counts.
+    rows.push(el("h3", { text: "Shift counts" }));
+    for (const x of counts?.counts ?? []) {
+      const d = x.difference_minor;
+      rows.push(el("p", { class: d < 0 ? "acct-error" : "meta",
+        text: `${x.branch} · ${x.person} · ${new Date(x.counted_at).toLocaleString()}: ${d === 0 ? "matches" : (d < 0 ? "short " : "over ") + money(Math.abs(d), c)}${x.note ? " · " + x.note : ""}` }));
+    }
+    if (!counts?.counts?.length) rows.push(el("p", { class: "meta", text: "No counts in this period." }));
     body.replaceChildren(...rows);
   };
   add.addEventListener("click", async () => {
     const minor = Math.round(parseFloat(amount.value) * 100);
     if (!(minor > 0)) { msg.replaceChildren(errorLine("Enter an amount.")); return; }
     add.disabled = true;
-    const { error } = await db.rpc("add_expense", { operator: m.operator_id, category: cat.value, amount_minor: minor,
+    const f = file.files?.[0];
+    if (f && f.size > 8 * 1024 * 1024) { add.disabled = false; msg.replaceChildren(errorLine("The receipt is over 8 MB. Choose a smaller photo or PDF.")); return; }
+    const { data: id, error } = await db.rpc("add_expense", { operator: m.operator_id, category: cat.value, amount_minor: minor,
       spent_on: day.value || null, note: note.value.trim() || null });
+    if (!error && f) {
+      try {
+        const data64 = await new Promise((ok, fail) => { const rd = new FileReader(); rd.onload = () => ok(String(rd.result).split(",")[1]); rd.onerror = fail; rd.readAsDataURL(f); });
+        const { path } = await call("business-docs", { action: "receipt_upload", operator_id: m.operator_id, content_type: f.type || "image/jpeg", data_base64: data64 });
+        const { error: e2 } = await db.rpc("set_expense_receipt", { expense: id, receipt_path: path });
+        if (e2) throw e2;
+      } catch (err) { msg.replaceChildren(errorLine(`The expense was added, but the receipt didn't upload: ${err.message}`)); }
+    }
     add.disabled = false;
     if (error) { msg.replaceChildren(errorLine(error.message)); return; }
-    amount.value = ""; note.value = ""; msg.replaceChildren(el("p", { class: "meta", text: "Added." })); load();
+    amount.value = ""; note.value = ""; file.value = ""; msg.replaceChildren(el("p", { class: "meta", text: "Added." })); load();
   });
   period.addEventListener("change", load);
   card.append(el("h2", { text: `Expenses and cash · ${m.operator_name}` }),
-    el("div", { class: "acct-field" }, cat, amount, day, note, add), msg, el("div", { class: "btn-row" }, period), body);
+    el("div", { class: "acct-field" }, cat, amount, day, note, el("label", { class: "meta", text: "Receipt photo or PDF (optional)" }), file, add), msg,
+    el("div", { class: "btn-row" }, period), body);
   load();
+  return card;
+}
+
+// M76: the customer's receipts (each opens a printable page).
+function receiptsCard() {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Receipts" }));
+  const list = el("div", {}, el("p", { class: "meta", text: "Loading…" }));
+  card.append(list);
+  (async () => {
+    const { data, error } = await db.rpc("my_receipts", { max_rows: 20 });
+    if (error) { list.replaceChildren(errorLine(error.message)); return; }
+    if (!data.length) { list.replaceChildren(el("p", { class: "meta", text: "No receipts yet. Each paid visit gets one here." })); return; }
+    list.replaceChildren(...data.map((r) => el("div", { class: "acct-machine" },
+      el("p", {}, el("a", { href: `/receipt.html?order=${r.order_id}`, text: `${r.business} · ${money(r.total_minor, r.currency)}` })),
+      el("p", { class: "meta", text: `${r.branch} · ${new Date(r.paid_at).toLocaleString()}${r.refunded ? " · refunded" : ""}${r.is_test ? " · Beta (test)" : ""}` }))));
+  })();
+  return card;
+}
+
+// M72: Klean's commission on cash sales: owed, pay now, and the 30-day pause.
+function commissionCard(m) {
+  const card = el("div", { class: "card acct-card", hidden: true });
+  (async () => {
+    const { data: o, error } = await db.rpc("commission_owed", { operator: m.operator_id });
+    if (error || (!o.owed_minor && !o.payments.length)) return;
+    const c = o.currency;
+    const parts = [el("h2", { text: `Commission on cash sales · ${m.operator_name}` })];
+    if (o.owed_minor > 0) {
+      parts.push(el("p", { class: "acct-code", text: money(o.owed_minor, c) }),
+        el("p", { class: "meta", text: `Klean's commission on ${o.orders} cash order${o.orders === 1 ? "" : "s"}. It comes off your next payout of GCash, Maya and card sales, or you can pay it now.` }));
+      if (o.paused) parts.push(el("p", { class: "acct-error", text: "Cash at the counter is paused until this is paid. GCash, Maya and cards still work." }));
+      else if (o.pauses_at) parts.push(el("p", { text: `Pay by ${new Date(o.pauses_at).toLocaleDateString()} to keep taking cash.` }));
+      if (o.can_pay || o.pending_checkout_url) {
+        const pay = el("button", { class: "btn btn-brand", type: "button", text: `Pay ${money(o.owed_minor, c)}` });
+        const msg = el("div");
+        pay.addEventListener("click", async () => {
+          pay.disabled = true;
+          try { location.href = (await call("payments", { action: "pay_commission", operator_id: m.operator_id })).checkout_url; }
+          catch (e) { msg.replaceChildren(errorLine(e.message)); pay.disabled = false; }
+        });
+        parts.push(el("div", { class: "btn-row" }, pay), msg);
+      } else parts.push(el("p", { class: "meta", text: `You can pay once it reaches ${money(o.minimum_minor, c)}.` }));
+    } else parts.push(el("p", { text: "✓ Nothing owed." }));
+    for (const p of o.payments.slice(0, 3)) parts.push(el("p", { class: "meta", text: `Paid ${money(p.amount_minor, c)}${p.paid_at ? " · " + new Date(p.paid_at).toLocaleDateString() : ""}` }));
+    card.replaceChildren(...parts);
+    card.hidden = false;
+  })();
+  return card;
+}
+
+// M71, M74, M75: for staff: close a shift (blind cash count), supplies, and machine maintenance, per branch.
+function staffCard(a) {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Shift, supplies and maintenance" }));
+  const pick = el("select", { "aria-label": "Branch" });
+  const body = el("div");
+  card.append(el("div", { class: "btn-row" }, pick), body);
+  let branches = [];
+  const amt = (v) => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const load = async () => {
+    const b = branches.find((x) => x.id === pick.value);
+    if (!b) return;
+    const admin = (a.memberships ?? []).some((m) => m.operator_id === b.operator_id && m.role === "super_admin");
+    const msg = el("div");
+    // End of shift (blind count).
+    const counted = el("input", { type: "number", min: "0", step: "0.01", inputmode: "decimal", placeholder: "Cash you counted", "aria-label": "Cash you counted" });
+    const close = el("button", { class: "btn btn-outline", type: "button", text: "Close my shift" });
+    const shift = el("div");
+    close.addEventListener("click", async () => {
+      const minor = Math.round(parseFloat(counted.value) * 100);
+      if (!(minor >= 0)) { shift.replaceChildren(errorLine("Enter the cash you counted.")); return; }
+      const { data: r, error } = await db.rpc("close_shift", { branch: b.id, counted_minor: minor });
+      if (error) { shift.replaceChildren(errorLine(error.message)); return; }
+      const d = r.difference_minor;
+      shift.replaceChildren(el("p", { class: d < 0 ? "acct-error" : "", text: d === 0 ? "✓ The cash matches." : `${d < 0 ? "Short" : "Over"} ${money(Math.abs(d), r.currency)}: you counted ${money(r.counted_minor, r.currency)}; Klean recorded ${money(r.expected_minor, r.currency)}.${d ? " Your Super Admin has been told." : ""}` }));
+      counted.value = "";
+    });
+    const parts = [el("h3", { text: "End of shift" }),
+      el("p", { class: "meta", text: "Count the cash you took since your last count and enter it. Klean compares it with the cash recorded under your name." }),
+      el("div", { class: "acct-field" }, counted, close), shift];
+    // Supplies.
+    const [{ data: supplies }, { data: care }] = await Promise.all([db.rpc("branch_supplies", { branch: b.id }), db.rpc("branch_maintenance", { branch: b.id })]);
+    parts.push(el("h3", { text: "Supplies" }));
+    if (!supplies?.length) parts.push(el("p", { class: "meta", text: admin ? "No supplies yet. Add detergent, softener and anything else you stock." : "No supplies set up for this branch yet." }));
+    for (const s of supplies ?? []) {
+      const kind = el("select", { "aria-label": "What happened" }, el("option", { value: "restock", text: "Restocked" }), el("option", { value: "used", text: "Used" }), el("option", { value: "count", text: "Counted" }));
+      const n = el("input", { type: "number", min: "0", step: "0.01", inputmode: "decimal", placeholder: s.unit, "aria-label": "Amount" });
+      const save = el("button", { class: "btn btn-outline", type: "button", text: "Record" });
+      save.addEventListener("click", async () => {
+        const { error } = await db.rpc("record_supply", { supply: s.id, kind: kind.value, amount: parseFloat(n.value) });
+        if (error) msg.replaceChildren(errorLine(error.message)); else load();
+      });
+      const row = el("div", { class: "acct-machine" },
+        el("p", { class: s.low ? "acct-error" : "", text: `${s.name}: ${amt(s.quantity)} ${s.unit}${s.low ? " · low, restock soon" : ""}` }),
+        el("p", { class: "meta", text: `Low at ${amt(s.low_at)} ${s.unit}${s.per_wash > 0 ? ` · ${amt(s.per_wash)} per wash` : ""}${s.per_dry > 0 ? ` · ${amt(s.per_dry)} per dry` : ""}` }),
+        el("div", { class: "btn-row" }, kind, n, save));
+      if (admin) {
+        const del = el("button", { class: "btn btn-outline", type: "button", text: "Delete" });
+        del.addEventListener("click", async () => { if (window.confirm(`Delete ${s.name}?`)) { await db.rpc("delete_supply", { supply: s.id }); load(); } });
+        row.querySelector(".btn-row").append(del);
+      }
+      parts.push(row);
+    }
+    if (admin) {
+      const name = el("input", { placeholder: "Name, e.g. Detergent", maxlength: 60, "aria-label": "Supply name" });
+      const unit = el("input", { placeholder: "Unit, e.g. L", maxlength: 20, value: "L", "aria-label": "Unit" });
+      const qty = el("input", { type: "number", step: "0.01", placeholder: "On hand now", "aria-label": "On hand now" });
+      const low = el("input", { type: "number", step: "0.01", placeholder: "Remind when down to", "aria-label": "Remind when down to" });
+      const pw = el("input", { type: "number", step: "0.001", placeholder: "Used per wash (optional)", "aria-label": "Used per wash" });
+      const pd = el("input", { type: "number", step: "0.001", placeholder: "Used per dry (optional)", "aria-label": "Used per dry" });
+      const addS = el("button", { class: "btn btn-outline", type: "button", text: "Add a supply" });
+      addS.addEventListener("click", async () => {
+        const { error } = await db.rpc("save_supply", { supply: null, branch: b.id, name: name.value.trim(), unit: unit.value.trim(),
+          low_at: parseFloat(low.value) || 0, per_wash: parseFloat(pw.value) || 0, per_dry: parseFloat(pd.value) || 0, quantity: parseFloat(qty.value) || 0 });
+        if (error) msg.replaceChildren(errorLine(error.message)); else load();
+      });
+      parts.push(el("div", { class: "acct-field" }, name, unit, qty, low, pw, pd, addS));
+    }
+    // Maintenance.
+    parts.push(el("h3", { text: "Maintenance due" }));
+    if (!care?.due?.length) parts.push(el("p", { class: "meta", text: "✓ Nothing due. Every machine is up to date." }));
+    for (const d of care?.due ?? []) {
+      const done = el("button", { class: "btn btn-brand", type: "button", text: "Done" });
+      done.addEventListener("click", async () => {
+        const { error } = await db.rpc("log_maintenance", { machine: d.machine_id, kind: "task", task: d.task_id });
+        if (error) msg.replaceChildren(errorLine(error.message)); else load();
+      });
+      const rule = d.every_days ? (d.every_days === 1 ? "Every day" : `Every ${d.every_days} days`) : `Every ${d.every_cycles} cycles`;
+      parts.push(el("div", { class: "acct-machine" }, el("p", { text: `${d.label} · ${d.task}` }),
+        el("p", { class: "meta", text: `${rule} · ${d.last_done_at ? "last done " + new Date(d.last_done_at).toLocaleDateString() : "not done yet"}` }), done));
+    }
+    if (care?.recent?.length) {
+      parts.push(el("h3", { text: "Recent maintenance" }));
+      for (const e of care.recent.slice(0, 8)) parts.push(el("p", { class: "meta", text: `${e.label} · ${e.task ?? (e.kind === "repair" ? "Repair" : "Note")}${e.note ? ": " + e.note : ""} · ${e.by ?? ""} · ${new Date(e.done_at).toLocaleString()}` }));
+    }
+    if (admin) {
+      const { data: tasks } = await db.rpc("maintenance_tasks", { operator: b.operator_id });
+      parts.push(el("h3", { text: "Routine tasks" }));
+      for (const t of tasks ?? []) {
+        const del = el("button", { class: "btn btn-outline", type: "button", text: "Delete" });
+        del.addEventListener("click", async () => { if (window.confirm(`Delete "${t.name}"? Its history stays on each machine.`)) { await db.rpc("delete_maintenance_task", { task: t.id }); load(); } });
+        const every = t.every_days ? (t.every_days === 1 ? "every day" : `every ${t.every_days} days`) : `every ${t.every_cycles} cycles`;
+        parts.push(el("div", { class: "acct-machine" }, el("p", { text: t.name }),
+          el("p", { class: "meta", text: `${{ washer: "Washers", dryer: "Dryers" }[t.machine_type] ?? "All machines"} · ${every}` }), del));
+      }
+      const tn = el("input", { placeholder: "Task, e.g. Clean the lint filter", maxlength: 80, "aria-label": "Task" });
+      const tt = el("select", { "aria-label": "Machines" }, el("option", { value: "any", text: "All machines" }), el("option", { value: "washer", text: "Washers" }), el("option", { value: "dryer", text: "Dryers" }));
+      const tk = el("select", { "aria-label": "How often" }, el("option", { value: "days", text: "Every so many days" }), el("option", { value: "cycles", text: "Every so many cycles" }));
+      const tv = el("input", { type: "number", min: "1", step: "1", value: "7", "aria-label": "How many" });
+      const addT = el("button", { class: "btn btn-outline", type: "button", text: "Add a task" });
+      addT.addEventListener("click", async () => {
+        const n = parseInt(tv.value, 10);
+        const { error } = await db.rpc("save_maintenance_task", { operator: b.operator_id, task: null, name: tn.value.trim(), machine_type: tt.value,
+          every_days: tk.value === "days" ? n : null, every_cycles: tk.value === "cycles" ? n : null });
+        if (error) msg.replaceChildren(errorLine(error.message)); else load();
+      });
+      parts.push(el("div", { class: "acct-field" }, tn, tt, tk, tv, addT));
+    }
+    parts.push(msg);
+    body.replaceChildren(...parts);
+  };
+  (async () => {
+    const { data, error } = await db.rpc("my_branches");
+    if (error || !data?.length) { body.replaceChildren(el("p", { class: "meta", text: error ? error.message : "You aren't assigned to a branch yet." })); return; }
+    branches = data;
+    pick.replaceChildren(...data.map((b) => el("option", { value: b.id, text: `${b.operator_name} · ${b.name}` })));
+    if (data.length < 2) pick.hidden = true;
+    load();
+  })();
+  pick.addEventListener("change", load);
   return card;
 }
 

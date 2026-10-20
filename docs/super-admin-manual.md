@@ -237,19 +237,55 @@ Expenses and cash) shows cash taken per branch and person for the day, week, mon
 it at the end of each shift. Attendants see their own cash for today in Work. Refunds of cash orders work like any
 refund (6a), but you hand the money back in cash; Klean doesn't send it anywhere.
 
+**End-of-shift count.** At the end of a shift, the attendant taps Work → Intake → **Count my cash and close my shift**,
+counts the cash they took since their last count, and enters it. It's a blind count: they don't see what Klean expects
+until they've entered it. Any difference notifies you ("Cash short at Main St"), and every count is listed under
+Business → Sales → **Shift counts**.
+
+**Commission on cash sales.** Cash stays in your drawer, so Klean's commission on it comes off your next payout of
+GCash, Maya and card sales. Business → Sales → **Commission on cash sales** shows what's owed. If you take mostly cash,
+tap **Pay** to pay it with GCash, Maya or card. If any of it is unpaid for 30 days, recording cash at the counter pauses
+until it's paid (digital payments keep working); you're reminded 7 days before and on the day.
+
 ## 6c. Expenses and profit
 
 **Business → Expenses** (or klean.ph → Account → Expenses and cash). Tap **Add an expense**: category (utilities,
 detergent and soap, rent, repairs, wages, supplies, equipment, fees and permits, other), amount, date, optional branch
 and note. Pick a period to see:
 
-- **Expenses** by category and each item (delete a wrong one; Klean keeps a record of it).
+- **Expenses** by category and each item (delete a wrong one; Klean keeps a record of it). Add a photo or PDF of the
+  receipt when you log it; tap **Receipt** on an item to see it. Only Super Admins can.
 - **Net to you**: all sales, cash included, after Klean's commission and refunds.
 - **Profit** = net to you − expenses.
 - **Cash sales** in the period, for the drawer.
 
 Only Super Admins see or log expenses. They're your own bookkeeping; Klean doesn't check them, and they aren't
 official receipts or tax filings.
+
+## 6d. Supplies
+
+Work → **Supplies** (pick the branch). Tap **Add a supply**: name (Detergent, Softener, Bleach, Bags…), unit (L, kg,
+pcs), how much you have, **Remind when down to**, and optionally how much one wash or one dry uses. When set, Klean takes
+that off every time a cycle starts. Staff tap **Record…** to log a restock, what they used, or a fresh count. When a
+supply reaches its level, the branch's staff and you get one reminder; the next one comes after it's restocked.
+
+## 6e. Maintenance
+
+Work → **Maintenance**. **Due now** lists each machine's routine tasks that are due; staff tap **Done**. Tap a machine to
+**log a repair or note** or see its **history** (useful for warranty claims). Every business starts with three routine
+tasks, which you can change under **Routine tasks**:
+
+- Clean the lint filter: dryers, every 10 cycles
+- Clean the drum and door seal: washers, every 7 days
+- Check hoses, drains and vents: all machines, every 30 days
+
+At 8 a.m. (your time zone), the staff of a branch with something due get one reminder.
+
+## 6f. Receipts
+
+Every paid order has a receipt. Customers find theirs in Account → Receipts. For a walk-in who wants one, open
+Business → Sales → Orders and refunds → **Receipt** (or on klean.ph, Account → Orders and refunds → Receipt) and print or
+share it. It isn't a BIR official receipt; issue official receipts as the law requires.
 
 ## 7. Customers
 

@@ -120,6 +120,10 @@ Only at branches of the same business where you earned them. Points from differe
 **Do points expire?**
 Yes, 12 months after you earn them.
 
+**Can I get a receipt?**
+Yes. Every paid visit has one in Account → **Receipts** (and on klean.ph → Account). Share it, print it or save it as
+a PDF. It isn't a BIR official receipt; ask the laundromat if you need one.
+
 **Can I pay cash?**
 At the counter, yes: hand the cash to the attendant, who records it in Klean and gives you your change before
 assigning your machines. Self-service (scanning a machine yourself) takes GCash, Maya, QR Ph and cards in the
@@ -179,6 +183,22 @@ You don't see their ID or legal name.
 **Which reports can I get?**
 Daily, weekly, semi-monthly, monthly, quarterly, semi-annual and annual sales, with CSV export; cash taken per
 attendant and branch; and expenses with profit (Business → Expenses).
+
+**How do I pay Klean's commission on cash sales?**
+It comes off your next payout of GCash, Maya and card sales. If you take mostly cash, pay it in Business → Sales →
+**Commission on cash sales** → **Pay** (GCash, Maya or card). If any of it is 30 days unpaid, recording cash pauses
+until it's paid; we remind you 7 days before.
+
+**How do attendants close a shift?**
+Work → Intake → **Count my cash and close my shift**: they count the cash they took and enter it, without seeing
+what Klean expects. Klean shows the difference, and Super Admins are told about any shortfall (Business → Sales →
+Shift counts).
+
+**Can Klean remind us about detergent and machine cleaning?**
+Yes. Work → **Supplies**: list each branch's supplies with a "low at" level (and, if you like, how much a wash or dry
+uses); staff record restocks, and everyone is reminded when one runs low. Work → **Maintenance**: routine tasks (lint
+filter every 10 dryer cycles, drum and door seal weekly, hoses and vents monthly, or your own); staff tap Done, log
+repairs, and get a morning reminder when something's due. Each machine keeps its history.
 
 **Can my attendants take cash?**
 Yes, at the counter: they record it in Work (**Paying cash instead** → **Cash received**), and only then can machines be

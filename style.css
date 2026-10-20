@@ -239,3 +239,14 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 /* Android beta steps (#android, 2026-10-19) */
 .android-steps { max-width: 640px; margin: 28px auto 0; text-align: left; }
 .android-steps ol { padding-left: 20px; display: grid; gap: 8px; }
+
+/* M76: receipts (klean.ph/receipt.html) */
+.receipt h1 { font-size: 1.5rem; margin: 0 0 4px; }
+.receipt h2 { font-size: 1.1rem; margin: 8px 0 4px; }
+.receipt hr { border: 0; border-top: 1px dashed var(--line); margin: 12px 0; }
+.receipt-line { display: flex; justify-content: space-between; gap: 12px; margin: 4px 0; }
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+  .receipt { box-shadow: none; border: 0; }
+}

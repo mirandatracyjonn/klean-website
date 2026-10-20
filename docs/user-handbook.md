@@ -96,6 +96,12 @@ browser for 2 hours, so you can sign in and verify first and still come back to 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Receipts
+
+Every paid visit has a receipt in **Account → Receipts** (and on klean.ph → Account): the laundromat, date, what you
+bought, how you paid (with the change, if you paid cash), points earned and any refund. Tap **Share** or **Print or save
+PDF**. It isn't a BIR official receipt; ask the laundromat if you need one.
+
 ### Messages and announcements
 
 Open a laundromat's page and tap **Message [laundromat]** to ask its staff anything; replies arrive in Klean with a
