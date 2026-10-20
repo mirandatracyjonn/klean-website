@@ -29,12 +29,8 @@ card.replaceChildren(
 document.title = `${title} | Klean`;
 
 // Android (TJ, 2026-10-20: "after paying the app doesn't go back to Klean automatically"): the iPhone app closes its
-// payment page by itself, but an Android app can't close Chrome's tab. So on Android this page sends people straight
-// back into Klean (which then sees the payment and opens the scanner). Without the app installed, Chrome follows the
-// fallback instead: klean.ph's account page, where browser payments continue. The buttons stay, in case it's blocked.
-if (/Android/i.test(navigator.userAgent)) {
-  const fallback = location.origin + (flow === "laundry" && paid ? "/account.html?paid=1" : "/account.html");
-  setTimeout(() => {
-    location.replace(`intent://home#Intent;scheme=klean;package=ph.klean.app;S.browser_fallback_url=${encodeURIComponent(fallback)};end`);
-  }, 600);
-}
+// payment page by itself, but an Android app can't close Chrome's tab. So on Android this page tries to open Klean
+// (which then sees the payment). Chrome only allows it when the visit came from a tap (the payment button); if it
+// refuses, nothing happens and the Back to Klean button is still here. No fallback page: that would take people who
+// have the app to the website's sign-in.
+if (/Android/i.test(navigator.userAgent)) setTimeout(() => { location.href = "klean://home"; }, 400);
