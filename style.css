@@ -217,3 +217,21 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .chat-msg.hidden { font-style: italic; opacity: .7; }
 .chat textarea, .announce input, .announce textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); margin: 4px 0; }
 .news p { margin: 6px 0; }
+
+/* Beta Testing (klean.ph/beta.html, M62) */
+.beta-role, .beta-tester, .beta-result { margin: 12px 0; }
+.beta-role summary, .beta-guide summary { cursor: pointer; padding: 6px 0; }
+.beta-guide { margin: 8px 0; }
+.beta-bar { height: 6px; border-radius: 3px; background: rgba(0, 0, 0, 0.08); margin: 8px 0; overflow: hidden; }
+.beta-bar > div { height: 100%; background: currentColor; opacity: 0.6; }
+.beta-tasks { padding-left: 20px; display: grid; gap: 14px; }
+.beta-task { display: grid; gap: 6px; }
+.beta-chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.06); }
+.beta-chip.ok, .beta-review.ok { color: #15803d; }
+.beta-chip.bad, .beta-review.bad { color: #b91c1c; }
+.beta-chip.warn { color: #b45309; }
+.beta-table { border-collapse: collapse; margin: 8px 0; }
+.beta-table th, .beta-table td { border: 1px solid rgba(0, 0, 0, 0.12); padding: 4px 8px; text-align: left; }
+.beta-dialog { max-width: 520px; width: calc(100% - 32px); border-radius: 16px; border: 0; padding: 20px; }
+.beta-dialog textarea, .beta-dialog input, .beta-dialog select { width: 100%; box-sizing: border-box; }
+.beta-roles-pick { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0; }

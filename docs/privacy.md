@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 2.1.*
+*Effective date: October 19, 2026. Version 2.2.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -20,6 +20,7 @@ and act as controllers for their own use of it.
 | Staff and business | Your role, which branches you're assigned to, who hired you; for Operators, business details and payout account status; if a business asks to be paid into a company account, its registered name and number, the bank details and a copy of its registration certificate (stored privately, seen only by Klean, kept while the business uses that account and as long as the law requires afterwards). **Each branch's name, address, map location, phone and email are public** (shown to customers). | You; Operators; Stripe/PayMongo |
 | Messages | Messages you exchange with a laundromat (text, time), and announcements Operators post. | You; Operators |
 | Location (optional) | If you allow it, your device's approximate location is sent to show laundromats nearest you. **We don't store it.** A laundromat's own location (set by its Super Admin) is public. | Your device |
+| Beta testing (invited testers only) | Your roles, each task you check off (Done, Problem or Blocked), your notes, platform and app build, the time, and Klean's confirmation or request to try again. | You; Klean |
 | Technical | Device type, app version, IP address, sign-in times, error logs | Your device |
 | Wallet card (optional) | If you add your Klean card to Apple Wallet or Google Wallet, it holds your name, member code (as a QR), points and laundromat. Apple keeps it on your device (and in iCloud if you use it); for Google Wallet, Klean sends those details to Google, which stores the card in your Google account. Remove it in Wallet any time. To keep the points on it current, Klean stores a random code for your card and, for Apple Wallet, an identifier for each device that has the card and its push token (deleted when you remove the card). | You; Google |
 | On your device only | The Home Screen widget's summary (points, paid loads, your laundromat) and the Lock Screen countdown are kept on your phone; reading an NFC sticker happens on your phone. On klean.ph, the machine you scanned is remembered in your browser for up to 2 hours (so you can sign in and verify first), and forgotten once you pay. | Your device |
@@ -71,6 +72,7 @@ technical safeguards required by applicable law for these transfers. [List provi
 | Transaction and tax records | As long as tax and accounting laws require, with personal identifiers removed after account deletion |
 | Duplicate-detection hashes | While your account exists; deleted when you delete your account, **except** for accounts suspended for fraud or abuse, where they're kept for 5 years to stop re-registration |
 | ID images and selfies | Held by Didit under its retention policy (see didit.me/privacy); never stored by Klean |
+| Beta testing check-offs | Kept after the beta as its record; deleted with your account |
 | Technical logs | 90 days |
 
 ## 6. Your rights
