@@ -227,10 +227,15 @@ bank sides with the customer, it's handled like a full refund of that order (its
 
 ## 6b. Cash at the counter
 
-Customers who don't use GCash, Maya or a card can pay cash at the counter. In Work → Intake, after **Charge**, the
-attendant taps **Paying cash instead**, optionally types the amount handed over (Klean shows the change), and taps
+Customers who don't use GCash, Maya or a card can pay cash at the counter. In Work → Intake, type the weight, then
+tap **Cash** (or, after **Charge**, **Paying cash instead**); the attendant optionally types the amount handed over (Klean shows the change), and taps
 **Cash received**. Only then do the loads become paid and machines can be assigned: **entering the sale in Klean is the
 only way a cash load gets a machine**, so cash that isn't rung up can't run a wash.
+
+**Starting a counter order's machines.** After tapping a free washer for the order, wait for its white light, then tap
+**Start wash** on it (in Work → Intake, or on its tile in Work → Machines) and confirm the laundry is in and the door is
+closed. Walk-ins have no app, so staff start counter orders; machines paid in a customer's own app are started by the
+customer.
 
 Every cash payment records who took it and when. **Business → Sales → Cash by person** (and klean.ph → Account →
 Expenses and cash) shows cash taken per branch and person for the day, week, month or year: count the drawer against

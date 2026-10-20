@@ -250,3 +250,11 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
   body { background: #fff; color: #000; }
   .receipt { box-shadow: none; border: 0; }
 }
+
+/* M80: deletable rows (swipe left on phones, long press or Select to pick several) */
+.deletable { display: flex; align-items: center; gap: 8px; transition: transform .15s ease; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.deletable > :last-child { flex: 1 1 auto; min-width: 0; }
+.deletable.selected { background: color-mix(in srgb, var(--brand) 10%, transparent); border-radius: 12px; }
+.chat-log .deletable { width: 100%; }
+.chat-log .deletable:has(.mine) { justify-content: flex-end; }
+.chat-log .deletable > .chat-msg { flex: 0 1 auto; }

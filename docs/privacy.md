@@ -1,6 +1,6 @@
 # Klean by Geerho Privacy Policy
 
-*Effective date: October 19, 2026. Version 2.4.*
+*Effective date: October 19, 2026. Version 2.5.*
 
 **Geerho Tech LLC**, which owns and operates **Klean by Geerho** ("Klean", "we"), is the personal information controller
 for the Klean apps and web app. Laundromat businesses on Klean ("Operators") also receive limited customer information, as described below,
@@ -44,7 +44,9 @@ and act as controllers for their own use of it.
 
 - **Messages** you send to a laundromat are seen by that business's staff (Super Admins and attendants), and their
   replies by you. Klean staff read a message only when someone reports it, to decide whether to remove it.
-  Messages are kept while your account exists and are deleted with it.
+  Messages are kept while your account exists and are deleted with it. Deleting a message or a conversation in Klean
+  removes it from your view only: the other side keeps theirs, and Klean keeps the record (for example, to review a
+  report of abuse). Deleted notifications are removed for good.
 
 - **Operators** where you do laundry see your **display name**, a **masked email** (e.g. `j***@gmail.com`), your
   points with them, your visits and spend with them, and the times you used their machines. They **don't** see your

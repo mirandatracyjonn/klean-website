@@ -90,6 +90,7 @@ function signedIn(a, v) {
     el("p", { class: "meta", text: "Member code" }), el("p", { class: "acct-code", text: a.member_code ?? "" }), walletButton())];
   if (pendingMachine()) parts.unshift(payMachineCard(pendingMachine(), v.status === "verified"));
   parts.push(machinesCard());
+  if (v.status === "verified") parts.push(notificationsCard());
   if (v.status === "verified") parts.push(commsCard(a));
   if (v.status === "verified") parts.push(phoneCard(a));
   if (v.status === "verified") parts.push(addressCard(a));
@@ -634,6 +635,91 @@ function googleWalletButton() {
 }
 
 // Roadmap 10 (M52): announcements, messages with laundromats, and (for staff) the business inbox and announcements.
+// M80 (TJ, 2026-10-20): delete notifications and messages, like the apps. Swipe left (phones) deletes one; a long press
+// (or Select) picks several; Delete all clears the list. `rows` are {id, node, open}; `remove(ids|null)` deletes.
+function deletableList(host, what, rows, remove) {
+  let selecting = false;
+  const chosen = new Set();
+  const bar = el("div", { class: "btn-row" });
+  const list = el("div");
+  const paint = () => {
+    for (const r of rows) {
+      r.wrap.classList.toggle("selected", chosen.has(r.id));
+      r.box.hidden = !selecting;
+      r.box.checked = chosen.has(r.id);
+    }
+    if (selecting) {
+      const cancel = el("button", { class: "btn btn-outline", type: "button", text: "Cancel" });
+      const del = el("button", { class: "btn btn-brand acct-danger", type: "button", text: `Delete (${chosen.size})` });
+      del.disabled = chosen.size === 0;
+      cancel.addEventListener("click", () => { selecting = false; chosen.clear(); paint(); });
+      del.addEventListener("click", () => remove([...chosen]));
+      bar.replaceChildren(cancel, del);
+    } else if (rows.length) {
+      const select = el("button", { class: "btn btn-outline", type: "button", text: "Select" });
+      const all = el("button", { class: "btn btn-outline acct-danger", type: "button", text: "Delete all" });
+      select.addEventListener("click", () => { selecting = true; paint(); });
+      all.addEventListener("click", () => {
+        if (window.confirm(`Delete all ${what}?${what === "messages" ? " They're removed from your view only." : " This can't be undone."}`)) remove(null);
+      });
+      bar.replaceChildren(select, all);
+    } else bar.replaceChildren();
+  };
+  const toggle = (id) => { if (chosen.has(id)) chosen.delete(id); else chosen.add(id); if (!chosen.size) selecting = false; paint(); };
+  for (const r of rows) {
+    r.box = el("input", { type: "checkbox", "aria-label": "Select", hidden: true });
+    r.wrap = el("div", { class: "deletable" }, r.box, r.node);
+    let x0 = null, t = null, longPressed = false;
+    r.wrap.addEventListener("pointerdown", (e) => {
+      x0 = e.clientX; longPressed = false;
+      t = setTimeout(() => { longPressed = true; selecting = true; chosen.add(r.id); paint(); }, 550);
+    });
+    r.wrap.addEventListener("pointermove", (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      if (Math.abs(dx) > 10) clearTimeout(t);
+      if (!selecting && e.pointerType !== "mouse" && dx < 0) r.wrap.style.transform = `translateX(${Math.max(dx, -120)}px)`;
+    });
+    const end = (e) => {
+      clearTimeout(t);
+      const dx = x0 === null ? 0 : e.clientX - x0;
+      x0 = null; r.wrap.style.transform = "";
+      if (!selecting && e.pointerType !== "mouse" && dx < -90) remove([r.id]);
+    };
+    r.wrap.addEventListener("pointerup", end);
+    r.wrap.addEventListener("pointercancel", () => { clearTimeout(t); x0 = null; r.wrap.style.transform = ""; });
+    r.wrap.addEventListener("click", (e) => {
+      if (longPressed) { e.preventDefault(); e.stopPropagation(); longPressed = false; return; }
+      if (selecting) { e.preventDefault(); e.stopPropagation(); toggle(r.id); }
+    }, true);
+    list.append(r.wrap);
+  }
+  paint();
+  host.replaceChildren(bar, list);
+}
+
+// M80: notifications on klean.ph (the apps show them under the bell).
+function notificationsCard() {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Notifications" }));
+  const body = el("div", {}, el("p", { class: "meta", text: "Loading…" }));
+  card.append(body);
+  const load = async () => {
+    const { data, error } = await db.rpc("my_notifications", { max_rows: 50 });
+    if (error) { body.replaceChildren(errorLine(error.message)); return; }
+    db.rpc("mark_notifications_read");
+    if (!data.length) { body.replaceChildren(el("p", { class: "meta", text: "No notifications." })); return; }
+    const rows = data.map((n) => ({ id: n.id, node: el("div", { class: "acct-machine" },
+      el("p", {}, el("strong", { text: n.title })), el("p", { text: n.body }),
+      el("p", { class: "meta", text: new Date(n.created_at).toLocaleString() })) }));
+    deletableList(body, "notifications", rows, async (ids) => {
+      const { error: e } = await db.rpc("delete_notifications", { ids });
+      if (e) body.prepend(errorLine(e.message)); else load();
+    });
+  };
+  load();
+  return card;
+}
+
 function commsCard(a) {
   const card = el("div", { class: "card acct-card" }, el("h2", { text: "Messages" }), el("p", { class: "meta", text: "Loading…" }));
   const chat = el("div", { class: "chat", hidden: true });
@@ -645,11 +731,21 @@ function commsCard(a) {
     const input = el("textarea", { rows: 2, placeholder: "Message", maxlength: 2000 });
     const send = el("button", { class: "btn btn-brand", type: "button", text: "Send" });
     const msg = el("p", { class: "meta" });
+    let shown = "";
     async function refresh() {
       if (!chat.isConnected || chat.hidden) return;
       const { data } = await db.rpc("conversation_messages", { conversation: id });
-      log.replaceChildren(...(data ?? []).map((m) => el("div", { class: "chat-msg" + (m.mine ? " mine" : "") + (m.hidden ? " hidden" : ""), text: m.body })));
-      log.scrollTop = log.scrollHeight;
+      const key = JSON.stringify((data ?? []).map((m) => m.id));
+      // Only redraw when something changed, so a selection in progress isn't wiped every 4 seconds.
+      if (key !== shown) {
+        shown = key;
+        const rows = (data ?? []).map((m) => ({ id: m.id, node: el("div", { class: "chat-msg" + (m.mine ? " mine" : "") + (m.hidden ? " hidden" : ""), text: m.body }) }));
+        deletableList(log, "messages", rows, async (ids) => {
+          const { error } = await db.rpc("delete_messages", { conversation: id, ids });
+          if (error) msg.replaceChildren(errorLine(error.message)); else { shown = ""; clearTimeout(timer); refresh(); }
+        });
+        log.scrollTop = log.scrollHeight;
+      }
       timer = setTimeout(refresh, 4000);
     }
     // M69: "your wash is done" updates arrive in this chat; customers answer with one tap.
@@ -685,12 +781,31 @@ function commsCard(a) {
     if (news?.length) parts.push(el("div", { class: "news" }, el("h3", { text: "From your laundromats" }),
       ...news.slice(0, 3).map((n) => el("p", {}, el("strong", { text: `${n.operator_name} · ${n.title}` }), el("br"), n.body))));
     parts.push(el("p", { class: "meta", text: convs?.length ? "Your conversations with laundromats:" : "Open a laundromat's page in the app and tap Message to ask its staff anything." }));
-    for (const c of convs ?? []) parts.push(row(c.operator_name, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.operator_name, true)));
+    const mineBox = el("div");
+    const removeConvs = async (ids, all) => {
+      const { error } = await db.rpc("delete_conversations", { ids: ids ?? all });
+      if (error) mineBox.prepend(errorLine(error.message)); else card.replaceWith(commsCard(a));
+    };
+    if (convs?.length) {
+      deletableList(mineBox, "messages", convs.map((c) => ({ id: c.conversation_id,
+        node: row(c.operator_name, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.operator_name, true)) })),
+        (ids) => removeConvs(ids, convs.map((c) => c.conversation_id)));
+      parts.push(mineBox);
+    }
     for (const m of a.memberships ?? []) {
       const { data: inbox } = await db.rpc("operator_conversations", { operator: m.operator_id });
       parts.push(el("h3", { text: `${m.operator_name}: customer messages` }));
       if (!inbox?.length) parts.push(el("p", { class: "meta", text: "None yet." }));
-      for (const c of inbox ?? []) parts.push(row(`${c.customer_name} · ${c.member_code}`, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.customer_name)));
+      else {
+        const box = el("div");
+        deletableList(box, "messages", inbox.map((c) => ({ id: c.conversation_id,
+          node: row(`${c.customer_name} · ${c.member_code}`, c.last_preview, c.last_message_at, c.unread, () => openChat(c.conversation_id, c.customer_name)) })),
+          async (ids) => {
+            const { error } = await db.rpc("delete_conversations", { ids: ids ?? inbox.map((c) => c.conversation_id) });
+            if (error) box.prepend(errorLine(error.message)); else card.replaceWith(commsCard(a));
+          });
+        parts.push(box);
+      }
       if (m.role === "super_admin") {
         const t = el("input", { placeholder: "Announcement title (e.g. Closed Monday)", maxlength: 80 });
         const body = el("textarea", { rows: 2, placeholder: "Message to your customers", maxlength: 1000 });

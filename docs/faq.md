@@ -64,8 +64,12 @@ Yes: open the laundromat's page (from Home or Laundromats near you) and tap **Me
 get a notification. Your conversations are under Home → **Messages**. Laundromats you've used can also post
 announcements ("Closed Monday"), which appear on Home. When your wash or dry is done, the update arrives in your chat
 with that laundromat; tap the notification and answer with one tap (**I'm on my way**, **I'll pick it up later**,
-**Thank you!**). To report a message, touch and hold it (iPhone) or tap it
-(Android) → **Report**.
+**Thank you!**). To report a message, touch and hold it to select it, then tap **Report**.
+
+**Can I delete notifications and messages?**
+Yes, in the app and on klean.ph. Swipe a notification, conversation or message to the left to delete it; touch and
+hold to select several, then tap **Delete**; or tap **Delete all**. Notifications are deleted for good. Messages are
+deleted from your view only: the laundromat keeps its copy.
 
 **Does Klean work with Siri?**
 Yes: "How long is left on my laundry in Klean?", "How many washers are free at Klean?", "Show my Klean member code",
@@ -201,8 +205,9 @@ filter every 10 dryer cycles, drum and door seal weekly, hoses and vents monthly
 repairs, and get a morning reminder when something's due. Each machine keeps its history.
 
 **Can my attendants take cash?**
-Yes, at the counter: they record it in Work (**Paying cash instead** → **Cash received**), and only then can machines be
-assigned, so cash that isn't rung up can't run a machine. Business → Sales → **Cash by person** shows who took how
+Yes, at the counter: Work → Intake, type the weight, tap **Cash** (or **Charge**, then **Paying cash instead**), enter
+what the customer handed over and tap **Cash received**. Only then can machines be assigned, so cash that isn't rung up
+can't run a machine. Tap a free washer; when its light is white, tap **Start wash** on it (walk-ins have no app). Business → Sales → **Cash by person** shows who took how
 much. Cash sales carry the same commission, deducted from your next payout.
 
 **Can I track my expenses?**
