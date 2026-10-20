@@ -235,3 +235,7 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .beta-dialog { max-width: 520px; width: calc(100% - 32px); border-radius: 16px; border: 0; padding: 20px; }
 .beta-dialog textarea, .beta-dialog input, .beta-dialog select { width: 100%; box-sizing: border-box; }
 .beta-roles-pick { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0; }
+
+/* Android beta steps (#android, 2026-10-19) */
+.android-steps { max-width: 640px; margin: 28px auto 0; text-align: left; }
+.android-steps ol { padding-left: 20px; display: grid; gap: 8px; }
