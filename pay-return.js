@@ -27,10 +27,3 @@ card.replaceChildren(
     el("a", { class: "btn btn-outline", href: flow === "laundry" && paid ? "/account.html?paid=1" : "/account.html", text: "Continue on klean.ph" })),
   el("p", { class: "meta", style: "margin-top:14px", text: "In the app? Tap Done (top left) to close this page." }));
 document.title = `${title} | Klean`;
-
-// Android (TJ, 2026-10-20: "after paying the app doesn't go back to Klean automatically"): the iPhone app closes its
-// payment page by itself, but an Android app can't close Chrome's tab. So on Android this page tries to open Klean
-// (which then sees the payment). Chrome only allows it when the visit came from a tap (the payment button); if it
-// refuses, nothing happens and the Back to Klean button is still here. No fallback page: that would take people who
-// have the app to the website's sign-in.
-if (/Android/i.test(navigator.userAgent)) setTimeout(() => { location.href = "klean://home"; }, 400);
