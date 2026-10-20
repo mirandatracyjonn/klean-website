@@ -258,3 +258,7 @@ a.store:hover { opacity: 1; transform: translateY(-1px); }
 .chat-log .deletable { width: 100%; }
 .chat-log .deletable:has(.mine) { justify-content: flex-end; }
 .chat-log .deletable > .chat-msg { flex: 0 1 auto; }
+
+/* Work → Intake on klean.ph: the payment QR for the customer's phone */
+.pay-qr { max-width: 280px; margin: 12px auto; background: #fff; padding: 8px; border-radius: 12px; }
+.pay-qr svg { width: 100%; height: auto; display: block; }

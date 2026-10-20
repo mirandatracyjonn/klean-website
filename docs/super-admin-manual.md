@@ -232,6 +232,9 @@ tap **Cash** (or, after **Charge**, **Paying cash instead**); the attendant opti
 **Cash received**. Only then do the loads become paid and machines can be assigned: **entering the sale in Klean is the
 only way a cash load gets a machine**, so cash that isn't rung up can't run a wash.
 
+**A counter computer or tablet.** Work is also on klean.ph → Account → **Work** (Machines, Intake with the payment QR
+or cash, Pickup), so a laptop or tablet at the counter can be the till without the app.
+
 **Starting a counter order's machines.** After tapping a free washer for the order, wait for its white light, then tap
 **Start wash** on it (in Work → Intake, or on its tile in Work → Machines) and confirm the laundry is in and the door is
 closed. Walk-ins have no app, so staff start counter orders; machines paid in a customer's own app are started by the

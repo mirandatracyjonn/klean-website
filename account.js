@@ -97,6 +97,7 @@ function signedIn(a, v) {
   parts.push(verificationCard(v));
   if (v.status === "verified") parts.push(businessCard());
   if (v.status === "verified") parts.push(receiptsCard());
+  if ((a.memberships ?? []).length) parts.push(workCard(a));
   if ((a.memberships ?? []).length) parts.push(staffCard(a));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(commissionCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
@@ -432,6 +433,203 @@ function commissionCard(m) {
     card.replaceChildren(...parts);
     card.hidden = false;
   })();
+  return card;
+}
+
+// Work at the counter on klean.ph (2026-10-20, so a shop's laptop or tablet can be the counter, like Work in the apps):
+// live machines (Start for counter orders, M81), Intake (weigh, then the payment QR or cash, M67; assign machines),
+// and the pickup board.
+let qrLib;
+function loadQr() {
+  qrLib ??= new Promise((ok, fail) => {
+    const t = document.createElement("script");
+    t.src = "/hq/vendor/qrcode-generator-1.4.4.min.js";
+    t.onload = () => ok(window.qrcode); t.onerror = fail;
+    document.head.append(t);
+  });
+  return qrLib;
+}
+const STATUS = { available: "Free", paid_awaiting_start: "Paid: press Start", in_use: "Running", error: "Needs attention" };
+function workCard(a) {
+  const card = el("div", { class: "card acct-card" }, el("h2", { text: "Work" }));
+  const pick = el("select", { "aria-label": "Branch" });
+  const show = el("select", { "aria-label": "Show" }, ...[["machines", "Machines"], ["intake", "Intake"], ["pickup", "Pickup"]]
+    .map(([v, t]) => el("option", { value: v, text: t })));
+  const body = el("div");
+  card.append(el("div", { class: "btn-row" }, pick, show), body);
+  let branches = [];
+  let timer;
+  const money2 = (v, c) => money(v, c);
+  const machinesOf = async (b) => {
+    const { data } = await db.from("machines").select("id,type,label,status,cycle_ends_at,reserved_until,error_reason").eq("branch_id", b.id).eq("is_enabled", true).order("label");
+    return data ?? [];
+  };
+  const startButton = (m, note) => {
+    const go = el("button", { class: "btn btn-brand", type: "button", text: m.type === "dryer" ? "Start dry" : "Start wash" });
+    go.addEventListener("click", async () => {
+      if (!window.confirm(`Start ${m.label} now? Make sure the laundry is inside and the door is closed.`)) return;
+      const { error } = await db.rpc("staff_start_machine", { machine: m.id });
+      note.replaceChildren(error ? errorLine(error.message) : el("p", { class: "meta", text: `Starting ${m.label}…` }));
+    });
+    return go;
+  };
+  const machinesView = async (b) => {
+    const note = el("div");
+    const draw = async () => {
+      if (!body.isConnected || show.value !== "machines") return;
+      const list = await machinesOf(b);
+      const rows = list.map((m) => {
+        const left = m.status === "in_use" && m.cycle_ends_at ? ` · ${Math.max(0, Math.ceil((new Date(m.cycle_ends_at) - Date.now()) / 60000))} min left` : "";
+        return el("div", { class: "acct-machine" },
+          el("p", {}, el("strong", { text: m.label }), ` · ${m.type === "dryer" ? "Dryer" : "Washer"} · ${STATUS[m.status] ?? m.status}${left}`),
+          m.error_reason ? el("p", { class: "acct-error", text: m.error_reason }) : "",
+          m.status === "paid_awaiting_start" ? startButton(m, note) : "");
+      });
+      body.replaceChildren(note, ...(rows.length ? rows : [el("p", { class: "meta", text: "No machines at this branch yet." })]));
+      timer = setTimeout(draw, 5000);
+    };
+    draw();
+  };
+  const intakeView = (b) => {
+    const kg = el("input", { type: "number", min: "0.1", step: "0.1", inputmode: "decimal", placeholder: "Weight (kg)", "aria-label": "Weight (kg)" });
+    const member = el("input", { placeholder: "Customer's member code (optional, for points)", "aria-label": "Member code" });
+    const price = el("p", { class: "meta" });
+    const charge = el("button", { class: "btn btn-brand", type: "button", text: "Charge (GCash, Maya, QR Ph, card)", disabled: true });
+    const cash = el("button", { class: "btn btn-outline", type: "button", text: "Cash", disabled: true });
+    const out = el("div");
+    let quoteTimer;
+    kg.addEventListener("input", () => {
+      clearTimeout(quoteTimer); charge.disabled = cash.disabled = true; price.textContent = "";
+      const w = parseFloat(kg.value);
+      if (!(w > 0)) return;
+      quoteTimer = setTimeout(async () => {
+        const { data: q, error } = await db.rpc("quote_intake", { branch: b.id, weight_kg: w });
+        if (error) { price.replaceChildren(errorLine(error.message)); return; }
+        price.textContent = `${q.loads} load${q.loads === 1 ? "" : "s"} × ${money2(q.price_per_load_minor, q.currency)} = ${money2(q.total_minor, q.currency)}`;
+        charge.disabled = cash.disabled = false;
+      }, 300);
+    });
+    const start = async () => {
+      const { data: id, error } = await db.rpc("start_pos_order", { branch: b.id, weight_kg: parseFloat(kg.value), customer_member_code: member.value.trim() || null });
+      if (error) { out.replaceChildren(errorLine(error.message)); return null; }
+      return id;
+    };
+    const paidView = async (id) => {
+      clearTimeout(timer);
+      const note = el("div");
+      const draw = async () => {
+        if (!body.isConnected || show.value !== "intake") return;
+        const [{ data: o }, list] = await Promise.all([db.rpc("pos_order", { order_id: id }), machinesOf(b)]);
+        if (!o) return;
+        const free = list.filter((m) => m.status === "available" && !(m.reserved_until && new Date(m.reserved_until) > new Date())
+          && (m.type === "washer" ? o.washes_remaining > 0 : o.dries_remaining > 0));
+        const armed = list.filter((m) => m.status === "paid_awaiting_start");
+        const next = el("button", { class: "btn btn-outline", type: "button", text: "Next customer" });
+        next.addEventListener("click", () => { clearTimeout(timer); render(); });
+        out.replaceChildren(
+          el("p", { text: `Paid ✓  Washes left: ${o.washes_remaining} · Dries left: ${o.dries_remaining}` }), note,
+          ...(free.length ? [el("p", { class: "meta", text: "Tap a free machine for the next wash or dry:" }), el("div", { class: "btn-row" }, ...free.map((m) => {
+            const btn = el("button", { class: "btn btn-outline", type: "button", text: `${m.label} (${m.type === "dryer" ? "dryer" : "washer"})` });
+            btn.addEventListener("click", async () => {
+              const { error } = await db.rpc("assign_machine", { order_id: id, machine: m.id });
+              note.replaceChildren(error ? errorLine(error.message) : el("p", { class: "meta", text: `${m.label} is getting ready. When it says Paid: press Start, tap Start below.` }));
+              clearTimeout(timer); draw();
+            });
+            return btn;
+          }))] : []),
+          ...armed.map((m) => el("div", { class: "btn-row" }, el("span", { text: `${m.label}: paid, waiting for Start` }), startButton(m, note))),
+          next);
+        timer = setTimeout(draw, 4000);
+      };
+      draw();
+    };
+    charge.addEventListener("click", async () => {
+      charge.disabled = cash.disabled = true;
+      const id = await start(); if (!id) return;
+      try {
+        const { checkout_url: url } = await call("payments", { action: "checkout", order_id: id });
+        const qrcode = await loadQr();
+        const q = qrcode(0, "M"); q.addData(url); q.make();
+        const box = el("div", { class: "pay-qr" }); box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 4, scalable: true });
+        const instead = el("button", { class: "btn btn-outline", type: "button", text: "Paying cash instead" });
+        instead.addEventListener("click", () => cashForm(id));
+        out.replaceChildren(el("p", { text: "Ask the customer to scan this to pay with GCash, Maya, QR Ph or card." }), box, instead);
+        const poll = async () => {
+          if (!body.isConnected) return;
+          const { data: o } = await db.rpc("pos_order", { order_id: id });
+          if (o?.status === "paid") paidView(id); else if (o?.status === "pending_payment") timer = setTimeout(poll, 3000);
+          else out.replaceChildren(errorLine("Checkout closed. Start over."));
+        };
+        timer = setTimeout(poll, 3000);
+      } catch (e) { out.replaceChildren(errorLine(e.message)); }
+    });
+    const cashForm = async (existing) => {
+      clearTimeout(timer);
+      const id = existing ?? await start(); if (!id) return;
+      const { data: o } = await db.rpc("pos_order", { order_id: id });
+      const tendered = el("input", { type: "number", min: "0", step: "0.01", inputmode: "decimal", placeholder: "Amount received (optional)", "aria-label": "Amount received" });
+      const change = el("p", { class: "meta" });
+      tendered.addEventListener("input", () => {
+        const t = Math.round(parseFloat(tendered.value) * 100);
+        change.textContent = t >= o.total_minor ? `Change: ${money2(t - o.total_minor, o.currency)}` : t ? "That's less than the total." : "";
+      });
+      const ok = el("button", { class: "btn btn-brand", type: "button", text: "Cash received" });
+      ok.addEventListener("click", async () => {
+        const t = parseFloat(tendered.value);
+        const { data: r, error } = await db.rpc("pos_cash_paid", { order_id: id, tendered_minor: t > 0 ? Math.round(t * 100) : null });
+        if (error) { change.replaceChildren(errorLine(error.message)); return; }
+        paidView(id);
+        if (r.change_minor > 0) out.prepend(el("p", { text: `Cash received. Give ${money2(r.change_minor, o.currency)} change.` }));
+      });
+      out.replaceChildren(el("h3", { text: `Cash: ${money2(o.total_minor, o.currency)}` }), tendered, change, ok,
+        el("p", { class: "meta", text: "Recorded with your name and the time. Machines start only after this." }));
+    };
+    cash.addEventListener("click", () => { charge.disabled = cash.disabled = true; cashForm(null); });
+    const render = () => {
+      kg.value = ""; member.value = ""; price.textContent = ""; charge.disabled = cash.disabled = true;
+      body.replaceChildren(el("div", { class: "acct-field" }, kg, member, price, el("div", { class: "btn-row" }, charge, cash)), out);
+      out.replaceChildren(el("p", { class: "meta", text: "Charge shows a QR for the customer's phone. Cash: take the money, then confirm it here. Either way, machines start only after payment is recorded." }));
+    };
+    render();
+  };
+  const pickupView = async (b) => {
+    const { data, error } = await db.rpc("branch_open_orders", { branch: b.id });
+    if (error) { body.replaceChildren(errorLine(error.message)); return; }
+    if (!data.length) { body.replaceChildren(el("p", { class: "meta", text: "Nothing waiting for pickup." })); return; }
+    body.replaceChildren(...data.map((o) => {
+      const note = el("div");
+      const ready = o.has_customer ? el("button", { class: "btn btn-outline", type: "button", text: o.ready_notified_at ? "Send reminder" : "Notify: ready for pickup" }) : "";
+      if (ready) ready.addEventListener("click", async () => {
+        const { error: e } = await db.rpc("notify_ready_for_pickup", { order_id: o.order_id, note: null });
+        note.replaceChildren(e ? errorLine(e.message) : el("p", { class: "meta", text: "Customer notified." }));
+      });
+      const done = el("button", { class: "btn btn-brand", type: "button", text: "Picked up" });
+      done.addEventListener("click", async () => {
+        const { error: e } = await db.rpc("mark_picked_up", { order_id: o.order_id });
+        if (e) note.replaceChildren(errorLine(e.message)); else pickupView(b);
+      });
+      return el("div", { class: "acct-machine" },
+        el("p", {}, el("strong", { text: o.customer_name ?? "Walk-in customer" })),
+        el("p", { class: "meta", text: `${o.loads} load${o.loads === 1 ? "" : "s"} · ${money2(o.total_minor, o.currency)} · paid ${new Date(o.paid_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}${o.washes_remaining + o.dries_remaining ? ` · still to do: ${o.washes_remaining} wash · ${o.dries_remaining} dry` : ""}` }),
+        el("div", { class: "btn-row" }, ready, done), note);
+    }));
+  };
+  const load = () => {
+    clearTimeout(timer);
+    const b = branches.find((x) => x.id === pick.value);
+    if (!b) return;
+    if (show.value === "intake") intakeView(b); else if (show.value === "pickup") pickupView(b); else machinesView(b);
+  };
+  (async () => {
+    const { data, error } = await db.rpc("my_branches");
+    if (error || !data?.length) { body.replaceChildren(el("p", { class: "meta", text: error ? error.message : "You aren't assigned to a branch yet." })); return; }
+    branches = data;
+    pick.replaceChildren(...data.map((b) => el("option", { value: b.id, text: `${b.operator_name} · ${b.name}` })));
+    if (data.length < 2) pick.hidden = true;
+    load();
+  })();
+  pick.addEventListener("change", load);
+  show.addEventListener("change", load);
   return card;
 }
 
