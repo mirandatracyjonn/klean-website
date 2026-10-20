@@ -39,7 +39,8 @@ notification, the refunded loads' unused washes/dries are cancelled, and the poi
 
 **It says "Test payment: no real money". What does that mean?**
 That laundromat is still testing Klean (Beta). Nothing is charged: on the payment page, use PayMongo's test options
-(for example the test GCash button). Points and loads from test payments are for testing only.
+(for example the test GCash button) or, where checkout is by Stripe, the test card 4242 4242 4242 4242 with any future
+date and any CVC. Points and loads from test payments are for testing only.
 
 **How do I find a laundromat near me?**
 On Home, tap **Laundromats near you** (or **Find a laundromat** on klean.ph). Allow location to see the nearest ones on
