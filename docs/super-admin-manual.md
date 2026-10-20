@@ -216,6 +216,12 @@ reason (the customer sees it), and confirm. Rules:
   The processor's fee on the original payment isn't returned. Payout statements show the refunds.
 - Beta (test) orders refund test money only.
 
+**Chargebacks (bank disputes):** if a customer disputes a payment with their bank, you and Klean get a notification
+("A customer disputed a payment") with the order number. Within 5 days, email Klean anything that shows the service
+was given: photos, messages with the customer, the machine's start and finish times. Klean answers the bank. If the
+bank sides with the customer, it's handled like a full refund of that order (its refund reason starts with
+"Chargeback", and it counts as a refund in your reports), and you're told "Dispute lost"; if it sides with you, nothing changes ("Dispute won").
+
 ## 7. Customers
 
 **Business → Customers.**

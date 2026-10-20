@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 1.7.*
+*Effective date: October 19, 2026. Version 1.8.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -167,6 +167,13 @@ and the points that payment earned are taken back in proportion. Refunds of Beta
 7.3 **Operators and refunds.** A refund (less Klean's commission on it, which Klean returns) is deducted from the
 Operator's next payout. The payment processor's fee on the original payment isn't returned by the processor and isn't
 refunded to the Operator. If a payment is charged back, related points and credits may be reversed in the same way.
+
+7.4 **Chargebacks.** If a customer disputes a payment with their bank or card issuer, Klean tells the Operator, who
+should send Klean any evidence (photos, messages, the machine's start and finish times) within 5 days; Klean answers
+the bank as the payment account holder. If the bank decides for the customer, the disputed order is treated as a full
+refund of the loads not yet refunded: its unused washes and dries are cancelled, its points are taken back, Klean
+returns its commission on it, and the amount is deducted from the Operator's next payout. If the bank decides for the
+Operator, nothing changes. A customer who wins a chargeback isn't refunded a second time.
 
 ## 8. Availability and changes
 
