@@ -55,7 +55,9 @@ pays your business its share of the previous day's payments:
 - Free loads redeemed with points carry no commission and no payout.
 
 The commission rate is set by Klean, not by you, and isn't editable from your dashboard. Every order records
-the rate it was charged at, so a future change never affects past orders.
+the rate it was charged at, so a future change never affects past orders. Klean may give your business its own
+rate: a lower rate starts with your next payment, and any increase starts at least 30 days after you're told. You get a
+notification either way, and the Setup screen shows the date of a change that's coming.
 
 Klean is free to download and free to set up. There's no subscription. Klean earns only when you do.
 
