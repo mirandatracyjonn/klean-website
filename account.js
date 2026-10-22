@@ -492,7 +492,20 @@ function workCard(a) {
           m.error_reason ? el("p", { class: "acct-error", text: m.error_reason }) : "",
           m.status === "paid_awaiting_start" ? startButton(m, note) : "");
       });
-      body.replaceChildren(note, ...(rows.length ? rows : [el("p", { class: "meta", text: "No machines at this branch yet." })]));
+      // M86 (TJ, 2026-10-21): Super Admins testing in Beta can put every simulated machine back to Available.
+      const admin = (a.memberships ?? []).some((x) => x.operator_id === b.operator_id && x.role === "super_admin");
+      let reset = "";
+      if (admin) {
+        reset = el("button", { class: "btn btn-outline", type: "button", text: "Reset simulated machines (Beta)" });
+        reset.addEventListener("click", async () => {
+          if (reset.dataset.armed !== "1") { reset.dataset.armed = "1"; reset.textContent = "Tap again to reset every simulated machine here"; return; }
+          const { data: n, error } = await db.rpc("reset_simulated_branch", { branch: b.id });
+          note.replaceChildren(error ? errorLine(error.message)
+            : el("p", { class: "meta", text: `Reset ${n} simulated machine${n === 1 ? "" : "s"}. Loads waiting to start went back to their orders.` }));
+          clearTimeout(timer); draw();
+        });
+      }
+      body.replaceChildren(note, reset, ...(rows.length ? rows : [el("p", { class: "meta", text: "No machines at this branch yet." })]));
       timer = setTimeout(draw, 5000);
     };
     draw();
