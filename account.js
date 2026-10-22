@@ -583,6 +583,9 @@ function workCard(a) {
       });
       out.replaceChildren(el("h3", { text: `Cash: ${money2(o.total_minor, o.currency)}` }), tendered, change, ok,
         el("p", { class: "meta", text: "Recorded with your name and the time. Machines start only after this." }));
+      // TJ (2026-10-21): jump to the cash step and put the cursor in "Amount received", no scrolling needed.
+      out.scrollIntoView({ behavior: "smooth", block: "start" });
+      tendered.focus({ preventScroll: true });
     };
     cash.addEventListener("click", () => { charge.disabled = cash.disabled = true; cashForm(null); });
     const render = () => {
