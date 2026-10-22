@@ -160,15 +160,31 @@ async function tickOnce() {
   }
   try {
     const { commands } = await sendEvents(events);
+    S.error = null;   // cleared before handling commands, so a failed Start below stays on the page
     for (const [controllerId, list] of Object.entries(commands ?? {})) {
       const m = machines.find((x) => x.controller_id === controllerId);
       for (const c of list) {
         if (m && c.type === "CREDIT") await onCredit(m, c);
+        // M88: Add time on a running bay.
+        if (m && c.type === "EXTEND") {
+          const sim = simOf(m);
+          if (sim.state === "RUNNING") sim.endsAt = Math.max(sim.endsAt ?? Date.now(), Date.now()) + ((c.minutes ?? 0) * 60000) / local.speed;
+        }
         // M37: the customer tapped Start wash / Start dry in Klean.
-        if (m && c.type === "START" && simOf(m).activation === c.activation_id) await pressStart(m.controller_id);
+        if (m && c.type === "START") {
+          const sim = simOf(m);
+          // TJ (2026-10-21): W1 needed three taps. When Klean HQ is open in two places, the other copy can take the
+          // payment (CREDIT) and this one never learns about it, so it ignored Start. The server's word wins: if the
+          // machine is paid and waiting for Start, arm it with this payment and press Start.
+          // Same when this copy thinks the machine is still running or faulted (TJ, 2026-10-21: W1 ignored six taps).
+          if (m.status === "paid_awaiting_start" && (sim.activation !== c.activation_id || sim.state !== "ARMED")) {
+            Object.assign(sim, { state: "ARMED", activation: c.activation_id, cycleMinutes: sim.cycleMinutes ?? m.cycle_minutes, endsAt: null });
+          }
+          if (sim.activation === c.activation_id) await pressStart(m.controller_id);
+          else console.warn(`Klean HQ: ignored Start for ${m.label} (it isn't paid and waiting)`);
+        }
       }
     }
-    S.error = null;
   } catch (e) { S.error = `Simulator can't reach Klean: ${e.message}`; }
   save();
   // Refresh what the server says (the lights are the server's truth, the same as the app shows).
@@ -193,9 +209,19 @@ async function pressStart(controllerId) {
   const sim = simOf(m);
   if (sim.state !== "ARMED") return;
   const minutes = sim.cycleMinutes ?? m.cycle_minutes;
-  Object.assign(sim, { state: "RUNNING", endsAt: Date.now() + (minutes * 60000) / local.speed });
+  // Tell Klean first, and only then run (2026-10-21): if the report fails, the machine stays armed so the next Start
+  // tries again, instead of this copy believing it's running while Klean still waits for Start.
+  try {
+    const reply = await sendEvents([event(m, "started", { activation_id: sim.activation })]);
+    const result = reply?.results?.[0];
+    if (result && !["ok", "duplicate"].includes(result)) throw new Error(`Klean answered "${result}" for ${m.label}'s start`);
+    Object.assign(sim, { state: "RUNNING", endsAt: Date.now() + (minutes * 60000) / local.speed });
+    S.error = null;
+  } catch (e) {
+    S.error = `${m.label} didn't start: ${e.message}. Tap Start again.`;
+    console.warn("Klean HQ:", S.error);
+  }
   save();
-  await sendEvents([event(m, "started", { activation_id: sim.activation })]).catch((e) => (S.error = e.message));
   renderFloor();
 }
 
@@ -209,6 +235,12 @@ async function act(controllerId, what) {
     if (what === "fault") {
       await sendEvents([event(m, "fault", { code: "SIMULATED_FAULT", ...(sim.state === "ARMED" ? { activation_id: sim.activation } : {}) })]);
       Object.assign(sim, { state: "FAULT", activation: null, endsAt: null });
+    }
+    if (what === "reset") {
+      await rpc("reset_simulated_machine", { machine: m.id });
+      Object.assign(sim, { state: "IDLE", activation: null, endsAt: null });
+      if (sim.plugged) await sendEvents([event(m, "hb", { state: "IDLE" })]);
+      S.error = null;
     }
     if (what === "clear") {
       await rpc("clear_machine_error", { machine: m.id });
@@ -240,7 +272,29 @@ async function act(controllerId, what) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Machine artwork (SVG): a washer has a glass door with water; a dryer tumbles clothes. Both spin when in use.
+// M88: a wash bay (car or motorcycle) shows the vehicle with spray while it runs.
+const isBayType = (t) => t === "car_bay" || t === "moto_bay";
+const TYPE_NAME = { washer: "Washer", dryer: "Dryer", car_bay: "Car wash bay", moto_bay: "Motorcycle wash bay" };
+function bayArt(m, status) {
+  const running = status === "in_use";
+  const vehicle = m.type === "car_bay"
+    ? `<rect x="36" y="104" width="88" height="26" rx="8" fill="#0E7C66"/><path d="M52 104 l12 -18 h32 l12 18z" fill="#2BB596"/>
+       <circle cx="58" cy="132" r="9" fill="#33413d"/><circle cx="102" cy="132" r="9" fill="#33413d"/>`
+    : `<circle cx="52" cy="128" r="12" fill="#33413d"/><circle cx="108" cy="128" r="12" fill="#33413d"/>
+       <path d="M52 128 l20 -22 h22 l14 22" stroke="#0E7C66" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="70" y="96" width="26" height="9" rx="4" fill="#2BB596"/>`;
+  const spray = running ? `<g class="spin fast" opacity=".8"><circle cx="60" cy="70" r="4" fill="#60a5fa"/><circle cx="80" cy="62" r="5" fill="#93c5fd"/>
+       <circle cx="100" cy="72" r="4" fill="#60a5fa"/><circle cx="72" cy="84" r="3" fill="#bfdbfe"/><circle cx="92" cy="86" r="3" fill="#bfdbfe"/></g>` : "";
+  return `<svg viewBox="0 0 160 170" width="150" height="160" aria-label="${TYPE_NAME[m.type]}">
+    <rect x="12" y="6" width="136" height="158" rx="16" fill="${status === "error" ? "#fff1f1" : "#f5fbff"}" stroke="#d6dfdc" stroke-width="2"/>
+    <rect x="12" y="6" width="136" height="30" rx="16" fill="#e8f1f8"/><rect x="12" y="24" width="136" height="12" fill="#e8f1f8"/>
+    <text x="80" y="27" font-size="12" font-weight="700" text-anchor="middle" fill="#5b6f69">${esc(m.label)}</text>
+    <rect x="76" y="36" width="8" height="18" fill="#9aa9a4"/><path d="M68 54 h24 l-4 8 h-16z" fill="#9aa9a4"/>
+    ${spray}${vehicle}<rect x="20" y="146" width="120" height="6" rx="3" fill="#d6dfdc"/>
+  </svg>`;
+}
+
 function machineArt(m, status) {
+  if (isBayType(m.type)) return bayArt(m, status);
   const running = status === "in_use";
   const isWasher = m.type === "washer";
   const body = status === "error" ? "#fff1f1" : "#ffffff";
@@ -337,16 +391,22 @@ function renderNotReady() {
 }
 
 let wizardFor = null; // null = new location, or a branch id to add machines to
+// M87: what this business offers (laundromat, carwash_self, carwash_full, moto_self).
+const has = (service) => (S.operators.find((o) => o.operator_id === local.operatorId)?.services ?? ["laundromat"]).includes(service);
 function renderWizard() {
   const branch = S.branches.find((b) => b.id === wizardFor);
   $("app").innerHTML = `<div class="card narrow">
-    <h2>${branch ? `Add machines to ${esc(branch.name)}` : S.branches.length ? "Add a location" : "Set up your laundromat"}</h2>
-    <p>${branch ? "How many more washers and dryers?" : "Tell us about this location. Each washer and dryer gets its own QR code and status light."}</p>
+    <h2>${branch ? `Add machines to ${esc(branch.name)}` : S.branches.length ? "Add a location" : "Set up your business"}</h2>
+    <p>${branch ? "How many more machines and bays?" : "Tell us about this location. Each machine and wash bay gets its own QR code and status light."}</p>
     ${branch ? "" : `<label class="field">Location name<input id="wName" placeholder="e.g. Makati Ave" maxlength="60"></label>
                      <label class="field">Address (optional)<input id="wAddr" placeholder="Street, city"></label>`}
     <div class="row">
-      <label class="field">Washers<input id="wWash" type="number" min="0" max="40" value="${branch ? 0 : 4}"></label>
-      <label class="field">Dryers<input id="wDry" type="number" min="0" max="40" value="${branch ? 0 : 4}"></label>
+      <label class="field">Washers<input id="wWash" type="number" min="0" max="40" value="${branch ? 0 : has("laundromat") ? 4 : 0}"></label>
+      <label class="field">Dryers<input id="wDry" type="number" min="0" max="40" value="${branch ? 0 : has("laundromat") ? 4 : 0}"></label>
+    </div>
+    <div class="row">
+      <label class="field">Car wash bays (self-service)<input id="wCar" type="number" min="0" max="40" value="${branch ? 0 : has("carwash_self") ? 2 : 0}"></label>
+      <label class="field">Motorcycle wash bays<input id="wMoto" type="number" min="0" max="40" value="${branch ? 0 : has("moto_self") ? 2 : 0}"></label>
     </div>
     <div class="row">
       <label class="field">Wash cycle (minutes)<input id="wWashMin" type="number" min="5" max="180" value="35"></label>
@@ -365,11 +425,11 @@ function renderWizard() {
 
 async function runWizard() {
   const n = (id) => Math.max(0, Math.min(40, parseInt($(id).value || "0", 10)));
-  const washers = n("wWash"), dryers = n("wDry");
+  const washers = n("wWash"), dryers = n("wDry"), carBays = n("wCar"), motoBays = n("wMoto");
   const washMin = Math.max(5, Math.min(180, parseInt($("wWashMin").value, 10) || 35));
   const dryMin = Math.max(5, Math.min(180, parseInt($("wDryMin").value, 10) || 40));
   const mode = $("wMode").value;
-  if (washers + dryers === 0) return ($("wMsg").textContent = "Add at least one machine.");
+  if (washers + dryers + carBays + motoBays === 0) return ($("wMsg").textContent = "Add at least one machine or bay.");
   $("wGo").disabled = true;
   try {
     let branchId = wizardFor;
@@ -383,6 +443,9 @@ async function runWizard() {
     const plan = [];
     for (let i = 0, s = next("W"); i < washers; i++) plan.push(["washer", `W${s + i}`, washMin]);
     for (let i = 0, s = next("D"); i < dryers; i++) plan.push(["dryer", `D${s + i}`, dryMin]);
+    // M88: bays run for the minutes the customer pays for; the cycle here is only a fallback.
+    for (let i = 0, s = next("B"); i < carBays; i++) plan.push(["car_bay", `B${s + i}`, 5]);
+    for (let i = 0, s = next("M"); i < motoBays; i++) plan.push(["moto_bay", `M${s + i}`, 5]);
     for (const [type, label, minutes] of plan) {
       $("wMsg").textContent = `Creating ${label}…`;
       const controllerId = `kln-${branchId.slice(0, 8)}-${label.toLowerCase()}`;
@@ -410,7 +473,8 @@ function renderFloor() {
     const list = machines.filter((m) => m.type === type).sort(byLabel);
     return list.length ? `<h3 class="section">${title} <span>${list.length}</span></h3><div class="floor">${list.map(machineCard).join("")}</div>` : "";
   };
-  const cards = section("washer", "Washers") + section("dryer", "Dryers") + scalesSection();
+  const cards = section("washer", "Washers") + section("dryer", "Dryers") + section("car_bay", "Car wash bays")
+    + section("moto_bay", "Motorcycle wash bays") + scalesSection();
   // The floor redraws every second; keep whatever is being typed in a scale's weight box.
   const typing = document.activeElement?.id?.startsWith("scaleKg-") ? { id: document.activeElement.id, value: document.activeElement.value } : null;
   const typed = [...document.querySelectorAll("[id^=scaleKg-]")].map((el) => [el.id, el.value]);
@@ -430,11 +494,14 @@ function renderFloor() {
       ? `<div class="note warn" style="margin-bottom:14px"><b>Beta testing is on.</b> Payments use test money (no real money moves) and this data can be deleted
          in the Klean app (Business → Setup → Beta testing). Going live needs real machines with Klean controllers.</div>`
       : `<div class="note" style="margin-bottom:14px"><b>Live.</b> Customers pay real money. Simulated machines are switched off.</div>`}
+    ${S.paused ? `<div class="note warn" style="margin-bottom:14px"><b>Paused: Klean HQ is open in another tab.</b> Only one tab runs the
+       simulated machines, so Start always reaches the right one. <button class="primary" data-do="run-here">Run the simulator here</button></div>` : ""}
     ${S.error ? `<p class="err">${esc(S.error)}</p>` : ""}
     ${sims.length && S.isBeta ? `<div class="note" style="margin-bottom:14px">Simulated machines run while this page is open. Scan a QR code with the Klean app on your phone and pay with
-       PayMongo test money: the machine's light turns white, then blue when it starts, then green when the cycle ends.</div>` : ""}
+       PayMongo test money: the machine's light turns white, then blue when it starts, then green when the cycle ends.
+       <button class="ghost" data-do="reset-all">Reset all simulated machines</button></div>` : ""}
     ${cards || `<p>No machines here yet.</p>`}
-    <div class="stickers">${[...machines].sort((a, b) => (a.type === b.type ? byLabel(a, b) : a.type === "washer" ? -1 : 1)).map((m) => `<div class="sticker"><b>${esc(m.label)}</b>${qrSvg(m.qr_token, 4, 4)}<span>Scan with the Klean app · ${esc(branch?.name ?? "")}</span></div>`).join("")}</div>`;
+    <div class="stickers">${[...machines].sort((a, b) => { const o = ["washer", "dryer", "car_bay", "moto_bay"]; return a.type === b.type ? byLabel(a, b) : o.indexOf(a.type) - o.indexOf(b.type); }).map((m) => `<div class="sticker"><b>${esc(m.label)}</b>${qrSvg(m.qr_token, 4, 4)}<span>Scan with the Klean app · ${esc(branch?.name ?? "")}</span></div>`).join("")}</div>`;
   for (const [id, value] of typed) { const el = $(id); if (el) el.value = value; }
   if (typing) $(typing.id)?.focus();
 }
@@ -458,6 +525,8 @@ function machineCard(m) {
       sim.plugged ? `<button class="ghost" data-act="unplug" data-cid="${m.controller_id}">Unplug</button>`
                   : `<button class="ghost" data-act="plug" data-cid="${m.controller_id}">Plug in</button>`,
       `<button class="ghost" data-act="real" data-cid="${m.controller_id}">Use real machine</button>`,
+      // M86 (TJ, 2026-10-21): back to Available; a load waiting to start goes back to its order.
+      `<button class="ghost" data-act="reset" data-cid="${m.controller_id}">Reset</button>`,
     ].join("");
     if (!sim.plugged) detail = "Unplugged: turns red within 90 s (no heartbeat).";
   } else {
@@ -472,7 +541,7 @@ function machineCard(m) {
     <div class="mhead" style="${m.is_enabled ? "" : "opacity:.55"}"><b>${esc(m.label)}</b><span class="mode ${mode === "real" ? "real" : ""}">${mode === "real" ? "Real" : "Simulated"}</span>
       <span class="light ${m.status}" title="${STATUS_TEXT[m.status]}"></span></div>
     <div class="art">${machineArt(m, m.status)}</div>
-    <div class="status">${STATUS_TEXT[m.status] ?? m.status}<small>${m.type === "washer" ? "Washer" : "Dryer"} · ${m.cycle_minutes} min cycle${detail ? " · " + detail : ""}</small></div>
+    <div class="status">${STATUS_TEXT[m.status] ?? m.status}<small>${TYPE_NAME[m.type] ?? m.type}${isBayType(m.type) ? "" : ` · ${m.cycle_minutes} min cycle`}${detail ? " · " + detail : ""}</small></div>
     <div class="qr"><button class="qr-btn" data-zoom="${esc(m.qr_token)}" data-label="${esc(m.label)}" title="Show large to scan">${qrSvg(m.qr_token, 3, 2)}</button><small>Scan with the Klean app to pay and start ${esc(m.label)}. <b>Click the code to make it big.</b></small></div>
     <div class="actions">${actions}</div>
   </div>`;
@@ -541,6 +610,8 @@ function renderHardware() {
     ${real.length ? `<p>The file holds each machine's controller ID and a <b>fresh secret key</b>. Downloading it replaces the old keys, so any controller already
        installed for these machines must be re-flashed. Keep the file private and delete it after flashing.</p>
        <label class="field">Coins (pulses) per cycle<input id="hwPulses" type="number" min="1" max="50" value="1"></label>
+       ${real.some((m) => isBayType(m.type)) ? `<label class="field">Wash bays: coins (pulses) per minute<input id="hwBayPulses" type="number" min="1" max="50" value="1"></label>
+       <p class="hint">A bay sells time: Klean drops minutes paid × this many coins, and more when the customer taps Add time.</p>` : ""}
        <label><input type="checkbox" id="hwCoinsStart"> These machines start as soon as coins go in (no Start button). Klean then holds the coins until the customer taps Start in the app, so they never start by themselves.</label>
        <button class="primary" data-do="config">Download controller file (klean_config.h)</button>`
      : `<p>No machine at this location is set to <b>Real</b> yet. On the floor, choose <b>Use real machine</b> on the machines that have controllers.</p>`}
@@ -552,13 +623,14 @@ async function downloadConfig() {
   const real = (S.machines[local.branchId] ?? []).filter((m) => modeOf(m) === "real");
   const pulses = Math.max(1, Math.min(50, parseInt($("hwPulses").value, 10) || 1));
   const coinsStartIt = $("hwCoinsStart").checked;
+  const bayPulses = Math.max(1, Math.min(50, parseInt($("hwBayPulses")?.value, 10) || 1));
   const branch = S.branches.find((b) => b.id === local.branchId);
   try {
     const lines = [];
     for (const [i, m] of real.entries()) {
       const secret = await rpc("rotate_device_secret", { machine: m.id });
       const box = Math.floor(i / 4) + 1, channel = (i % 4) + 1;
-      lines.push(`  // ${m.label} (${m.type}), box ${box} channel ${channel}\n  { "${m.label}", "${m.controller_id}", "${secret}", ${box}, ${channel}, ${pulses}, ${coinsStartIt} },`);
+      lines.push(`  // ${m.label} (${m.type}), box ${box} channel ${channel}\n  { "${m.label}", "${m.controller_id}", "${secret}", ${box}, ${channel}, ${isBayType(m.type) ? bayPulses : pulses}, ${coinsStartIt}, ${isBayType(m.type)} },`);
     }
     for (const m of real) delete local.secrets[m.controller_id]; // the controller holds them now
     save();
@@ -570,7 +642,8 @@ async function downloadConfig() {
 #define KLEAN_WIFI_SSID "your-wifi-name"
 #define KLEAN_WIFI_PASSWORD "your-wifi-password"
 
-struct KleanMachine { const char* label; const char* controllerId; const char* secret; uint8_t box; uint8_t channel; uint8_t pulses; bool coinsStartIt; };
+// pulses: coins per cycle (washers, dryers) or coins per MINUTE (wash bays, isBay = true).
+struct KleanMachine { const char* label; const char* controllerId; const char* secret; uint8_t box; uint8_t channel; uint8_t pulses; bool coinsStartIt; bool isBay; };
 static const KleanMachine KLEAN_MACHINES[] = {
 ${lines.join("\n")}
 };
@@ -593,7 +666,36 @@ $("signOutBtn").onclick = async () => { await db.auth.signOut(); location.reload
 $("hardwareBtn").onclick = () => { S.view = S.view === "hardware" ? "floor" : "hardware"; render(); };
 $("operatorPick").onchange = async (e) => { local.operatorId = e.target.value; local.branchId = null; save(); await start(); };
 
+// M86: every simulated machine at this location back to Available (loads waiting to start go back to their orders).
+async function resetAll() {
+  try {
+    const n = await rpc("reset_simulated_branch", { branch: local.branchId });
+    for (const m of simulated().filter((x) => branchOf(x) === local.branchId)) Object.assign(simOf(m), { state: "IDLE", activation: null, endsAt: null });
+    save();
+    S.error = null;
+    await loadMachines(local.branchId);
+    console.info(`Klean HQ: reset ${n} simulated machines`);
+  } catch (e) { S.error = `Couldn't reset: ${e.message}`; }
+  renderFloor();
+}
+
 let ticking = null;
+// TJ (2026-10-21): washers needed several taps. Two Klean HQ tabs share the same saved simulator state, and each
+// overwrote the other's, so a tab could get a Start for a payment it didn't know about. Only one tab simulates now:
+// a tab that starts (or "Run the simulator here") tells the others to pause.
+const hqChannel = "BroadcastChannel" in window ? new BroadcastChannel("klean-hq") : null;
+function runHere() {
+  hqChannel?.postMessage("takeover");
+  if (S.paused) Object.assign(local, loadLocal());   // pick up what the other tab saved last
+  S.paused = false;
+  if (!ticking) { ticking = setInterval(tick, TICK_MS); tick(); }
+  render();
+}
+hqChannel?.addEventListener("message", (e) => {
+  if (e.data !== "takeover") return;
+  clearInterval(ticking); ticking = null; S.paused = true;
+  render();
+});
 async function start() {
   const { data } = await db.auth.getSession();
   S.session = data.session;
@@ -604,7 +706,7 @@ async function start() {
     await loadBranches();
     S.view = S.branches.length ? "floor" : "wizard";
     render();
-    if (!ticking) { ticking = setInterval(tick, TICK_MS); tick(); }
+    runHere();
   } catch (e) { S.error = e.message; S.view = "signin"; render(); }
 }
 db.auth.onAuthStateChange((event) => { if (event === "SIGNED_IN" && !S.session) start(); });
@@ -626,7 +728,7 @@ document.addEventListener("click", (e) => {
   if (d.wizard !== undefined) { wizardFor = d.wizard || null; S.view = "wizard"; return render(); }
   if (d.signin) return signIn(d.signin);
   if (d.branch) return pickBranch(d.branch);
-  ({ print: () => window.print(), "wizard-run": runWizard, reload: () => location.reload(), config: downloadConfig, "add-scale": addScale })[d.do]?.();
+  ({ print: () => window.print(), "wizard-run": runWizard, reload: () => location.reload(), "run-here": runHere, "reset-all": resetAll, config: downloadConfig, "add-scale": addScale })[d.do]?.();
 });
 document.addEventListener("change", (e) => {
   const d = e.target.dataset ?? {};

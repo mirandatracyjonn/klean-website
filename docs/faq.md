@@ -2,6 +2,12 @@
 
 ## For customers
 
+**Can I use Klean at a carwash or motorcycle wash?**
+Yes, where the business uses Klean. At a **self-service bay**, scan the bay's QR code, choose how much time (blocks
+of minutes, e.g. ₱50 for 5 minutes), pay, then tap **Start bay** or press Start on the bay. Need more? Tap **Add
+time** on Home while it runs (or scan the bay again). For a **full-service wash**, the attendant rings it up at the
+counter; give your member code and Klean tells you when your car is ready.
+
 **Why do I have to verify my ID?**
 Klean is one person, one account, for everyone: customers, staff and owners. Verification keeps points fair,
 stops fraud, and protects your wallet.
@@ -147,6 +153,12 @@ on your phone keeps you current without asking.
 
 ## For laundromat owners (Super Admins)
 
+**Can I run a carwash or motorcycle wash on Klean?**
+Yes. When you create your business, choose what it offers: **Laundromat**, **Carwash** (self-service bays and/or full
+service), **Motorcycle wash** (self-service bays), or all of the above; change it any time in Business → Setup →
+What you offer. Self-service bays are priced per block of minutes (Setup → Self-service wash bays) and added in Klean
+HQ like machines; full service uses a menu priced by vehicle size (Setup → Full-service menu).
+
 **How much does Klean cost?**
 Free to download and set up, with no subscription. Klean takes a commission on each payment it processes (shown
 in Business → Setup). Payment-processor fees apply. Free loads redeemed with points carry no commission.
@@ -205,9 +217,9 @@ filter every 10 dryer cycles, drum and door seal weekly, hoses and vents monthly
 repairs, and get a morning reminder when something's due. Each machine keeps its history.
 
 **Can my attendants take cash?**
-Yes, at the counter: Work → Intake, type the weight, tap **Cash** (or **Charge**, then **Paying cash instead**), enter
+Yes, at the counter: Work → Intake, type the weight, choose **Wash & dry**, **Wash only** or **Dry only**, tap **Cash** (or **Charge**, then **Paying cash instead**), enter
 what the customer handed over and tap **Cash received**. Only then can machines be assigned, so cash that isn't rung up
-can't run a machine. Tap a free washer; when its light is white, tap **Start wash** on it (walk-ins have no app). Business → Sales → **Cash by person** shows who took how
+can't run a machine. Tap a free washer; when its light is white, tap **Start wash** on it (walk-ins have no app). Later, Work → Intake → **Paid, still to start** brings the order back to pick its dryer (the dry is already paid). Business → Sales → **Cash by person** shows who took how
 much. Cash sales carry the same commission, deducted from your next payout.
 
 **Can I track my expenses?**
@@ -219,6 +231,11 @@ Klean locks on every device until it's back online, and machine controllers show
 with a mobile-data backup.
 
 ## For attendants
+
+**How do I ring up a full-service car wash?**
+Work → **Carwash**: choose the vehicle size and the service, add the plate number (optional) and the customer's
+member code (optional), then tap **Charge** (payment QR) or **Cash**. The car joins **Cars**: tap **Start washing**,
+then **Done** (the customer is told their car is ready), then **Picked up**.
 
 **Do I need a separate staff account?**
 No. Your one personal Klean account gets staff access when your employer adds you. If you leave the job, your

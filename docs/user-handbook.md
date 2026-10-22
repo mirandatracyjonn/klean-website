@@ -97,6 +97,14 @@ browser for 2 hours, so you can sign in and verify first and still come back to 
 To earn points on attendant-assisted visits, give the attendant the **member code** from **Account**. They'll
 add it to your order.
 
+### Carwash and motorcycle wash
+
+- **Self-service bay:** scan the bay's QR code, choose how much time (in blocks of minutes) and pay. When the bay's
+  light turns white, tap **Start bay** on Home or press Start on the bay. While it runs, Home shows **Add time**:
+  tap it to buy more minutes without stopping. The bay stops when your time is up.
+- **Full service:** the attendant rings up your wash by vehicle size. Give your member code to earn points and get
+  a message when your car or motorcycle is ready.
+
 ### Receipts
 
 Every paid visit has a receipt in **Account → Receipts** (and on klean.ph → Account): the laundromat, date, what you

@@ -1,6 +1,6 @@
 # Klean by Geerho Terms of Service
 
-*Effective date: October 19, 2026. Version 2.0.*
+*Effective date: October 22, 2026. Version 2.1.*
 
 These Terms are an agreement between you and **Geerho Tech LLC**, which owns and operates **Klean by Geerho**
 ("**Klean**", "we", "us"), 2108 N St, Ste N, Sacramento, CA 95816, USA. They apply to the Klean apps for iOS and Android, the Klean web app, and related services (the
@@ -38,9 +38,22 @@ Privacy Policy.
 
 ## 3. Using laundromats on Klean (customers)
 
-3.1 **Operators.** Laundromats on Klean are run by independent businesses ("**Operators**"). Each Operator sets
-its own prices, operates its own premises and machines, and is responsible for its laundry services. Klean
-provides the software and payment processing; Klean is not the laundromat.
+3.1 **Operators.** Laundromats, carwashes and motorcycle washes on Klean are run by independent businesses
+("**Operators**"). Each Operator sets its own prices, operates its own premises, machines and wash bays, and is
+responsible for its services. Klean provides the software and payment processing; Klean is not the laundromat or
+the carwash. In these Terms, "laundromat" and "machine" also cover carwashes, motorcycle washes and wash bays where
+that makes sense.
+
+3.1a **Self-service wash bays.** At a self-service carwash or motorcycle wash bay you pay for **time**: a block of
+minutes at the price the Operator sets (for example ₱50 for 5 minutes), up to 12 blocks at a time. The bay starts
+only when you start it, and runs for the minutes you paid for; **Add time** while it runs buys more. Unused minutes
+aren't refunded once the bay has started, and time can't be moved to another bay. Use the bay safely and as the
+Operator's signs say; the Operator is responsible for the bay, its water and chemicals, and your vehicle's safety
+on its premises.
+
+3.1b **Full-service washes.** When an Operator's staff wash your car or motorcycle, you choose a service from its
+menu, priced by vehicle size, and pay at the counter (cash or a payment page). The Operator may record your plate
+number to find your vehicle. If you give your member code, Klean tells you when it's done.
 
 3.2 **Payment before use.** A machine is activated only after your payment is confirmed by the payment provider
 (or, when you pay cash at a laundromat's counter, after the attendant records your cash payment in Klean), and it starts only when you start it (in the app or with the machine's Start button); make sure your laundry is
@@ -70,10 +83,12 @@ business on Klean, its points and free loads end; paid loads must be used or ref
 automatically when a machine fails to start after payment. Questions about laundry quality, damage or lost items
 are between you and the Operator.
 
-## 4. Running a laundromat on Klean (Operators)
+## 4. Running a laundromat, carwash or motorcycle wash on Klean (Operators)
 
 4.1 **Operator mode.** A verified user may create an Operator account and becomes its Super Admin. You must have
-authority to bind the business you register.
+authority to bind the business you register. You choose what the business offers (laundromat, self-service and/or
+full-service carwash, self-service motorcycle wash) and can change it later. You're responsible for your wash bays'
+equipment, water and chemicals, drainage and environmental permits, signage, and for safety on your premises.
 
 4.2 **Payments and payouts.** You appoint Klean as your limited agent to collect payments from customers for laundry
 services at your business. A customer's payment to Klean counts as payment to you. Customers pay Klean through its

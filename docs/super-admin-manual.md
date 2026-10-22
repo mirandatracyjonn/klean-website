@@ -95,6 +95,25 @@ your laundromat: people verified in the last 30 days who haven't done laundry an
 one welcome load across all of Klean, at the first participating laundromat they scan; their machine starts without
 payment and they get a "Welcome to …" notification. It's your promotion: no payment, no commission, no payout.
 
+## 3a. What you offer: laundromat, carwash, motorcycle wash
+
+When you create the business you choose what it offers; change it in Business → Setup → **What you offer**:
+**Laundromat** (washers and dryers), **Carwash: self-service bays**, **Carwash: full service**, **Motorcycle wash:
+self-service bays**, or all of them. Klean shows only the screens that apply (for example Work → Intake for
+laundromats, Work → Carwash for full service).
+
+- **Self-service bays** (Setup → Self-service wash bays): set a price for a block of minutes for car bays and for
+  motorcycle bays (e.g. ₱50 for 5 minutes). Customers scan the bay, pay for 1–12 blocks, start the bay, and tap
+  **Add time** while it runs. Add bays in Klean HQ (set up a location → Car wash bays / Motorcycle wash bays) like
+  machines; each gets its own QR code and status light. With a Klean controller, a bay's **pulses** setting is coins
+  per **minute**: Klean drops minutes paid × that many coins, and more on Add time. Bench-test a controller on one bay
+  before installing (the bay firmware is new as of 2026-10-22).
+- **Full service** (Setup → Full-service menu): add services (e.g. Wash, Wash + Wax, Interior) with a price per
+  vehicle size (Motorcycle, Sedan, SUV, Van / Pickup; blank = not offered for that size). Attendants ring them up in
+  Work → Carwash and move each car through Waiting → Washing → Done → Picked up; Done tells a customer with a Klean
+  account their vehicle is ready.
+- You're responsible for bay equipment, water, chemicals, drainage and any environmental permits, signs and safety.
+
 ## 4. Branches and machines
 
 **Add a branch:** Business → Setup → Branches → **+ Add a branch**. One form: the branch's name and address
@@ -129,6 +148,12 @@ details: the Hardware Guide.
 **Start dry** in Klean (after confirming the laundry is in and the door is closed) or presses Start on the machine;
 on a simulated machine you can also click **Press Start** in Klean HQ. If your machines start as soon as coins go
 in, tick that box before downloading the controller file, so Klean holds the coins until the customer taps Start.
+
+**Testing in Beta: reset simulated machines.** If a simulated machine gets stuck (for example paid and waiting for a
+Start that never comes), click **Reset** on it in Klean HQ, or **Reset all simulated machines**; in the app or on
+klean.ph it's Work → Machines → **Reset simulated machines (Beta)**. The machine goes back to Available and any load
+waiting to start goes back to its order (find it under Work → Intake → Paid, still to start). Only simulated machines
+in a Beta business can be reset; real machines and live businesses are never touched.
 
 In the app:
 

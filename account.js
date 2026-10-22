@@ -99,6 +99,7 @@ function signedIn(a, v) {
   if (v.status === "verified") parts.push(receiptsCard());
   if ((a.memberships ?? []).length) parts.push(workCard(a));
   if ((a.memberships ?? []).length) parts.push(staffCard(a));
+  for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(offerCard(m));   // M87–M89
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(commissionCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(ordersCard(m));
   for (const m of (a.memberships ?? []).filter((x) => x.role === "super_admin")) parts.push(expensesCard(m));
@@ -186,6 +187,7 @@ function payMachineCard(token, verified) {
       msg.replaceChildren(el("p", { text: question }), el("div", { class: "btn-row" }, yes, back));
       return;
     }
+    if (r.mode === "bay_checkout" || r.mode === "bay_add_time") { bay(r); return; }
     if (r.mode === "credit_used") {
       forgetMachine();
       msg.replaceChildren(el("p", { text: `${r.machine_label} is ready, already paid. Tap ${r.machine_type === "dryer" ? "Start dry" : "Start wash"} under Ready to start, or press Start on the machine.` }));
@@ -193,6 +195,39 @@ function payMachineCard(token, verified) {
       return;
     }
     choose(r);
+  };
+  // M88: a self-service car or motorcycle bay, paid in blocks of minutes (also Add time while it runs).
+  const bay = (r) => {
+    const cur = r.currency ?? "PHP";
+    const adding = r.mode === "bay_add_time";
+    let blocks = r.blocks ?? 1;
+    const total = el("p", { class: "acct-total" });
+    const pay = button("Pay");
+    const redraw = () => {
+      total.textContent = `${blocks * r.block_minutes} minutes: ${money(blocks * r.block_minor, cur)}`;
+      pay.textContent = `Pay ${money(blocks * r.block_minor, cur)} · GCash, Maya, card`;
+    };
+    const n = el("select", { "aria-label": "Time" }, ...Array.from({ length: 12 }, (_, i) => el("option", { value: String(i + 1), text: `${(i + 1) * r.block_minutes} minutes` })));
+    n.value = String(blocks);
+    n.addEventListener("change", () => { blocks = +n.value; redraw(); });
+    pay.addEventListener("click", async () => {
+      pay.disabled = true;
+      try {
+        if (blocks !== (r.blocks ?? 1) && !r.checkout_open) {
+          const { error } = await db.rpc("set_bay_blocks", { target_order: r.order_id, blocks });
+          if (error) throw error;
+        }
+        const c = await call("payments", { action: "checkout", order_id: r.order_id });
+        if (c.checkout_url) location.href = c.checkout_url;
+      } catch (e) { msg.append(errorLine(e.message)); pay.disabled = false; }
+    });
+    redraw();
+    msg.replaceChildren(
+      el("h2", { text: adding ? `Add time · ${r.machine_label}` : `${r.machine_label} · ${r.machine_type === "moto_bay" ? "Motorcycle wash bay" : "Car wash bay"}` }),
+      el("p", { class: "meta", text: `${money(r.block_minor, cur)} for ${r.block_minutes} minutes` + (adding && r.minutes_left != null ? ` · about ${r.minutes_left} min left now` : "") }),
+      el("label", { class: "acct-field" }, adding ? "Add how much time? " : "How much time? ", n), total,
+      el("div", { class: "btn-row" }, pay, forget),
+      el("p", { class: "meta", text: adding ? "Once paid, the time is added right away." : "After paying, come back here: tap Start bay, or press Start on the bay. Need more? Scan the bay again to add time." }));
   };
   // "How many loads?" and wash + dry / wash only, then one payment.
   const choose = (r) => {
@@ -251,8 +286,72 @@ function payMachineCard(token, verified) {
   const go = button("Pay for this machine");
   go.addEventListener("click", () => { go.remove(); scan(); });
   card.append(el("h2", { text: "You scanned a Klean machine" }),
-    el("p", { text: "Pay here in your browser. Load your laundry first if you like; the machine waits for you to start it." }),
+    el("p", { text: "Pay here in your browser. The machine or wash bay waits for you to start it." }),
     el("div", { class: "btn-row" }, go, forget), msg);
+  return card;
+}
+
+// M87–M89 (TJ, 2026-10-22): what the business offers, self-service bay prices, and the full-service menu.
+function offerCard(m) {
+  const card = el("div", { class: "card acct-card" });
+  const msg = el("div");
+  const types = [["laundromat", "Laundromat"], ["carwash_self", "Carwash: self-service bays"], ["carwash_full", "Carwash: full service"], ["moto_self", "Motorcycle wash: self-service bays"]];
+  const boxes = types.map(([v, t]) => { const b = el("input", { type: "checkbox", value: v, checked: (m.services ?? ["laundromat"]).includes(v) }); return [b, el("label", { class: "acct-check" }, b, ` ${t}`)]; });
+  const save = el("button", { class: "btn btn-brand", type: "button", text: "Save" });
+  save.addEventListener("click", async () => {
+    const services = boxes.filter(([b]) => b.checked).map(([b]) => b.value);
+    const { error } = await db.rpc("set_business_services", { operator: m.operator_id, services });
+    msg.replaceChildren(error ? errorLine(error.message) : el("p", { text: "Saved what you offer." }));
+    if (!error) setTimeout(render, 1200);
+  });
+  card.append(el("h2", { text: `What ${m.operator_name} offers` }), ...boxes.map(([, l]) => l), el("div", { class: "btn-row" }, save), msg);
+  const svc = m.services ?? ["laundromat"];
+  (async () => {
+    const [{ data: st }, { data: menu }] = await Promise.all([
+      db.from("operator_settings").select("car_block_minor,car_block_minutes,moto_block_minor,moto_block_minutes").eq("operator_id", m.operator_id).maybeSingle(),
+      db.from("carwash_services").select("id,name,prices,position").eq("operator_id", m.operator_id).eq("is_active", true).order("position")]);
+    const peso = (v) => (v == null ? "" : String(v / 100));
+    const minor = (v) => (parseFloat(v) > 0 ? Math.round(parseFloat(v) * 100) : 0);
+    if (svc.includes("carwash_self") || svc.includes("moto_self")) {
+      const carP = el("input", { type: "number", step: "0.01", value: peso(st?.car_block_minor), "aria-label": "Car bay price per block" });
+      const carM = el("input", { type: "number", min: "1", max: "60", value: st?.car_block_minutes ?? 5, "aria-label": "Car bay minutes per block" });
+      const motoP = el("input", { type: "number", step: "0.01", value: peso(st?.moto_block_minor), "aria-label": "Motorcycle bay price per block" });
+      const motoM = el("input", { type: "number", min: "1", max: "60", value: st?.moto_block_minutes ?? 5, "aria-label": "Motorcycle bay minutes per block" });
+      const bays = el("button", { class: "btn btn-brand", type: "button", text: "Save bay prices" });
+      const out = el("div");
+      bays.addEventListener("click", async () => {
+        const { error } = await db.rpc("set_bay_prices", { operator: m.operator_id, car_block_minor: minor(carP.value), car_block_minutes: +carM.value || 5,
+          moto_block_minor: minor(motoP.value), moto_block_minutes: +motoM.value || 5 });
+        out.replaceChildren(error ? errorLine(error.message) : el("p", { text: "Saved. New bay prices apply to new payments." }));
+      });
+      card.append(el("h3", { text: "Self-service wash bays" }), el("p", { class: "meta", text: "A price for a block of minutes. Customers tap Add time while washing. Blank = not offered." }),
+        ...(svc.includes("carwash_self") ? [el("div", { class: "acct-row" }, el("label", { class: "acct-field" }, "Car bay price per block", carP), el("label", { class: "acct-field" }, "Minutes", carM))] : []),
+        ...(svc.includes("moto_self") ? [el("div", { class: "acct-row" }, el("label", { class: "acct-field" }, "Motorcycle bay price per block", motoP), el("label", { class: "acct-field" }, "Minutes", motoM))] : []),
+        el("div", { class: "btn-row" }, bays), out);
+    }
+    if (svc.includes("carwash_full")) {
+      const sizes = [["motorcycle", "Motorcycle"], ["sedan", "Sedan"], ["suv", "SUV"], ["van_pickup", "Van / Pickup"]];
+      const list = el("div");
+      const form = (item) => {
+        const name = el("input", { value: item?.name ?? "", placeholder: "Service, e.g. Wash + Wax", "aria-label": "Service name" });
+        const inputs = sizes.map(([k, t]) => [k, el("input", { type: "number", step: "0.01", value: peso(item?.prices?.[k]), placeholder: "—", "aria-label": `${t} price` }), t]);
+        const ok = el("button", { class: "btn btn-brand", type: "button", text: item ? "Save" : "Add service" });
+        const out = el("div");
+        ok.addEventListener("click", async () => {
+          const prices = Object.fromEntries(inputs.filter(([, i]) => minor(i.value) > 0).map(([k, i]) => [k, minor(i.value)]));
+          const { error } = await db.rpc("save_carwash_service", { operator: m.operator_id, service: item?.id ?? null, name: name.value.trim(), prices, position: item?.position ?? (menu ?? []).length });
+          out.replaceChildren(error ? errorLine(error.message) : el("p", { text: "Saved." }));
+          if (!error) setTimeout(render, 800);
+        });
+        const del = item ? el("button", { class: "btn btn-outline", type: "button", text: "Remove" }) : "";
+        if (item) del.addEventListener("click", async () => { const { error } = await db.rpc("delete_carwash_service", { service: item.id }); if (!error) render(); else out.replaceChildren(errorLine(error.message)); });
+        return el("div", { class: "acct-machine" }, el("label", { class: "acct-field" }, "Service", name),
+          el("div", { class: "acct-row" }, ...inputs.map(([, i, t]) => el("label", { class: "acct-field" }, t, i))), el("div", { class: "btn-row" }, ok, del), out);
+      };
+      list.append(...(menu ?? []).map(form), form(null));
+      card.append(el("h3", { text: "Full-service menu" }), el("p", { class: "meta", text: "Priced by vehicle size; blank = not offered for that size. Attendants ring these up in Work → Carwash." }), list);
+    }
+  })();
   return card;
 }
 
@@ -460,7 +559,9 @@ const STATUS = { available: "Free", paid_awaiting_start: "Paid: press Start", in
 function workCard(a) {
   const card = el("div", { class: "card acct-card" }, el("h2", { text: "Work" }));
   const pick = el("select", { "aria-label": "Branch" });
-  const show = el("select", { "aria-label": "Show" }, ...[["machines", "Machines"], ["intake", "Intake"], ["pickup", "Pickup"]]
+  // M89: Carwash (full service) for businesses that offer it.
+  const offersFull = (a.memberships ?? []).some((m) => (m.services ?? []).includes("carwash_full"));
+  const show = el("select", { "aria-label": "Show" }, ...[["machines", "Machines"], ["intake", "Intake"], ...(offersFull ? [["carwash", "Carwash"]] : []), ["pickup", "Pickup"]]
     .map(([v, t]) => el("option", { value: v, text: t })));
   const body = el("div");
   card.append(el("div", { class: "btn-row" }, pick, show), body);
@@ -488,7 +589,7 @@ function workCard(a) {
       const rows = list.map((m) => {
         const left = m.status === "in_use" && m.cycle_ends_at ? ` · ${Math.max(0, Math.ceil((new Date(m.cycle_ends_at) - Date.now()) / 60000))} min left` : "";
         return el("div", { class: "acct-machine" },
-          el("p", {}, el("strong", { text: m.label }), ` · ${m.type === "dryer" ? "Dryer" : "Washer"} · ${STATUS[m.status] ?? m.status}${left}`),
+          el("p", {}, el("strong", { text: m.label }), ` · ${({ dryer: "Dryer", washer: "Washer", car_bay: "Car wash bay", moto_bay: "Motorcycle wash bay" })[m.type] ?? m.type} · ${STATUS[m.status] ?? m.status}${left}`),
           m.error_reason ? el("p", { class: "acct-error", text: m.error_reason }) : "",
           m.status === "paid_awaiting_start" ? startButton(m, note) : "");
       });
@@ -555,7 +656,7 @@ function workCard(a) {
         const [{ data: o }, list] = await Promise.all([db.rpc("pos_order", { order_id: id }), machinesOf(b)]);
         if (!o) return;
         const free = list.filter((m) => m.status === "available" && !(m.reserved_until && new Date(m.reserved_until) > new Date())
-          && (m.type === "washer" ? o.washes_remaining > 0 : o.dries_remaining > 0));
+          && m.type !== "car_bay" && m.type !== "moto_bay" && (m.type === "washer" ? o.washes_remaining > 0 : o.dries_remaining > 0));
         const armed = list.filter((m) => m.status === "paid_awaiting_start");
         // TJ (2026-10-21): washers first (W1…W5, then D1…D5).
         const order = (a, c) => (a.type === "washer" ? 0 : 1) - (c.type === "washer" ? 0 : 1) || a.label.localeCompare(c.label, undefined, { numeric: true });
@@ -665,11 +766,101 @@ function workCard(a) {
         el("div", { class: "btn-row" }, ready, done), note);
     }));
   };
+  // M89 (TJ, 2026-10-22): ring up a full-service wash (menu by vehicle size, cash or QR), then move cars through the queue.
+  const carwashView = async (b) => {
+    const sizes = [["motorcycle", "Motorcycle"], ["sedan", "Sedan"], ["suv", "SUV"], ["van_pickup", "Van / Pickup"]];
+    const { data: menu } = await db.from("carwash_services").select("id,name,prices,position").eq("operator_id", b.operator_id).eq("is_active", true).order("position");
+    const note = el("div");
+    const queueBox = el("div");
+    const size = el("select", { "aria-label": "Vehicle" }, ...sizes.map(([v, t]) => el("option", { value: v, text: t, selected: v === "sedan" })));
+    const service = el("select", { "aria-label": "Service" });
+    const plate = el("input", { placeholder: "Plate number (optional)", "aria-label": "Plate number" });
+    const member = el("input", { placeholder: "Customer's member code (optional)", "aria-label": "Member code" });
+    const price = el("p", { class: "acct-total" });
+    const charge = el("button", { class: "btn btn-brand", type: "button", text: "Charge (GCash, Maya, QR Ph, card)" });
+    const cash = el("button", { class: "btn btn-outline", type: "button", text: "Cash" });
+    const pay = el("div");
+    const fill = () => {
+      service.replaceChildren(...(menu ?? []).map((m) => {
+        const p = m.prices?.[size.value];
+        return el("option", { value: m.id, disabled: p == null, text: `${m.name} · ${p == null ? "not for this size" : money2(p, b.currency ?? "PHP")}` });
+      }));
+      const m = (menu ?? []).find((x) => x.id === service.value && x.prices?.[size.value] != null) ?? (menu ?? []).find((x) => x.prices?.[size.value] != null);
+      if (m) service.value = m.id;
+      const p = m?.prices?.[size.value];
+      price.textContent = p == null ? "" : money2(p, b.currency ?? "PHP");
+      charge.disabled = cash.disabled = p == null;
+    };
+    size.addEventListener("change", fill);
+    service.addEventListener("change", () => { const m = (menu ?? []).find((x) => x.id === service.value); price.textContent = m ? money2(m.prices[size.value], b.currency ?? "PHP") : ""; });
+    const start = async (useCash) => {
+      charge.disabled = cash.disabled = true;
+      const { data: id, error } = await db.rpc("start_carwash_order", { branch: b.id, service: service.value, vehicle_size: size.value,
+        plate: plate.value.trim() || null, customer_member_code: member.value.trim() || null });
+      if (error) { note.replaceChildren(errorLine(error.message)); fill(); return; }
+      const { data: o } = await db.rpc("pos_order", { order_id: id });
+      if (useCash) {
+        const tendered = el("input", { type: "number", min: "0", step: "0.01", inputmode: "decimal", placeholder: "Amount received (optional)", "aria-label": "Amount received" });
+        const ok = el("button", { class: "btn btn-brand", type: "button", text: "Cash received" });
+        ok.addEventListener("click", async () => {
+          const t = parseFloat(tendered.value);
+          const { data: r, error: e } = await db.rpc("pos_cash_paid", { order_id: id, tendered_minor: t > 0 ? Math.round(t * 100) : null });
+          if (e) { note.replaceChildren(errorLine(e.message)); return; }
+          note.replaceChildren(el("p", { text: r.change_minor > 0 ? `Cash received. Give ${money2(r.change_minor, o.currency)} change. The car is in the queue.` : "Cash received. The car is in the queue." }));
+          pay.replaceChildren(); plate.value = ""; member.value = ""; fill(); drawQueue();
+        });
+        pay.replaceChildren(el("h3", { text: `Cash: ${money2(o.total_minor, o.currency)}` }), tendered, ok);
+        pay.scrollIntoView({ behavior: "smooth", block: "start" }); tendered.focus({ preventScroll: true });
+      } else {
+        try {
+          const c = await call("payments", { action: "checkout", order_id: id });
+          pay.replaceChildren(el("p", { text: `Ask the customer to pay ${money2(o.total_minor, o.currency)}:` }),
+            el("a", { class: "btn btn-brand", href: c.checkout_url, target: "_blank", rel: "noopener", text: "Open the payment page" }),
+            el("p", { class: "meta", text: "This updates when they've paid." }));
+          const poll = async () => {
+            const { data: x } = await db.rpc("pos_order", { order_id: id });
+            if (x?.status === "paid") { pay.replaceChildren(); note.replaceChildren(el("p", { text: "Paid. The car is in the queue." })); fill(); drawQueue(); }
+            else if (pay.isConnected) setTimeout(poll, 3000);
+          };
+          setTimeout(poll, 3000);
+        } catch (e) { note.replaceChildren(errorLine(e.message)); fill(); }
+      }
+    };
+    charge.addEventListener("click", () => start(false));
+    cash.addEventListener("click", () => start(true));
+    const drawQueue = async () => {
+      if (!queueBox.isConnected && body.contains(queueBox) === false && show.value !== "carwash") return;
+      const { data: q } = await db.rpc("carwash_queue", { branch: b.id });
+      queueBox.replaceChildren(el("h3", { text: "Cars" }), ...((q ?? []).length ? q.map((car) => {
+        const next = { waiting: ["washing", "Start washing"], washing: ["done", "Done"], done: ["picked_up", "Picked up"] }[car.status];
+        const btn = next ? el("button", { class: "btn btn-brand", type: "button", text: next[1] }) : "";
+        if (next) btn.addEventListener("click", async () => {
+          const { error: e } = await db.rpc("set_wash_status", { order_id: car.order_id, status: next[0] });
+          if (e) note.replaceChildren(errorLine(e.message));
+          else if (next[0] === "done" && car.has_customer) note.replaceChildren(el("p", { text: "The customer was told their car is ready." }));
+          drawQueue();
+        });
+        const sizeName = Object.fromEntries(sizes)[car.vehicle_size] ?? car.vehicle_size;
+        return el("div", { class: "acct-machine" },
+          el("p", {}, el("strong", { text: `${sizeName}${car.plate ? ` · ${car.plate}` : ""}` }), ` · ${({ waiting: "Waiting", washing: "Washing", done: "Done" })[car.status] ?? car.status}`),
+          el("p", { class: "meta", text: [car.service, car.customer_name, money2(car.total_minor, car.currency)].filter(Boolean).join(" · ") }),
+          el("div", { class: "btn-row" }, btn));
+      }) : [el("p", { class: "meta", text: "No cars waiting." })]));
+      if (show.value === "carwash") timer = setTimeout(drawQueue, 5000);
+    };
+    fill();
+    body.replaceChildren(
+      (menu ?? []).length ? el("div", { class: "acct-field" }, el("h3", { text: "New car" }), size, service, plate, member, price, el("div", { class: "btn-row" }, charge, cash), pay)
+                          : el("p", { class: "meta", text: "No service menu yet: a Super Admin adds it in the Klean app → Business → Setup → Full-service menu." }),
+      note, queueBox);
+    drawQueue();
+  };
   const load = () => {
     clearTimeout(timer);
     const b = branches.find((x) => x.id === pick.value);
     if (!b) return;
-    if (show.value === "intake") intakeView(b); else if (show.value === "pickup") pickupView(b); else machinesView(b);
+    if (show.value === "intake") intakeView(b); else if (show.value === "pickup") pickupView(b);
+    else if (show.value === "carwash") carwashView(b); else machinesView(b);
   };
   (async () => {
     const { data, error } = await db.rpc("my_branches");
@@ -1192,14 +1383,22 @@ function businessCard() {
   const zone = el("select", { "aria-label": "Time zone" }, ...zones.sort().map((z) => el("option", { value: z, selected: z === here }, zoneLabel(z))));
   const locate = el("button", { type: "button", class: "btn btn-outline", text: "📍 Locate me" });
   locate.addEventListener("click", () => { zone.value = Intl.DateTimeFormat().resolvedOptions().timeZone; });
+  // M87 (TJ, 2026-10-22): what the business offers.
+  const offerTypes = [["laundromat", "Laundromat (washers and dryers)"], ["carwash_self", "Carwash: self-service bays"],
+    ["carwash_full", "Carwash: full service (menu by vehicle size)"], ["moto_self", "Motorcycle wash: self-service bays"]];
+  const offerBoxes = offerTypes.map(([v, t]) => { const b = el("input", { type: "checkbox", value: v, checked: v === "laundromat" }); return [b, el("label", { class: "acct-check" }, b, ` ${t}`)]; });
+  const allOffers = el("button", { type: "button", class: "btn btn-outline", text: "All of the above" });
+  allOffers.addEventListener("click", () => offerBoxes.forEach(([b]) => { b.checked = true; }));
   const create = el("button", { type: "button", class: "btn btn-brand", text: "Create business" });
   const out = el("div");
   create.addEventListener("click", async () => {
     out.replaceChildren();
     if (name.value.trim().length < 2) { out.append(errorLine("Enter your business name.")); return; }
+    const services = offerBoxes.filter(([b]) => b.checked).map(([b]) => b.value);
+    if (!services.length) { out.append(errorLine("Choose what your business offers.")); return; }
     create.disabled = true;
     const { error } = await db.rpc("create_operator", { name: name.value.trim(), country: country.value.trim() || "PH",
-      currency: (currency.value.trim() || "PHP").toUpperCase(), time_zone: zone.value });
+      currency: (currency.value.trim() || "PHP").toUpperCase(), time_zone: zone.value, services });
     if (error) { out.append(errorLine(error.message)); create.disabled = false; return; }
     card.replaceChildren(el("h2", { text: "Business created ✓" }),
       el("p", { text: "Next: open the Klean app → Business → Setup to add your branch, machines and payments, or use Klean HQ on this computer." }),
@@ -1207,6 +1406,7 @@ function businessCard() {
   });
   card.append(
     el("label", { class: "acct-field" }, "Business name", name),
+    el("p", { class: "acct-field" }, "What does your business offer?"), ...offerBoxes.map(([, l]) => l), el("div", { class: "btn-row" }, allOffers),
     el("div", { class: "acct-row" }, el("label", { class: "acct-field" }, "Country", country), el("label", { class: "acct-field" }, "Currency", currency)),
     el("label", { class: "acct-field" }, "Time zone", zone),
     el("div", { class: "btn-row" }, locate),
