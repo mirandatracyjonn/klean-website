@@ -592,6 +592,18 @@ function workCard(a) {
       kg.value = ""; member.value = ""; price.textContent = ""; charge.disabled = cash.disabled = true;
       body.replaceChildren(el("div", { class: "acct-field" }, kg, member, price, el("div", { class: "btn-row" }, charge, cash)), out);
       out.replaceChildren(el("p", { class: "meta", text: "Charge shows a QR for the customer's phone. Cash: take the money, then confirm it here. Either way, machines start only after payment is recorded." }));
+      // TJ (2026-10-21): paid counter orders with a wash or dry still to start (e.g. the dryer after the wash).
+      db.rpc("branch_open_orders", { branch: b.id }).then(({ data }) => {
+        const waiting = (data ?? []).filter((w) => w.washes_remaining > 0 || w.dries_remaining > 0);
+        if (!waiting.length || !out.isConnected) return;
+        out.append(el("h3", { text: "Paid, still to start" }), el("p", { class: "meta", text: "Tap an order to pick its washer or dryer." }),
+          el("div", { class: "btn-row" }, ...waiting.map((w) => {
+            const left = [w.washes_remaining > 0 ? `${w.washes_remaining} wash left` : null, w.dries_remaining > 0 ? `${w.dries_remaining} dry left` : null].filter(Boolean).join(" · ");
+            const btn = el("button", { class: "btn btn-outline", type: "button", text: `${w.customer_name ?? "Walk-in"} · ${money2(w.total_minor, w.currency)} · ${left}` });
+            btn.addEventListener("click", () => { charge.disabled = cash.disabled = true; paidView(w.order_id); });
+            return btn;
+          })));
+      });
     };
     render();
   };
