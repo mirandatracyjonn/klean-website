@@ -3,6 +3,14 @@
 // (card); the iPhone and Android apps use Apple / Google in-app purchase instead and never link here. Didit's check
 // runs on Didit's page and returns to this page (start-verification's web callback).
 import { SUPABASE_URL, SUPABASE_KEY, el, money } from "./site.js";
+import "./hq/bay-art.js"; // TJ's car and motorcycle bay artwork, shared with Klean HQ (globalThis.KleanBayArt)
+
+// A wash bay's picture; the foam rolls blue, green and white while it runs (keyframes in style.css).
+const bayArt = (type, running, size) => {
+  const t = document.createElement("template");
+  t.innerHTML = globalThis.KleanBayArt.svg(type, { running, size });
+  return t.content.firstElementChild;
+};
 
 const box = document.getElementById("acct");
 const heading = document.getElementById("acct-title");
@@ -223,6 +231,7 @@ function payMachineCard(token, verified) {
     });
     redraw();
     msg.replaceChildren(
+      bayArt(r.machine_type, adding, 120),
       el("h2", { text: adding ? `Add time · ${r.machine_label}` : `${r.machine_label} · ${r.machine_type === "moto_bay" ? "Motorcycle wash bay" : "Car wash bay"}` }),
       el("p", { class: "meta", text: `${money(r.block_minor, cur)} for ${r.block_minutes} minutes` + (adding && r.minutes_left != null ? ` · about ${r.minutes_left} min left now` : "") }),
       el("label", { class: "acct-field" }, adding ? "Add how much time? " : "How much time? ", n), total,
@@ -589,6 +598,7 @@ function workCard(a) {
       const rows = list.map((m) => {
         const left = m.status === "in_use" && m.cycle_ends_at ? ` · ${Math.max(0, Math.ceil((new Date(m.cycle_ends_at) - Date.now()) / 60000))} min left` : "";
         return el("div", { class: "acct-machine" },
+          m.type === "car_bay" || m.type === "moto_bay" ? bayArt(m.type, m.status === "in_use", 88) : "",
           el("p", {}, el("strong", { text: m.label }), ` · ${({ dryer: "Dryer", washer: "Washer", car_bay: "Car wash bay", moto_bay: "Motorcycle wash bay" })[m.type] ?? m.type} · ${STATUS[m.status] ?? m.status}${left}`),
           m.error_reason ? el("p", { class: "acct-error", text: m.error_reason }) : "",
           m.status === "paid_awaiting_start" ? startButton(m, note) : "");

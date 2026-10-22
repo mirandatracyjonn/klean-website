@@ -130,3 +130,19 @@ test("Add time: EXTEND adds the paid minutes to a running bay (M88)", async () =
   const after = hq.state().sim["ctrl-W1"].endsAt;
   assert.ok(after - before >= (5 * 60000) / 60 - 50, `5 minutes added at 60x speed (got ${after - before} ms)`);
 });
+
+test("Bay artwork (TJ, 2026-10-22): the car and motorcycle bays, and only a running bay animates", () => {
+  const context = {};
+  vm.createContext(context);
+  vm.runInContext(readFileSync(new URL("./bay-art.js", import.meta.url), "utf8"), context);
+  const art = context.KleanBayArt;
+  const carOff = art.svg("car_bay"), carOn = art.svg("car_bay", { running: true }), moto = art.svg("moto_bay", { running: true });
+  assert.match(carOff, /^<svg class="kb-art" /);
+  assert.match(carOn, /class="kb-art kb-on"/);
+  assert.match(carOn, /kb-fill/, "car foam changes colour");
+  assert.match(moto, /Motorcycle wash bay, running/);
+  assert.match(moto, /#ff5fae/, "the pink scooter");
+  assert.doesNotMatch(art.svg("car_bay", { layer: "suds" }), /url\(#/, "the suds layer is plain shapes the apps can tint");
+  const ids = [...(art.svg("car_bay") + art.svg("car_bay")).matchAll(/id="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(ids).size, ids.length, "two bays on one page don't share gradient ids");
+});

@@ -79,3 +79,13 @@
     .sticker b { display: block; font-size: 20pt; color: #0E7C66; }
     .sticker span { font-size: 9pt; color: #333; }
   }
+
+/* Car and motorcycle wash bays (bay-art.js, TJ 2026-10-22): while running, foam, bubbles and cloud roll through blue,
+   green and white. The same rules are in klean-website/style.css. */
+@keyframes kbFill { 0%, 100% { fill: #5bb4ff; } 33% { fill: #3fd0a8; } 66% { fill: #ffffff; } }
+@keyframes kbLine { 0%, 100% { stroke: #5bb4ff; } 33% { stroke: #3fd0a8; } 66% { stroke: #ffffff; } }
+.kb-on .kb-fill { animation: kbFill 2.4s ease-in-out infinite; }
+.kb-on .kb-line { animation: kbLine 2.4s ease-in-out infinite; }
+.kb-on .kb-d1 { animation-delay: -.4s; } .kb-on .kb-d2 { animation-delay: -.8s; } .kb-on .kb-d3 { animation-delay: -1.2s; }
+.kb-on .kb-d4 { animation-delay: -1.6s; } .kb-on .kb-d5 { animation-delay: -2s; }
+@media (prefers-reduced-motion: reduce) { .kb-on .kb-fill, .kb-on .kb-line { animation: none; } }

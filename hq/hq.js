@@ -275,21 +275,15 @@ async function act(controllerId, what) {
 // M88: a wash bay (car or motorcycle) shows the vehicle with spray while it runs.
 const isBayType = (t) => t === "car_bay" || t === "moto_bay";
 const TYPE_NAME = { washer: "Washer", dryer: "Dryer", car_bay: "Car wash bay", moto_bay: "Motorcycle wash bay" };
+// TJ's car and motorcycle bay artwork (bay-art.js) in the machine frame with the bay's label.
 function bayArt(m, status) {
-  const running = status === "in_use";
-  const vehicle = m.type === "car_bay"
-    ? `<rect x="36" y="104" width="88" height="26" rx="8" fill="#0E7C66"/><path d="M52 104 l12 -18 h32 l12 18z" fill="#2BB596"/>
-       <circle cx="58" cy="132" r="9" fill="#33413d"/><circle cx="102" cy="132" r="9" fill="#33413d"/>`
-    : `<circle cx="52" cy="128" r="12" fill="#33413d"/><circle cx="108" cy="128" r="12" fill="#33413d"/>
-       <path d="M52 128 l20 -22 h22 l14 22" stroke="#0E7C66" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="70" y="96" width="26" height="9" rx="4" fill="#2BB596"/>`;
-  const spray = running ? `<g class="spin fast" opacity=".8"><circle cx="60" cy="70" r="4" fill="#60a5fa"/><circle cx="80" cy="62" r="5" fill="#93c5fd"/>
-       <circle cx="100" cy="72" r="4" fill="#60a5fa"/><circle cx="72" cy="84" r="3" fill="#bfdbfe"/><circle cx="92" cy="86" r="3" fill="#bfdbfe"/></g>` : "";
+  const art = globalThis.KleanBayArt.svg(m.type, { running: status === "in_use", size: 124, label: TYPE_NAME[m.type] })
+    .replace("<svg ", '<svg x="18" y="38" ');
   return `<svg viewBox="0 0 160 170" width="150" height="160" aria-label="${TYPE_NAME[m.type]}">
     <rect x="12" y="6" width="136" height="158" rx="16" fill="${status === "error" ? "#fff1f1" : "#f5fbff"}" stroke="#d6dfdc" stroke-width="2"/>
     <rect x="12" y="6" width="136" height="30" rx="16" fill="#e8f1f8"/><rect x="12" y="24" width="136" height="12" fill="#e8f1f8"/>
     <text x="80" y="27" font-size="12" font-weight="700" text-anchor="middle" fill="#5b6f69">${esc(m.label)}</text>
-    <rect x="76" y="36" width="8" height="18" fill="#9aa9a4"/><path d="M68 54 h24 l-4 8 h-16z" fill="#9aa9a4"/>
-    ${spray}${vehicle}<rect x="20" y="146" width="120" height="6" rx="3" fill="#d6dfdc"/>
+    ${art}
   </svg>`;
 }
 
