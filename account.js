@@ -106,6 +106,13 @@ function signedIn(a, v) {
   const out = el("button", { class: "btn btn-outline", type: "button", text: "Sign out" });
   out.addEventListener("click", async () => { await db.auth.signOut(); });
   parts.push(el("div", { class: "btn-row" }, out), deleteCard(a));
+  // TJ (2026-10-21): which website and app versions are current, so testers can say which one they have.
+  const version = el("p", { class: "meta", text: `Klean website · updated ${new Date(document.lastModified).toLocaleString()}` });
+  parts.push(version);
+  Promise.all(["ios", "android"].map((p) => db.rpc("app_version_policy", { platform: p }))).then(([i, an]) => {
+    const ios = i.data?.latest_build, android = an.data?.latest_build;
+    if (ios || android) version.textContent += ` · Latest apps: iPhone build ${ios ?? "?"} · Android build ${android ?? "?"}`;
+  }).catch(() => {});
   box.replaceChildren(...parts);
   if (v.status === "in_progress" || new URLSearchParams(location.search).has("verification")) watch(v.status);
 }
