@@ -501,23 +501,36 @@ function workCard(a) {
     const kg = el("input", { type: "number", min: "0.1", step: "0.1", inputmode: "decimal", placeholder: "Weight (kg)", "aria-label": "Weight (kg)" });
     const member = el("input", { placeholder: "Customer's member code (optional, for points)", "aria-label": "Member code" });
     const price = el("p", { class: "meta" });
+    // M84 (TJ, 2026-10-21): wash and dry (the usual for drop-off), wash only, or dry only.
+    const service = el("select", { "aria-label": "Service" },
+      el("option", { value: "wash_dry", text: "Wash & dry" }), el("option", { value: "wash_only", text: "Wash only" }), el("option", { value: "dry_only", text: "Dry only" }));
+    const serviceNote = el("p", { class: "meta" });
     const charge = el("button", { class: "btn btn-brand", type: "button", text: "Charge (GCash, Maya, QR Ph, card)", disabled: true });
     const cash = el("button", { class: "btn btn-outline", type: "button", text: "Cash", disabled: true });
     const out = el("div");
     let quoteTimer;
-    kg.addEventListener("input", () => {
+    const requote = () => {
+      serviceNote.textContent = service.value === "wash_only" ? "Wash only: the customer picks up their wet laundry right after the wash. We don't hang or dry it."
+        : service.value === "dry_only" ? "Dry only: we can fold it when it's done." : "";
       clearTimeout(quoteTimer); charge.disabled = cash.disabled = true; price.textContent = "";
       const w = parseFloat(kg.value);
       if (!(w > 0)) return;
       quoteTimer = setTimeout(async () => {
-        const { data: q, error } = await db.rpc("quote_intake", { branch: b.id, weight_kg: w });
+        const { data: q, error } = await db.rpc("quote_intake", { branch: b.id, weight_kg: w, service: service.value });
         if (error) { price.replaceChildren(errorLine(error.message)); return; }
+        for (const opt of service.options) {
+          const p = q.prices?.[opt.value];
+          opt.hidden = q.offers ? !q.offers[opt.value] : false;
+          opt.textContent = `${{ wash_dry: "Wash & dry", wash_only: "Wash only", dry_only: "Dry only" }[opt.value]}${p ? ` · ${money2(p, q.currency)}` : ""}`;
+        }
         price.textContent = `${q.loads} load${q.loads === 1 ? "" : "s"} × ${money2(q.price_per_load_minor, q.currency)} = ${money2(q.total_minor, q.currency)}`;
         charge.disabled = cash.disabled = false;
       }, 300);
-    });
+    };
+    kg.addEventListener("input", requote);
+    service.addEventListener("change", requote);
     const start = async () => {
-      const { data: id, error } = await db.rpc("start_pos_order", { branch: b.id, weight_kg: parseFloat(kg.value), customer_member_code: member.value.trim() || null });
+      const { data: id, error } = await db.rpc("start_pos_order", { branch: b.id, weight_kg: parseFloat(kg.value), customer_member_code: member.value.trim() || null, service: service.value });
       if (error) { out.replaceChildren(errorLine(error.message)); return null; }
       return id;
     };
@@ -531,6 +544,9 @@ function workCard(a) {
         const free = list.filter((m) => m.status === "available" && !(m.reserved_until && new Date(m.reserved_until) > new Date())
           && (m.type === "washer" ? o.washes_remaining > 0 : o.dries_remaining > 0));
         const armed = list.filter((m) => m.status === "paid_awaiting_start");
+        // TJ (2026-10-21): washers first (W1…W5, then D1…D5).
+        const order = (a, c) => (a.type === "washer" ? 0 : 1) - (c.type === "washer" ? 0 : 1) || a.label.localeCompare(c.label, undefined, { numeric: true });
+        free.sort(order); armed.sort(order);
         const next = el("button", { class: "btn btn-outline", type: "button", text: "Next customer" });
         next.addEventListener("click", () => { clearTimeout(timer); render(); });
         out.replaceChildren(
@@ -596,8 +612,8 @@ function workCard(a) {
     };
     cash.addEventListener("click", () => { charge.disabled = cash.disabled = true; cashForm(null); });
     const render = () => {
-      kg.value = ""; member.value = ""; price.textContent = ""; charge.disabled = cash.disabled = true;
-      body.replaceChildren(el("div", { class: "acct-field" }, kg, member, price, el("div", { class: "btn-row" }, charge, cash)), out);
+      kg.value = ""; member.value = ""; price.textContent = ""; charge.disabled = cash.disabled = true; service.value = "wash_dry"; serviceNote.textContent = "";
+      body.replaceChildren(el("div", { class: "acct-field" }, kg, service, serviceNote, member, price, el("div", { class: "btn-row" }, charge, cash)), out);
       out.replaceChildren(el("p", { class: "meta", text: "Charge shows a QR for the customer's phone. Cash: take the money, then confirm it here. Either way, machines start only after payment is recorded." }));
       // TJ (2026-10-21): paid counter orders with a wash or dry still to start (e.g. the dryer after the wash).
       db.rpc("branch_open_orders", { branch: b.id }).then(({ data }) => {
