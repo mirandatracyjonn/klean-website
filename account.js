@@ -828,23 +828,41 @@ function workCard(a) {
     };
     charge.addEventListener("click", () => start(false));
     cash.addEventListener("click", () => start(true));
+    const chosenBay = {};   // M92: order id → the bay picked for it
     const drawQueue = async () => {
       if (!queueBox.isConnected && body.contains(queueBox) === false && show.value !== "carwash") return;
-      const { data: q } = await db.rpc("carwash_queue", { branch: b.id });
+      const [{ data: q }, { data: bays }] = await Promise.all([db.rpc("carwash_queue", { branch: b.id }), db.rpc("carwash_bays", { branch: b.id })]);
+      const busyText = (bay) => ({ full_service: bay.plate ? `washing ${bay.plate}` : "washing a car", self_service: "self-service running" })[bay.state] ?? "not available";
       queueBox.replaceChildren(el("h3", { text: "Cars" }), ...((q ?? []).length ? q.map((car) => {
+        const moto = car.vehicle_size === "motorcycle";
         const next = { waiting: ["washing", "Start washing"], washing: ["done", "Done"], done: ["picked_up", "Picked up"] }[car.status];
         const btn = next ? el("button", { class: "btn btn-brand", type: "button", text: next[1] }) : "";
+        // A motorcycle goes in a motorcycle bay, a car in a car bay; only free bays can be chosen.
+        const kind = (bays ?? []).filter((x) => (x.type === "moto_bay") === moto);
+        let bayPick = "";
+        if (car.status === "waiting" && kind.length) {
+          bayPick = el("select", { "aria-label": moto ? "Motorcycle bay" : "Car bay" },
+            el("option", { value: "", text: moto ? "Choose a motorcycle bay" : "Choose a car bay" }),
+            ...kind.map((x) => el("option", { value: x.id, text: x.state === "free" ? x.label : `${x.label} · ${busyText(x)}`, disabled: x.state !== "free" })));
+          if (kind.some((x) => x.id === chosenBay[car.order_id] && x.state === "free")) bayPick.value = chosenBay[car.order_id];
+          const sync = () => { chosenBay[car.order_id] = bayPick.value; btn.disabled = !bayPick.value; btn.textContent = bayPick.value ? `Start washing in ${bayPick.selectedOptions[0].text}` : "Start washing"; };
+          bayPick.addEventListener("change", sync); sync();
+        }
         if (next) btn.addEventListener("click", async () => {
-          const { error: e } = await db.rpc("set_wash_status", { order_id: car.order_id, status: next[0] });
+          const args = { order_id: car.order_id, status: next[0] };
+          if (next[0] === "washing" && bayPick) args.bay = bayPick.value;
+          const { error: e } = await db.rpc("set_wash_status", args);
           if (e) note.replaceChildren(errorLine(e.message));
-          else if (next[0] === "done" && car.has_customer) note.replaceChildren(el("p", { text: "The customer was told their car is ready." }));
+          else if (next[0] === "done" && car.has_customer) note.replaceChildren(el("p", { text: `The customer was told their ${moto ? "motorcycle" : "car"} is ready.` }));
+          else note.replaceChildren();
           drawQueue();
         });
         const sizeName = Object.fromEntries(sizes)[car.vehicle_size] ?? car.vehicle_size;
         return el("div", { class: "acct-machine" },
-          el("p", {}, el("strong", { text: `${sizeName}${car.plate ? ` · ${car.plate}` : ""}` }), ` · ${({ waiting: "Waiting", washing: "Washing", done: "Done" })[car.status] ?? car.status}`),
+          el("p", {}, el("strong", { text: `${sizeName}${car.plate ? ` · ${car.plate}` : ""}` }),
+            ` · ${({ waiting: "Waiting", washing: "Washing", done: "Done" })[car.status] ?? car.status}${car.status === "washing" && car.bay_label ? ` in ${car.bay_label}` : ""}`),
           el("p", { class: "meta", text: [car.service, car.customer_name, money2(car.total_minor, car.currency)].filter(Boolean).join(" · ") }),
-          el("div", { class: "btn-row" }, btn));
+          bayPick, el("div", { class: "btn-row" }, btn));
       }) : [el("p", { class: "meta", text: "No cars waiting." })]));
       if (show.value === "carwash") timer = setTimeout(drawQueue, 5000);
     };

@@ -234,8 +234,9 @@ with a mobile-data backup.
 
 **How do I ring up a full-service car wash?**
 Work → **Carwash**: choose the vehicle size and the service, add the plate number (optional) and the customer's
-member code (optional), then tap **Charge** (payment QR) or **Cash**. The car joins **Cars**: tap **Start washing**,
-then **Done** (the customer is told their car is ready), then **Picked up**.
+member code (optional), then tap **Charge** (payment QR) or **Cash**. The car joins **Cars**: choose the bay (a motorcycle bay for
+a motorcycle, a car bay for a sedan, SUV or van/pickup; busy bays can't be chosen), tap **Start washing**, then **Done**
+(the customer is told their car is ready, and the bay is free again), then **Picked up**.
 
 **Do I need a separate staff account?**
 No. Your one personal Klean account gets staff access when your employer adds you. If you leave the job, your

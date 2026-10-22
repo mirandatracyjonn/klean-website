@@ -110,7 +110,9 @@ laundromats, Work → Carwash for full service).
   before installing (the bay firmware is new as of 2026-10-22).
 - **Full service** (Setup → Full-service menu): add services (e.g. Wash, Wash + Wax, Interior) with a price per
   vehicle size (Motorcycle, Sedan, SUV, Van / Pickup; blank = not offered for that size). Attendants ring them up in
-  Work → Carwash and move each car through Waiting → Washing → Done → Picked up; Done tells a customer with a Klean
+  Work → Carwash and move each car through Waiting → Washing → Done → Picked up. Start washing asks for the bay: a
+  motorcycle bay for a motorcycle, a car bay for a sedan, SUV or van/pickup, and only bays that are free. While staff
+  wash a car in a bay, self-service customers can't start that bay; Done frees it and tells a customer with a Klean
   account their vehicle is ready.
 - You're responsible for bay equipment, water, chemicals, drainage and any environmental permits, signs and safety.
 
