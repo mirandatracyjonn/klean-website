@@ -193,6 +193,8 @@ their business. Anyone can report a message; Klean may remove messages and suspe
 
 ## 7. Fees, refunds and chargebacks
 
+Our [Return & Refund Policy](refund-policy.md) explains these rules in short.
+
 7.1 Laundry payments are made to the Operator through Klean. Refund requests for laundry services go to the
 Operator (message them in the app, or ask an attendant), who decides in line with law and their policies. Klean may
 issue refunds where the Service itself failed (e.g. a double charge).

@@ -27,13 +27,14 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' 
 
 NAV = [("index", "/", "Home"), ("find", "/find.html", "Find a laundromat"), ("owners", "/owners.html", "For owners"),
        ("faq", "/faq.html", "Help"), ("account", "/account.html", "Account")]
-FOOTER = [("/terms.html", "Terms"), ("/privacy.html", "Privacy"), ("/faq.html", "FAQ"), ("/help.html", "User Handbook"),
+FOOTER = [("/terms.html", "Terms"), ("/privacy.html", "Privacy"), ("/refunds.html", "Refunds"), ("/faq.html", "FAQ"), ("/help.html", "User Handbook"),
           ("/manual.html", "Super Admin Manual"), ("/hardware.html", "Hardware Guide"), ("/hq/", "Klean HQ"),
           ("mailto:info@klean.ph", "info@klean.ph")]
 
 DOCS = {  # app repo docs/<file> → site page, title, description
     "terms.md": ("terms", "Terms of Service", "The agreement for using Klean."),
     "privacy.md": ("privacy", "Privacy Policy", "What Klean collects, why, and your rights."),
+    "refund-policy.md": ("refunds", "Return & Refund Policy", "How refunds work for payments made through Klean."),
     "faq.md": ("faq", "Help & FAQ", "Answers for customers, laundromat owners and attendants."),
     "user-handbook.md": ("help", "User Handbook", "How to use Klean: scan, pay, earn points, free loads."),
     "super-admin-manual.md": ("manual", "Super Admin Manual", "Running your laundromat on Klean."),
