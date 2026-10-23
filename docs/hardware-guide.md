@@ -72,8 +72,11 @@ Current switch, clamped on the machine's LIVE wire at its breaker (electrician)
    cable) and set it to close when the motor runs. Wire its contact to the controller's input for that machine.
 5. Mount the box away from water, steam and dryer heat.
 
-Default pins (LILYGO T-Relay): relays on 21, 19, 18, 5; current switch inputs on 32, 33, 25, 26. Change them at the
-top of the firmware for other boards.
+Pins: the firmware has two board settings at the top (`KLEAN_BOARD`). **1** (the default since 2026-10-22) is the
+common "ESP32 Relay x4" board that takes AC 90-250 V or DC 7-30 V: relays on 32, 33, 25, 26, current switch inputs on
+16, 17, 18, 19, status light on 23. It has no USB port: load the firmware with a USB-to-TTL adapter (GND, 5V, TX→RX,
+RX→TX) and a jumper from IO0 to GND while uploading. **0** is the LILYGO T-Relay: relays on 21, 19, 18, 5; current
+switch inputs on 32, 33, 25, 26. For any other board, change the pins at the top of the firmware.
 
 ## Software
 
